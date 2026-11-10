@@ -13,6 +13,7 @@ import json
 import os
 import subprocess
 import sys
+import urllib.error
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import heroes, read_json, read_text, write_text  # noqa: E402
@@ -83,7 +84,7 @@ def main():
         for lang in LANGS:
             path, done, total = build_hub(root, lang, patch_list)
             print(f"Home ({lang}): {path} ({done} of {total} heroes done)")
-    except OSError as e:
+    except urllib.error.URLError as e:
         sys.exit(f"Heroes API unavailable: {e}")
     if "--open" in sys.argv:
         subprocess.Popen(["xdg-open", f"{root}/{page_name(DEFAULT_LANG)}"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)

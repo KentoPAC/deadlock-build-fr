@@ -107,6 +107,23 @@
    ],
    "auto": true,
    "todo": "Run report.py: power spikes now include the reference OTP's key items (>= 75% of games from 1,600 souls, >= 60% from 3,200 souls) at their real purchase minute, next to the ability order. No text to rewrite."
+  },
+  {
+   "version": 8,
+   "date": "2026-11-11",
+   "title": {
+    "fr": "Contenu en anglais",
+    "en": "English content"
+   },
+   "parts": [
+    "summaries.en.json",
+    "codes"
+   ],
+   "scripts": [
+    "apply.py",
+    "report.py"
+   ],
+   "todo": "Write summaries.en.json: every text of summaries.json in English, same paths (finish.py \"en\": {...}), with official English item and ability names. Run apply.py --lang en on every build (automatic for English originals and generated OTP texts; non-English builds need \"tr_en\"). Add the English text of the hero's creator tips (videos.py add with \"en\")."
   }
  ]
 }
