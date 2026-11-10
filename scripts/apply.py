@@ -1,9 +1,11 @@
 """Apply translations to a build and produce the in-game "Paste build" code.
 
-Usage: python3 -I apply.py <folder> [--fr <json|->] [--no-clipboard] [--keep-layout]
+Usage: python3 -I apply.py <folder> [--lang fr|en] [--tr <json|->] [--no-clipboard] [--keep-layout]
 
-Reads <folder>/original.json and <folder>/strings.json (with "fr" filled in), writes
-<folder>/build_fr.json and <folder>/code.txt, and copies the code to the clipboard (wl-copy / xclip).
+Reads <folder>/original.json and <folder>/strings.json (with the --lang field filled in, "fr" by default; --fr is
+kept as a shortcut for --lang fr --tr), writes <folder>/build_<lang>.json and the code (code.txt for French,
+code.<lang>.txt otherwise), and copies it to the clipboard (wl-copy / xclip). Texts already in the target language
+(the author's own language, or texts generated from the locales) are filled in automatically.
 """
 import json
 import os
@@ -14,7 +16,8 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from codec import encode, encode_build  # noqa: E402
-from common import fill, read_json, write_json, write_text  # noqa: E402
+from common import GAME_LANGUAGE, fill, localize_generated, read_json, write_json, write_text  # noqa: E402
+from i18n import CONTENT_LANG, LANGS  # noqa: E402
 
 MAX_BUILD_BYTES = 16000  # limit enforced by the game
 # The game only offers "Paste build" when the author account id field is present, but any value works:
@@ -87,22 +90,44 @@ def copy_to_clipboard(code):
     return False
 
 
+def fill_known_texts(original, strings, lang):
+    """Fill the `lang` texts that need no translator: the author's own language, or texts generated from the locales."""
+    native = original.get("language") == GAME_LANGUAGE.get(lang)
+    for s in strings:
+        if not s.get(lang):
+            s[lang] = s["text"] if native else localize_generated(s["text"], lang) or ""
+    return strings
+
+
+def output_paths(folder, lang):
+    code = f"{folder}/code.txt" if lang == CONTENT_LANG else f"{folder}/code.{lang}.txt"
+    return f"{folder}/build_{lang}.json", code
+
+
+def option(name):
+    return sys.argv[sys.argv.index(name) + 1] if name in sys.argv else None
+
+
 def main():
     folder = sys.argv[1]
-    if "--fr" in sys.argv:  # translations as JSON (ordered list or {n: fr}): a file, or "-" for stdin
-        src = sys.argv[sys.argv.index("--fr") + 1]
-        fill(folder, json.load(sys.stdin) if src == "-" else read_json(src))
+    lang = "fr" if "--fr" in sys.argv else option("--lang") or CONTENT_LANG
+    if lang not in LANGS:
+        sys.exit(f"Unknown language {lang!r}: expected one of {LANGS}")
+    src = option("--fr") or option("--tr")
+    if src:  # translations as JSON (ordered list or {n: text}): a file, or "-" for stdin
+        fill(folder, json.load(sys.stdin) if src == "-" else read_json(src), lang)
     original = read_json(f"{folder}/original.json")
-    strings = read_json(f"{folder}/strings.json")
+    strings = fill_known_texts(original, read_json(f"{folder}/strings.json"), lang)
+    write_json(f"{folder}/strings.json", strings, compact=True)
 
-    missing = [s["text"][:40] for s in strings if not s.get("fr")]
+    missing = [s["text"][:40] for s in strings if not s.get(lang)]
     if missing:
-        sys.exit(f"Missing translations: {missing}")
+        sys.exit(f"Missing {lang} translations: {missing}")
     for s in strings:
         node = original
         for key in s["path"][:-1]:
             node = node[key]
-        node[s["path"][-1]] = s["fr"]
+        node[s["path"][-1]] = s[lang]
 
     if "--keep-layout" not in sys.argv:
         for cat in original["details"]["mod_categories"]:
@@ -129,9 +154,10 @@ def main():
     if len(raw) > MAX_BUILD_BYTES:
         sys.exit(f"Build too large ({len(raw)} bytes > {MAX_BUILD_BYTES}): shorten the texts")
     code = encode(build)  # no trailing newline: the game rejects it
-    write_json(f"{folder}/build_fr.json", build, indent=1)
-    write_text(f"{folder}/code.txt", code)
-    print(f"{len(raw)} bytes, code: {folder}/code.txt")
+    build_path, code_path = output_paths(folder, lang)
+    write_json(build_path, build, indent=1)
+    write_text(code_path, code)
+    print(f"{len(raw)} bytes, code: {code_path}")
 
     if "--no-clipboard" not in sys.argv:
         if copy_to_clipboard(code):

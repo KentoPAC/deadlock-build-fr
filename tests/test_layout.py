@@ -18,6 +18,14 @@ class LayoutTest(unittest.TestCase):
         self.assertGreater(long["width"], short["width"])
         self.assertLessEqual(long["width"], apply.MAX_W)
 
+    def test_known_texts_are_filled(self):
+        english_author = {"language": 0}
+        strings = apply.fill_known_texts(english_author, [{"text": "Rush this", "fr": "Fonce"}], "en")
+        self.assertEqual(strings[0]["en"], "Rush this")
+        otp = {"language": 2}
+        strings = apply.fill_known_texts(otp, [{"text": "Situationnel"}, {"text": "Une vraie note"}], "en")
+        self.assertEqual([s["en"] for s in strings], ["Situational", ""])
+
     def test_empty_category_has_no_card_row(self):
         cat = {"name": "Vide", "mods": []}
         apply.layout(cat)

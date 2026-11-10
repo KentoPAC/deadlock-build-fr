@@ -48,6 +48,11 @@ def table(key, lang=None):
     return strings(lang or _current)[key]
 
 
+def named_pattern(key, lang=None):
+    """Anchored regex matching a whole localized template, each {placeholder} captured as a named group."""
+    return "^" + re.sub(r"\\\{(\w+)\\\}", lambda m: f"(?P<{m[1]}>.+?)", re.escape(strings(lang or _current)[key])) + "$"
+
+
 def pattern(key, placeholder=r"(\d+)", lang=None):
     """Regex matching a localized template, its {placeholders} replaced by `placeholder`."""
     return re.sub(r"\\\{\w+\\\}", lambda _: placeholder, re.escape(strings(lang or _current)[key]))
