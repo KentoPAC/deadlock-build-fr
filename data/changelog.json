@@ -73,6 +73,19 @@
    ],
    "auto": true,
    "todo": "Run report.py: ability upgrade texts now keep each effect separate (\" · \") so the power-spike timeline shows one chip per effect. No text to rewrite."
+  },
+  {
+   "version": 7,
+   "date": "2026-11-10",
+   "title": "Objets clés dans les pics de puissance",
+   "parts": [
+    "kit.spikes"
+   ],
+   "scripts": [
+    "report.py"
+   ],
+   "auto": true,
+   "todo": "Run report.py: power spikes now include the reference OTP's key items (>= 75% of games from 1,600 souls, >= 60% from 3,200 souls) at their real purchase minute, next to the ability order. No text to rewrite."
   }
  ]
 }
