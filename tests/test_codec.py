@@ -36,6 +36,11 @@ class CodecTest(unittest.TestCase):
         self.assertEqual(len(categories), 2)
         self.assertIn((6, 1), categories[1])  # optional flag
 
+    def test_zero_author_id_is_kept(self):
+        # The game hides "Paste build" when field 3 is missing: 0 must still be encoded.
+        fields = dict(codec.decode(codec.encode({**BUILD, "author_account_id": 0})))
+        self.assertEqual(fields[3], 0)
+
     def test_no_trailing_newline(self):
         self.assertFalse(codec.encode(BUILD).endswith("\n"))
 

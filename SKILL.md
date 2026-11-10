@@ -144,7 +144,8 @@ is missing.
   some heroes (statistical test). Steam pages are cached for a day (`~/.cache/deadlock-build-fr`).
 - Power spikes and ability cards: computed by report.py (game level thresholds x the OTP's ability order).
 - **apply.py** recomputes category width / height from the text length (the game cuts text with "..."); constants at
-  the top of the file, `--keep-layout` keeps the original. It fills in the local account id and mirrors an in-game copy.
+  the top of the file, `--keep-layout` keeps the original. It mirrors an in-game copy, with author account id 0: the game
+  requires the field to show "Coller le build" but accepts any value, so codes contain nothing personal.
 - **Translation**: official French names of items and abilities (the summary already gives them). Nicknames
   ("Cultist" = Sacrifice rituel, "E-Shift" = Refuge céleste…): compare `api.deadlock-api.com/v1/assets/items?language=<lang>`
   with `?language=french`. Natural French gamer tone (lane, farm, focus… are fine). `#Citadel_HeroBuilds_*` labels are
