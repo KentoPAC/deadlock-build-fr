@@ -20,6 +20,14 @@ class CommonTest(unittest.TestCase):
         self.assertEqual(common.rank_label(114), "Eternus 4")
         self.assertEqual(common.rank_label(90), "Phantom")
 
+    def test_generated_texts_are_localized(self):
+        self.assertEqual(common.localize_generated("Pris dans 98 % de ses parties, vers 4 min. Revendu vers 9 min.", "en"),
+                         "Bought in 98% of their games, around 4 min. Sold around 9 min.")
+        self.assertEqual(common.localize_generated("Situationnel (late)", "en"), "Situational (late)")
+        self.assertEqual(common.localize_generated("Ses achats systématiques entre 10 et 22 min.", "en"),
+                         "Their systematic purchases between 10 and 22 min.")
+        self.assertIsNone(common.localize_generated("Une note d'auteur", "en"))
+
     def test_otp_notes_are_parsed_in_every_language(self):
         self.assertEqual(common.parse_otp_note("Pris dans 98 % de ses parties, vers 4 min. Revendu vers 9 min."), (98, 4, 9))
         self.assertEqual(common.parse_otp_note("Bought in 60% of their games, around 12 min."), (60, 12, None))

@@ -5,11 +5,12 @@ import re
 import urllib.parse
 import urllib.request
 
-from i18n import API_LANGUAGE, LANGS, current, pattern, t, table
+from i18n import API_LANGUAGE, LANGS, current, named_pattern, pattern, t, table
 
 API = "https://api.deadlock-api.com"
 USER_AGENT = {"User-Agent": "deadlock-build-fr/1.0"}
 LANG_FR = 2  # ELanguage: 0 English, 2 French, 6 Simplified Chinese...
+GAME_LANGUAGE = {"en": 0, "fr": 2}  # locale -> the game's ELanguage
 
 
 def read_json(path):
@@ -157,6 +158,49 @@ def parse_otp_note(note):
     return None
 
 
+# Texts generated for OTP builds, in the order they are tried (the note with a resale is tried before the plain one).
+GENERATED_KEYS = ("otp.name", "otp.description", "otp.cat.early", "otp.cat.mid", "otp.cat.late", "otp.cat.situational",
+                  "otp.cat.situational_desc", "otp.cat.situational_late", "otp.cat.situational_late_desc")
+
+
+def _convert_value(name, value, src, dst):
+    """Placeholder values that are themselves localized: rank labels and hero names."""
+    if name == "rank":
+        ranks_src, ranks_dst = table("ranks", lang=src), table("ranks", lang=dst)
+        head, _, sub = value.rpartition(" ")
+        tier_name, sub = (head, " " + sub) if sub.isdigit() else (value, "")
+        if tier_name in ranks_src:
+            return ranks_dst[ranks_src.index(tier_name)] + sub
+    if name == "hero":
+        by_name = {h["name"]: h["id"] for h in heroes(src).values()}
+        if value in by_name:
+            return heroes(dst)[by_name[value]]["name"]
+    return value
+
+
+def localize_generated(text, dst):
+    """A text generated from a locale template (OTP notes, categories, name, description) -> the same text in `dst`.
+    None when the text was not generated (an author's own words)."""
+    for src in LANGS:
+        if src == dst:
+            continue
+        sold = re.match(named_pattern("otp.note", lang=src)[:-1] + "(?P<rest>.*)$", text or "")
+        if sold:
+            rest = sold["rest"]
+            out = t("otp.note", lang=dst, pct=sold["pct"], minute=sold["minute"])
+            if not rest:
+                return out
+            m = re.match(named_pattern("otp.note_sold", lang=src), rest)
+            if m:
+                return out + t("otp.note_sold", lang=dst, minute=m["minute"])
+        for key in GENERATED_KEYS:
+            m = re.match(named_pattern(key, lang=src), text or "")
+            if m:
+                values = {k: _convert_value(k, v, src, dst) for k, v in m.groupdict().items()}
+                return t(key, lang=dst, **values)
+    return None
+
+
 def short_note(note):
     """Generated OTP note -> "98%@4m rev9m" (bought in 98% of games around 4 min, sold around 9 min); others truncated."""
     parsed = parse_otp_note(note)
@@ -201,18 +245,18 @@ def summarize(build, strings=None):
     return "\n".join(lines)
 
 
-def todo_list(strings):
-    """Numbered texts still to translate (same numbering as summarize)."""
-    return "\n".join(f"[{n}] {s['text']}" for n, s in enumerate(strings) if not s["fr"])
+def todo_list(strings, lang="fr"):
+    """Numbered texts still to translate into `lang` (same numbering as summarize)."""
+    return "\n".join(f"[{n}] {s['text']}" for n, s in enumerate(strings) if not s.get(lang))
 
 
-def fill(folder, translations):
-    """Fill strings.json: a list in the order of the texts to translate, or a {n: fr} dict."""
+def fill(folder, translations, lang="fr"):
+    """Fill the `lang` field of strings.json: a list in the order of the texts still to translate, or a {n: text} dict."""
     strings = read_json(f"{folder}/strings.json")
-    todo = [n for n, s in enumerate(strings) if not s["fr"]]
+    todo = [n for n, s in enumerate(strings) if not s.get(lang)]
     if not isinstance(translations, dict) and len(translations) != len(todo):
         raise SystemExit(f"{folder}: {len(translations)} translations for {len(todo)} texts")
     pairs = translations.items() if isinstance(translations, dict) else zip(todo, translations)
-    for n, fr in pairs:
-        strings[int(n)]["fr"] = fr
+    for n, text in pairs:
+        strings[int(n)][lang] = text
     write_json(f"{folder}/strings.json", strings, compact=True)

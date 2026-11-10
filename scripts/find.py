@@ -19,8 +19,8 @@ import sys
 import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import (LANG_FR, find_hero, get, items, rank_label, read_json, summarize, text_amount,  # noqa: E402
-                    todo_list, write_candidate, write_json)
+from common import (GAME_LANGUAGE, LANG_FR, find_hero, get, items, rank_label, read_json, summarize,  # noqa: E402
+                    text_amount, todo_list, write_candidate, write_json)
 from i18n import CONTENT_LANG, t, use  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -282,6 +282,9 @@ def main():
         else:  # already French: generate the code right away
             subprocess.run([sys.executable, "-I", f"{HERE}/apply.py", build_dir, "--no-clipboard"],
                            check=True, stdout=subprocess.DEVNULL)
+        # English texts come for free from English authors and generated OTP texts; list the others.
+        if c["source"] != "OTP" and b.get("language") != GAME_LANGUAGE["en"]:
+            print(f"-- To translate into English, \"tr_en\" ({len(strings)}):\n{todo_list(strings, 'en')}")
     # Measured play style + community advice (for the "how to play" view).
     sys.stdout.flush()  # keep our output before the modules' output when piped
     for module in ANALYSIS_MODULES:
