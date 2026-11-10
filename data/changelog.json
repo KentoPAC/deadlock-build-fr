@@ -1,0 +1,65 @@
+{
+ "_doc": "Log of analysis METHOD changes (how information is gathered, what is written). Every change, even a small one, adds an entry; the highest version is ANALYSIS_VERSION. A page made with an older version shows the later entries and a targeted request to paste to Claude. 'title' is shown on the pages (French). 'auto': true = fixed by rerunning the listed scripts, no text to rewrite. 'todo' = what Claude must do on an existing page, and only that.",
+ "changes": [
+  {
+   "version": 1,
+   "date": "2026-10-20",
+   "title": "Analyse initiale",
+   "parts": [
+    "intro",
+    "builds"
+   ],
+   "todo": "Write the intro and the summary of each build."
+  },
+  {
+   "version": 2,
+   "date": "2026-11-08",
+   "title": "Comment le jouer / le contrer",
+   "parts": [
+    "tldr",
+    "plan"
+   ],
+   "scripts": [
+    "playstyle.py",
+    "guides.py",
+    "roles.py",
+    "matchups.py",
+    "counterplay.py"
+   ],
+   "todo": "Run the listed scripts on the folder, then write tldr and plan (early, mid, late, tips, role, abilities 1-4, strengths, weaknesses, vs)."
+  },
+  {
+   "version": 3,
+   "date": "2026-11-10",
+   "title": "Avis des créateurs (vidéos YouTube)",
+   "parts": [
+    "plan.vs"
+   ],
+   "scripts": [
+    "report.py"
+   ],
+   "todo": "Read the \"L'avis des créateurs\" section of the counter view (data/videos.json). If a video tip is missing from plan.vs or contradicts an existing point, add a point to plan.vs (or fix the contradicted one), citing it (source video:<id>@<s>) and saying whether the stats confirm it. Touch nothing else."
+  },
+  {
+   "version": 4,
+   "date": "2026-11-10",
+   "title": "Sources obligatoires pour chaque texte",
+   "parts": [
+    "sources"
+   ],
+   "todo": "Add \"sources\" to summaries.json: for every text path (intro, <build>.resume, <build>.points[i], tldr.*, plan.*), the list of its sources (build:<key>, guide:<n>, video:<id>@<s>, stat:<module>, roles-guide, analyse). Do not rewrite the texts."
+  },
+  {
+   "version": 5,
+   "date": "2026-11-10",
+   "title": "Phrases complètes et noms complets",
+   "parts": [
+    "textes"
+   ],
+   "scripts": [
+    "report.py"
+   ],
+   "todo": "Run report.py and fix every \"Shortened name\" it reports (always the full official name, otherwise no link and no English translation). Reread the texts: every item or ability inside a sentence with a verb (\"achète X\", \"X empêche…\"), no telegraphic \"… : Name.\"; the sentence must stay correct when the name switches to English."
+  }
+ ]
+}
