@@ -5,7 +5,6 @@ Usage: python3 -I apply.py <folder> [--fr <json|->] [--no-clipboard] [--keep-lay
 Reads <folder>/original.json and <folder>/strings.json (with "fr" filled in), writes
 <folder>/build_fr.json and <folder>/code.txt, and copies the code to the clipboard (wl-copy / xclip).
 """
-import glob
 import json
 import os
 import shutil
@@ -17,19 +16,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from codec import encode, encode_build  # noqa: E402
 from common import fill, read_json, write_json, write_text  # noqa: E402
 
-DEADLOCK_DIRS = [
-    "~/.local/share/Steam/steamapps/common/Deadlock/game/citadel",
-    "~/.steam/steam/steamapps/common/Deadlock/game/citadel",
-]
 MAX_BUILD_BYTES = 16000  # limit enforced by the game
-
-
-def account_id():
-    """The local player's account id, read from the game's stats file name (never stored in the repo)."""
-    for folder in DEADLOCK_DIRS:
-        for f in glob.glob(os.path.expanduser(folder) + "/account_*.stats"):
-            return int(os.path.basename(f)[len("account_"):-len(".stats")])
-    return None
+# The game only offers "Paste build" when the author account id field is present, but any value works:
+# 0 keeps codes anonymous (verified in game).
+ANONYMOUS_AUTHOR = 0
 
 
 # --- Category layout ----------------------------------------------------------
@@ -122,7 +112,7 @@ def main():
     build = {
         "hero_build_id": 3,
         "hero_id": original["hero_id"],
-        "author_account_id": account_id(),
+        "author_account_id": ANONYMOUS_AUTHOR,
         "last_updated_timestamp": int(time.time()),
         "name": original.get("name"),
         "description": original.get("description") or "",
