@@ -18,6 +18,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import fill, read_json, write_json  # noqa: E402
+from i18n import LANG  # noqa: E402
 from status import ANALYSIS_VERSION, completeness  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -42,6 +43,7 @@ def main():
         else:
             summaries[key] = value
     summaries.setdefault("version", 1)
+    summaries.setdefault("lang", LANG)  # language of every written text in this file
     save(summaries_path, summaries)
     # The page only moves to the current method version once nothing is missing: the call must have applied
     # every pending change from data/changelog.json (see SKILL.md).

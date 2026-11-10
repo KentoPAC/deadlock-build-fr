@@ -22,6 +22,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import get, read_json, write_json  # noqa: E402
+from i18n import LANG  # noqa: E402
 
 SKILL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(SKILL, "data", "videos.json")
@@ -55,7 +56,7 @@ def fetch(v):
             w = s.get("utf8", "").replace("\n", " ")
             if w.strip():
                 words.append((e.get("tStartMs", 0) + s.get("tOffsetMs", 0), w))
-    ch = [(int(c["start_time"]), c["title"]) for c in meta.get("chapters") or []] or [(0, "Vidéo")]
+    ch = [(int(c["start_time"]), c["title"]) for c in meta.get("chapters") or []] or [(0, "Video")]
     date = datetime.datetime.strptime(meta["upload_date"], "%Y%m%d").strftime("%Y-%m-%d")
     print(f"# {meta['title']} — {meta['uploader']} ({date}, {meta['duration'] // 60} min) [{v}]\n")
     for i, (s, name) in enumerate(ch):
@@ -88,7 +89,7 @@ def add(v, src):
             continue
         mm, ss = map(int, tip["t"].split(":"))
         lst = [x for x in d["tips"].get(str(h), []) if x["video"] != v]
-        lst.append({"video": v, "t": mm * 60 + ss, "text": tip["text"], "items": ids})
+        lst.append({"video": v, "t": mm * 60 + ss, "text": tip["text"], "lang": tip.get("lang", LANG), "items": ids})
         d["tips"][str(h)] = lst
     write_json(DATA, d, indent=1)
     print(f"{len(d['tips'])} heroes with at least one video tip.")

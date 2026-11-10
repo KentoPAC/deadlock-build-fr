@@ -589,7 +589,7 @@ const LINKS=(D.links||[]).slice().sort((a,b)=>b.name.length-a.name.length);
 const LRE=LINKS.length?new RegExp('(?<![\\p{L}\\p{N}])('+LINKS.map(l=>esc(l.name).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')(?![\\p{L}\\p{N}])','gu'):null;
 const LBY=Object.fromEntries(LINKS.map(l=>[esc(l.name),l]));
 function lk(t){const h=esc(t);if(!LRE)return h;return h.replace(LRE,m=>{const l=LBY[m];if(!l)return m;const i=IT[l.id]||{};
-  const shown=LANG==='en'&&i.en&&i.en.n?esc(i.en.n):m;
+  const shown=LANG==='en'&&i.en&&i.en.n?`<span lang="en">${esc(i.en.n)}</span>`:m;
   return `<span class="ref ${l.key?'abil':esc(i.slot||'')}" tabindex="0" data-id="${l.id}"><img src="${esc(l.key?(i.icon||i.img):(i.img||i.icon)||'')}" alt="">${shown}${l.key?`<kbd title="Touche ${l.key}${l.key===4?' (ultime)':''}">${l.key}</kbd>`:''}</span>`})}
 function img(id,cls){const i=IT[id]||{};return `<img class="${cls||''}" src="${esc(i.img||i.icon||'')}" data-alt="${esc(i.icon||'')}" alt="" loading="lazy" onerror="fb(this)">`}
 function fb(el){if(el.dataset.alt&&el.src!==el.dataset.alt)el.src=el.dataset.alt;else el.style.visibility='hidden'}
@@ -787,7 +787,7 @@ function swBlock(full){const P_=D.plan||{},M=D.matchups||{},m=M.matchups;const n
   return h}
 function vidTips(){const V=D.videoTips||[];if(!V.length)return'';
   return `<section class="phase"><h3>L’avis des créateurs</h3><p class="phase__desc">Conseils tirés de vidéos de joueurs reconnus, traduits et résumés. C’est un avis : ✓ indique qu’un objet cité ressort aussi des stats Fantôme+ de cette page.</p>
-  ${V.map(v=>`<div class="vt"><p class="vt__txt">${lk(v.text)}</p>
+  ${V.map(v=>`<div class="vt"><p class="vt__txt" lang="${esc(v.lang||D.lang||'fr')}">${lk(v.text)}</p>
     ${v.items.length?`<div class="cp__then">${v.items.map(id=>{const c=(v.check||{})[id];return `<span class="ref ${esc(T(id).slot||'')}" tabindex="0" data-id="${id}">${img(id)}${esc(T(id).n)}</span>${c?(c.delta!=null?` <small class="ok">✓ mesuré +${c.delta} pts</small>`:` <small class="ok">✓ dans les stats</small>`):''}`}).join(' · ')}</div>`:''}
     <p class="vt__src">Source : <a href="https://www.youtube.com/watch?v=${esc(v.video)}&amp;t=${v.t}s" target="_blank" rel="noopener">${esc(v.author)}, « ${esc(v.title)} » (${Math.floor(v.t/60)}:${String(v.t%60).padStart(2,'0')})</a> · ${new Date(v.date).toLocaleDateString('fr-FR')}${v.prePatch?' · <b>⚠ avant le dernier gros patch</b>':''}</p></div>`).join('')}</section>`}
 function vsPanel(){const P_=D.plan||{},M=D.matchups||{},m=M.matchups,k=K();

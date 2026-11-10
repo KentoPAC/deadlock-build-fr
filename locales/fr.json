@@ -1,0 +1,156 @@
+{
+ "_doc": "French user-facing strings. Keys are stable ids; values may use {placeholders}. Lists and mappings are used as-is.",
+ "ranks": [
+  "Obscurus",
+  "Initié",
+  "Chercheur",
+  "Alchimiste",
+  "Arcaniste",
+  "Ritualiste",
+  "Émissaire",
+  "Archonte",
+  "Oracle",
+  "Fantôme",
+  "Ascendant",
+  "Éternus"
+ ],
+ "rank.unknown": "rang inconnu",
+ "otp.note": "Pris dans {pct} % de ses parties, vers {minute} min.",
+ "otp.note_sold": " Revendu vers {minute} min.",
+ "otp.cat.early": "Ce que {who} achète presque toujours avant {minute} min.",
+ "otp.cat.mid": "Ses achats systématiques entre {start} et {end} min.",
+ "otp.cat.late": "Ses achats systématiques après {minute} min.",
+ "otp.cat.situational": "Situationnel",
+ "otp.cat.situational_desc": "Pris dans une partie sur trois à deux sur trois : selon la partie.",
+ "otp.cat.situational_late": "Situationnel (late)",
+ "otp.cat.situational_late_desc": "Choix de fin de partie selon la situation.",
+ "otp.name": "OTP {who} ({hero})",
+ "otp.description": "Build reconstitué d'après les vrais achats de {who} ({rank}), {matches} parties de {hero} sur la période ({share} % de ses parties), {winrate} % de victoires.",
+ "style_tags": {
+  "lane_aggressive": "Lane agressive",
+  "lane_passive": "Lane passive",
+  "jungle_farmer": "Farmeur jungle",
+  "split_pusher": "Split pusher",
+  "pushes_objectives": "Pousse les objectifs",
+  "teamfight": "Teamfight",
+  "dies_little": "Meurt peu",
+  "takes_risks": "Prend des risques",
+  "hero_damage": "Gros dégâts aux héros",
+  "farm_above": "Farm au-dessus de la moyenne",
+  "farm_below": "Farm sous la moyenne"
+ },
+ "metrics": {
+  "farm": "Farm (âmes)",
+  "tank": "Dégâts encaissés",
+  "dmg": "Dégâts aux héros",
+  "assists": "Assists",
+  "kills": "Kills",
+  "deaths": "Morts",
+  "obj": "Dégâts aux objectifs"
+ },
+ "roles.default_title": "Guide des rôles",
+ "upgrade_labels": {
+  "Damage": [
+   "",
+   "dégâts"
+  ],
+  "AbilityCooldown": [
+   " s",
+   "de recharge"
+  ],
+  "AbilityDuration": [
+   " s",
+   "de durée"
+  ],
+  "AbilityCastRange": [
+   " m",
+   "de portée"
+  ],
+  "Radius": [
+   " m",
+   "de rayon"
+  ],
+  "AbilityCharges": [
+   "",
+   "charge(s)"
+  ],
+  "TechDamage": [
+   "",
+   "dégâts spirituels"
+  ],
+  "Heal": [
+   "",
+   "soins"
+  ],
+  "BonusHealth": [
+   "",
+   "PV"
+  ],
+  "SlowPercent": [
+   " %",
+   "de ralentissement"
+  ],
+  "MoveSpeed": [
+   " m/s",
+   "de vitesse"
+  ],
+  "StunDuration": [
+   " s",
+   "d'étourdissement"
+  ]
+ },
+ "source_info": {
+  "OTP": "reconstitué d'après les vrais achats d'un joueur qui joue surtout ce héros",
+  "Mobalytics": "build officiel d'un expert Mobalytics, publié en jeu",
+  "Communauté": "build public populaire, bien expliqué, d'un auteur bien classé"
+ },
+ "facts.by": "par {author}",
+ "facts.matches": "{matches} parties sur le héros ({share} % de ses parties)",
+ "facts.winrate": "{winrate:.0f} % de victoires",
+ "facts.favorites": "{favorites} favoris",
+ "facts.build": "build {build_id}",
+ "facts.updated": "mis à jour le {date}",
+ "facts.untranslated": "pas encore traduit",
+ "date_format": "%d/%m/%Y",
+ "datetime_format": "%d/%m/%Y %H:%M",
+ "patch.big": "Gros patch",
+ "needed_text": {
+  "intro": "analyse globale",
+  "tldr": "TLDR",
+  "plan.early": "plan early/mid/late",
+  "plan.role": "rôle",
+  "plan.abilities": "conseils par compétence",
+  "plan.strengths": "forces",
+  "plan.weaknesses": "faiblesses",
+  "plan.vs": "comment le contrer"
+ },
+ "needed_data": {
+  "baseline.json": "style de jeu mesuré (playstyle.py)",
+  "guides.json": "conseils commu (guides.py)",
+  "roles.json": "rôle (roles.py)",
+  "matchups.json": "matchups (matchups.py)",
+  "counterplay.json": "counterplay de fin de partie (counterplay.py)"
+ },
+ "missing.build_summaries": "résumé de chaque build",
+ "missing.sources": "sources de {count} texte(s) ({paths})",
+ "ask.update": "Mets à jour la page {hero} ({folder}) de la méthode v{version} à v{current} : applique seulement les changements {changes} décrits dans data/changelog.json, sans refaire le reste.",
+ "ask.also_missing": " Il manque aussi : {missing}.",
+ "ask.complete": "Complète la page {hero} : il manque {missing}.",
+ "stat_sources": {
+  "playstyle": "Style de jeu mesuré (deadlock-api, courbes de performance des OTP et auteurs)",
+  "baseline": "Moyennes Fantôme+ du même rôle (deadlock-api)",
+  "roles": "Percentiles du héros vs tous les héros (deadlock-api hero-stats)",
+  "matchups": "Matchups et objets de contre mesurés (deadlock-api hero-counter-stats / item-stats)",
+  "counterplay": "Profils des héros et objets de contre par catégorie (deadlock-api)",
+  "counters": "Objets achetés par les OTP contre certains héros (deadlock-api)",
+  "kit": "Données du jeu : compétences, recharges, paliers, pics de puissance (API assets)",
+  "items": "Données du jeu : objets, coûts, effets (API assets)",
+  "patch": "Notes de patch officielles (liste des patchs de l'API)"
+ },
+ "source.build": "Build {source} de {author}",
+ "source.guide": "« {title} » de {author}",
+ "source.video": "Vidéo « {title} » de {author}{at}",
+ "source.roles_guide": "Guide Steam « {title} »",
+ "source.analysis": "Déduction de Claude à partir des autres sources citées",
+ "source.unknown": "Source inconnue : {ref}"
+}

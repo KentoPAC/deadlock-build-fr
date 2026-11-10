@@ -16,7 +16,8 @@ import subprocess
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import get, heroes, items, read_json, read_text, write_text  # noqa: E402
+from common import OTP_NOTE, get, heroes, items, read_json, read_text, write_text  # noqa: E402
+from i18n import LANG, t, table  # noqa: E402
 from status import completeness, load_json, resolve_sources  # noqa: E402
 from textlinks import link_index, short_names, signature_abilities  # noqa: E402
 from tooltips import UPGRADE_COST, english_items, item_data, plain, tier_text, tooltip  # noqa: E402
@@ -24,35 +25,28 @@ from tooltips import UPGRADE_COST, english_items, item_data, plain, tier_text, t
 HERE = os.path.dirname(os.path.abspath(__file__))
 SKILL = os.path.dirname(HERE)
 TEMPLATE = os.path.join(SKILL, "templates", "hero.html")
-# Shown on the page under each source name (French UI).
-SOURCE_INFO = {
-    "OTP": "reconstitué d'après les vrais achats d'un joueur qui joue surtout ce héros",
-    "Mobalytics": "build officiel d'un expert Mobalytics, publié en jeu",
-    "Communauté": "build public populaire, bien expliqué, d'un auteur bien classé",
-}
-OTP_NOTE = re.compile(r"Pris dans (\d+) % de ses parties, vers (\d+) min\.(?: Revendu vers (\d+) min\.)?$")
 GAMEPLAY_PATCH = re.compile(r"update|\d{2}-\d{2}-\d{4}|gameplay|patch", re.I)
 CORE_ITEM_PCT, CORE_ITEM_COST = 90, 1600
 
 
 def facts(candidate):
-    """One-line facts about a build (French UI)."""
+    """One-line facts about a build (localized)."""
     c = candidate
-    parts = [f"par {c.get('author')}"]
+    parts = [t("facts.by", author=c.get("author"))]
     if c.get("rank"):
         parts.append(c["rank"])
     if c.get("matches"):
-        parts.append(f"{c['matches']} parties sur le héros ({round(100 * c.get('share', 0))} % de ses parties)")
+        parts.append(t("facts.matches", matches=c["matches"], share=round(100 * c.get("share", 0))))
     if c.get("winrate") is not None:
-        parts.append(f"{c['winrate']:.0f} % de victoires")
+        parts.append(t("facts.winrate", winrate=c["winrate"]))
     if c.get("favorites"):
-        parts.append(f"{c['favorites']} favoris")
+        parts.append(t("facts.favorites", favorites=c["favorites"]))
     if c.get("build_id"):
-        parts.append(f"build {c['build_id']}")
+        parts.append(t("facts.build", build_id=c["build_id"]))
     if c.get("updated"):
-        parts.append("mis à jour le " + datetime.date.fromtimestamp(c["updated"]).strftime("%d/%m/%Y"))
+        parts.append(t("facts.updated", date=datetime.date.fromtimestamp(c["updated"]).strftime(t("date_format"))))
     if c.get("needs_translation") and not c.get("_translated"):
-        parts.append("pas encore traduit")
+        parts.append(t("facts.untranslated"))
     return parts
 
 
@@ -93,21 +87,21 @@ def patches():
     """Game updates (big patches flagged): the page compares build dates with these."""
     by_day = {}
     try:
-        for t in get("/v1/patches/big-days"):
-            by_day[iso_timestamp(t) // 86400] = {"t": iso_timestamp(t), "title": "Gros patch", "big": True}
+        for date in get("/v1/patches/big-days"):
+            by_day[iso_timestamp(date) // 86400] = {"t": iso_timestamp(date), "title": t("patch.big"), "big": True}
     except Exception:
         pass
     try:
         for x in get("/v2/patches"):
             if not GAMEPLAY_PATCH.search(x.get("title") or ""):
                 continue
-            t = iso_timestamp(x["pub_date"])
-            day = t // 86400
+            published = iso_timestamp(x["pub_date"])
+            day = published // 86400
             same = next((d for d in (day, day - 1, day + 1) if d in by_day), None)
             if same is not None:  # same update as the big patch
                 by_day[same]["title"] = x["title"].strip()
             else:
-                by_day[day] = {"t": t, "title": x["title"].strip(), "big": False}
+                by_day[day] = {"t": published, "title": x["title"].strip(), "big": False}
     except Exception:
         pass
     return sorted(by_day.values(), key=lambda p: -p["t"])[:40]
@@ -268,7 +262,7 @@ def load_builds(folder, candidates, summaries):
         counters = load_json(f"{build_dir}/counters.json")
         builds.append({"key": c["key"], "play": load_json(f"{build_dir}/playstyle.json"),
                        "counters": counters["items"] if counters else None,
-                       "source": c["source"], "sourceInfo": SOURCE_INFO.get(c["source"], ""),
+                       "source": c["source"], "sourceInfo": table("source_info").get(c["source"], ""),
                        "author": c.get("author"), "rank": c.get("rank"), "name": build.get("name"),
                        "desc": "" if c["source"] == "OTP" else build.get("description") or "",  # OTP: already in facts
                        "facts": facts(c), "code": code, "winrate": c.get("winrate"), "rankImg": rank_image(c.get("badge")),
@@ -365,8 +359,9 @@ def main():
                "baseline": load_json(f"{folder}/baseline.json"), "guides": guides, "plan": summaries.get("plan"),
                "generatedTs": data["generated"], "since": since, "patches": patches(), "intro": summaries.get("intro", ""),
                "days": data["days"],
-               "generated": datetime.datetime.fromtimestamp(data["generated"]).strftime("%d/%m/%Y %H:%M"),
-               "builds": builds, "items": item_data(all_items, used, keys, english), "links": links}
+               "generated": datetime.datetime.fromtimestamp(data["generated"]).strftime(t("datetime_format")),
+               "builds": builds, "items": item_data(all_items, used, keys, english), "links": links,
+               "lang": summaries.get("lang", LANG)}
     template = read_text(TEMPLATE)
     payload_js = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     page = (template.replace("__HERO__", html.escape(hero["name"]))
