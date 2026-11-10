@@ -14,7 +14,6 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import get, read_json, write_json  # noqa: E402
-from i18n import table  # noqa: E402
 
 PHASES = [("Early", 0, 540), ("Mid", 540, 1200), ("Late", 1200, 1800)]  # game seconds
 MIN_MATCHES = 20
@@ -84,38 +83,38 @@ def ratio(player, base, key, sub=None, idx=None):
 
 
 def tags(player, base):
-    """Style tags from the gap to the Phantom+ average (deliberately clear-cut thresholds), localized."""
-    label = table("style_tags")
+    """Style tag ids from the gap to the Phantom+ average (deliberately clear-cut thresholds).
+    Labels come from the locale ("style_tags") when the page is rendered."""
     out = []
 
     def r(*args, **kwargs):
         return ratio(player, base, *args, **kwargs) or 1.0
     early_fight = (r("kpm", idx=[0]) + r("apm", idx=[0])) / 2
     if early_fight >= 1.3 or r("denies", idx=[0]) >= 1.5:
-        out.append(label["lane_aggressive"])
+        out.append("lane_aggressive")
     elif early_fight <= 0.7:
-        out.append(label["lane_passive"])
+        out.append("lane_passive")
     if r("src_spm", "jungle", idx=[1, 2]) >= 1.25:
-        out.append(label["jungle_farmer"])
+        out.append("jungle_farmer")
     objectives = r("obj_dmg", idx=[1, 2])
     team = r("apm", idx=[1, 2])
     if objectives >= 1.3 and team <= 0.95:
-        out.append(label["split_pusher"])
+        out.append("split_pusher")
     elif objectives >= 1.3:
-        out.append(label["pushes_objectives"])
+        out.append("pushes_objectives")
     if team >= 1.25:
-        out.append(label["teamfight"])
+        out.append("teamfight")
     deaths = r("dpm")
     if deaths <= 0.8:
-        out.append(label["dies_little"])
+        out.append("dies_little")
     elif deaths >= 1.25:
-        out.append(label["takes_risks"])
+        out.append("takes_risks")
     if r("hero_dmg") >= 1.2:
-        out.append(label["hero_damage"])
+        out.append("hero_damage")
     if r("spm") >= 1.1:
-        out.append(label["farm_above"])
+        out.append("farm_above")
     elif r("spm") <= 0.9:
-        out.append(label["farm_below"])
+        out.append("farm_below")
     return out
 
 

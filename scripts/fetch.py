@@ -12,6 +12,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import LANG_FR, get, heroes, summarize, todo_list, write_candidate  # noqa: E402
+from i18n import CONTENT_LANG, use  # noqa: E402
 
 
 def parse_build_id(arg):
@@ -24,6 +25,7 @@ def parse_build_id(arg):
 
 def main():
     build_id, out = parse_build_id(sys.argv[1]), sys.argv[2]
+    use(CONTENT_LANG)  # builds are written and translated in the content language
     versions = get("/v1/builds", build_id=build_id)
     if not versions:
         sys.exit(f"Build {build_id} not found")
