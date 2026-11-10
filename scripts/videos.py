@@ -22,7 +22,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import get, read_json, write_json  # noqa: E402
-from i18n import LANG  # noqa: E402
+from i18n import CONTENT_LANG  # noqa: E402
 
 SKILL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(SKILL, "data", "videos.json")
@@ -89,7 +89,7 @@ def add(v, src):
             continue
         mm, ss = map(int, tip["t"].split(":"))
         lst = [x for x in d["tips"].get(str(h), []) if x["video"] != v]
-        lst.append({"video": v, "t": mm * 60 + ss, "text": tip["text"], "lang": tip.get("lang", LANG), "items": ids})
+        lst.append({"video": v, "t": mm * 60 + ss, "text": tip["text"], "lang": tip.get("lang", CONTENT_LANG), "items": ids})
         d["tips"][str(h)] = lst
     write_json(DATA, d, indent=1)
     print(f"{len(d['tips'])} heroes with at least one video tip.")

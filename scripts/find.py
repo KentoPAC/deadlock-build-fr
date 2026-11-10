@@ -21,7 +21,7 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import (LANG_FR, find_hero, get, items, rank_label, read_json, summarize, text_amount,  # noqa: E402
                     todo_list, write_candidate, write_json)
-from i18n import t  # noqa: E402
+from i18n import CONTENT_LANG, t, use  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MIN_BADGE = 90          # Fantôme (Phantom) and above for OTPs
@@ -215,6 +215,7 @@ def main():
     parser.add_argument("--otp", type=int, default=2)
     parser.add_argument("--community", type=int, default=2)
     args = parser.parse_args()
+    use(CONTENT_LANG)  # builds are written and translated in the content language
     hero = find_hero(args.hero)
     since = last_big_patch_since(int(time.time()) - args.days * 86400)
     os.makedirs(args.out, exist_ok=True)

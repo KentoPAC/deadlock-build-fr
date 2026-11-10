@@ -23,7 +23,7 @@ class StatusTest(unittest.TestCase):
             resolved = status.resolve_sources({"sources": {"intro": ["build:otp-1", "stat:roles", "nope"]}}, candidates, None, None)
         self.assertIn("nope", out.getvalue())
         labels = [x["label"] for x in resolved["intro"]]
-        self.assertEqual(labels[0], "Build OTP de Kiwi")
+        self.assertEqual(labels[0], "OTP build by Kiwi")
         self.assertTrue(resolved["intro"][2]["bad"])
 
 

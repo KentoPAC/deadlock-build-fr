@@ -6,7 +6,7 @@ import datetime
 import os
 
 from common import read_json
-from i18n import t, table
+from i18n import CONTENT_LANG, current, t, table
 
 SKILL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CHANGELOG = read_json(os.path.join(SKILL, "data", "changelog.json"))["changes"]
@@ -16,6 +16,13 @@ NEEDED_TEXT = ["intro", "tldr", "plan.early", "plan.role", "plan.abilities", "pl
 NEEDED_DATA = ["baseline.json", "guides.json", "roles.json", "matchups.json", "counterplay.json"]
 # summaries.json keys that are not written texts.
 META_KEYS = ("version", "sources", "lang")
+
+
+def localized(value):
+    """A {"en": ..., "fr": ...} mapping -> the current language's text (plain strings are returned as is)."""
+    if isinstance(value, dict):
+        return value.get(current()) or value.get(CONTENT_LANG) or next(iter(value.values()), "")
+    return value
 
 
 def load_json(path, default=None):
@@ -63,7 +70,8 @@ def completeness(folder):
         paths = ", ".join(unsourced[:4]) + ("…" if len(unsourced) > 4 else "")
         missing.append(t("missing.sources", count=len(unsourced), paths=paths))
     version = summaries.get("version", 1)
-    pending = [{k: c.get(k) for k in ("version", "date", "title", "todo", "auto")} for c in CHANGELOG if c["version"] > version]
+    pending = [{**{k: c.get(k) for k in ("version", "date", "todo", "auto")}, "title": localized(c["title"])}
+               for c in CHANGELOG if c["version"] > version]
     try:
         hero = load_json(f"{folder}/candidates.json")["hero"]["name"]
     except Exception:
