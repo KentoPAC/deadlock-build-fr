@@ -9,11 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* Hallmark · genre: atmospheric · macrostructure: Feature Stack (rail + detail) · theme: custom (vibe: "noir city poster, charcoal, parchment, signal orange")
- * paper oklch(13% 0.005 260) charcoal · ink parchment oklch(94% 0.03 78) · accent oklch(65% 0.165 42) signal orange · display Big Shoulders Display (roman caps) + body Jost (tabular nums)
- * axes: dark / display-condensed / warm · enrichment: Tier C generated still (banner, cropped + grain) · nav: N3 side-rail · footer: Ft2 inline
- * user override: game-UI language on request — palette/body font studied from playdeadlock.com (no Valve fonts, logos or art reused)
- * pre-emit critique: P4 H4 E4 S5 R4 V4 */
+/* Design: charcoal background, parchment text, the hero's colour as accent; display font Big Shoulders Display,
+ * body font Jost (tabular numbers). Look inspired by playdeadlock.com; no Valve fonts, logos or art are reused. */
 :root{
   --color-paper:oklch(13% 0.005 260);--color-paper-2:oklch(19% 0.008 260);--color-paper-3:oklch(25% 0.012 260);
   --color-rule:oklch(36% 0.018 260);--color-neutral:oklch(66% 0.015 250);--color-muted:oklch(84% 0.025 78);
@@ -205,6 +202,9 @@ kbd{display:inline-block;min-width:15px;padding:0 3px;border-radius:3px;backgrou
   font:700 10px/1 var(--font-body);font-style:normal;color:var(--color-ink);background:var(--color-accent-dim);border-radius:3px}
 .spl__m.t0{width:14px;height:14px;border-radius:50%;background:var(--color-paper);border:2px solid var(--color-accent)}
 .spl__m.t3{width:22px;height:22px;background:var(--color-accent);color:var(--color-accent-ink);box-shadow:0 0 0 3px color-mix(in oklch,var(--color-accent) 25%,transparent)}
+.spl__m.it{width:22px;height:22px;padding:0;background:var(--color-paper);border:1px solid var(--color-accent-dim);border-radius:4px;overflow:hidden}.spl__m.it img{width:100%;height:100%;object-fit:cover}
+.spl__k--it{font-size:var(--text-xs);font-weight:700;color:var(--color-neutral);letter-spacing:.04em;text-transform:uppercase}
+.spt__e.it>img{border-radius:4px}.spt__e.it .spt__lv{color:var(--color-ink)}
 .spl__ax{height:auto;margin-top:2px}.spl__ax .spl__tr{height:1.1rem;background:none}
 .spl__ax .spl__tr span{position:absolute;left:var(--x);translate:-50% 0;font-size:var(--text-xs);color:var(--color-neutral);white-space:nowrap;font-variant-numeric:tabular-nums}
 .spl__ax .spl__tr span:first-child{translate:0 0}.spl__ax .spl__tr span:last-child{translate:-100% 0}
@@ -684,7 +684,7 @@ function renderRail(){$('list').innerHTML=D.builds.map(b=>{const f=buildFresh(b)
   <span class="pick__sub">${sub}</span></button></li>`}).join('')
  +(HASPLAN?`<li><button class="pick pick--compare cham" data-v="plan"><span class="pick__src">Stats + commu</span>
   <span class="pick__who">Comment le jouer</span><span class="pick__sub">Early, mid, late · farm, fights, push</span></button></li>`:'')
- +(HASVS?`<li><button class="pick pick--compare cham" data-v="vs"><span class="pick__src">Tu l’affrontes ?</span><span class="pick__who">Le contrer</span><span class="pick__sub">Faiblesses, héros et objets qui le battent</span></button></li>`:'')
+ +(HASVS?`<li><button class="pick pick--compare cham" data-v="vs"><span class="pick__src">Tu l’affrontes ?</span><span class="pick__who">Le contrer</span><span class="pick__sub">Faiblesses, contres et objets à prendre</span></button></li>`:'')
  +(D.builds.length>1?`<li><button class="pick pick--compare cham" data-v="compare"><span class="pick__src">Vue d’ensemble</span>
   <span class="pick__who">Comparer les builds</span><span class="pick__sub">Objets en commun, différences</span></button></li>`:'');}
 
@@ -728,7 +728,7 @@ function playRows(p){const B=(D.baseline||{}).phases||[];
   dégâts aux héros <b class="num">${ph.hero_dmg}</b>/min${delta(ph.hero_dmg,b.hero_dmg)} · objectifs <b class="num">${ph.obj_dmg}</b>/min${delta(ph.obj_dmg,b.obj_dmg)}</div></div>`}).join('')}
 const legendSrc=base=>`<div class="legend-src">${SRC.map(([k,l])=>`<span><i class="bar ${k}" style="background:var(--src-${k})"></i>${l}</span>`).join('')}${base?`<span>barre fine = moyenne Fantôme+ sur ${esc(D.hero.name)}</span>`:''}</div>`;
 function playSection(b){if(!b.play)return'';
-  return `<section class="phase"><h3>Comment il joue</h3><p class="phase__desc">Mesuré sur ses parties de ${esc(D.hero.name)} depuis le ${fmt(D.since)} : d’où viennent ses âmes, ses combats, sa pression sur les objectifs, comparés à la moyenne des joueurs Fantôme+.</p>
+  return `<section class="phase"><h3>Son style de jeu</h3><p class="phase__desc">Mesuré sur ses parties de ${esc(D.hero.name)} depuis le ${fmt(D.since)} : d’où viennent ses âmes, ses combats, sa pression sur les objectifs, comparés à la moyenne des joueurs Fantôme+.</p>
   <div class="play__tags">${(b.play.tags.length?b.play.tags:['Style proche de la moyenne']).map(t=>`<span class="ptag${b.play.tags.length?'':' ptag--none'}">${esc(t)}</span>`).join('')}</div>
   ${playRows(b.play)}${legendSrc(true)}</section>`}
 function planPanel(){const P_=D.plan||{},G=(D.guides&&D.guides.guides)||[],measured=D.builds.filter(b=>b.play);
@@ -746,30 +746,31 @@ function planPanel(){const P_=D.plan||{},G=(D.guides&&D.guides.guides)||[],measu
    ${swBlock(true)?`<section class="phase"><h3>Forces et faiblesses</h3>${swBlock(true)}</section>`:''}
    ${D.counterplay?`<section class="phase"><h3>Counterplay en fin de partie</h3><p class="phase__desc">Adapte tes derniers achats à la compo adverse.</p>${counterplay(false)}</section>`:''}
    ${K().abilities.length?`<section class="phase"><h3>Les compétences</h3><p class="phase__desc">Description du jeu, paliers T1 / T2 / T3, et laquelle les meilleurs montent en premier.</p>${abilityCards(true)}</section>`:''}
-   ${K().spikes.length?`<section class="phase"><h3>Pics de puissance</h3><p class="phase__desc">Seuils d’âmes du jeu × ordre de compétences de ${esc(K().ref||'')} ; minutes d’après son rythme de farm réel.</p>${spikesTable()}</section>`:''}
+   ${K().spikes.length?`<section class="phase"><h3>Pics de puissance</h3><p class="phase__desc">Objets clés de ${esc(K().ref||'')} à leur minute d’achat réelle, et ses compétences placées sur les seuils d’âmes du jeu selon son ordre de compétences et son rythme de farm réel.</p>${spikesTable()}</section>`:''}
    ${table?`<section class="phase"><h3>Ce que font les meilleurs joueurs</h3>${table}</section>`:''}
    <section class="phase"><h3>Sources</h3><ul class="srcs">${srcs||'<li>Aucun guide communautaire récent assez détaillé : synthèse basée sur les stats et les notes des builds.</li>'}
    ${measured.map(b=>`<li><b>Stats de ${esc(b.author)}</b> — parties depuis le ${fmt(D.since)} (deadlock-api)</li>`).join('')}</ul></section></article>`}
 function pickBuild(){const t=D.tldr||{};return D.builds.find(b=>b.key===t.pick)||D.builds.find(b=>b.code&&b.source==='OTP')||D.builds.find(b=>b.code)||D.builds[0]}
 const K=()=>D.kit||{abilities:[],spikes:[],core:[]};
 function spikeGroups(){const g=[];for(const s of K().spikes){const last=g[g.length-1];if(last&&last.souls===s.souls)last.items.push(s);else g.push({souls:s.souls,min:s.min,items:[s]})}return g}
-const tierLbl=s=>s.tier?`T${s.tier}`:(LANG==='en'?'unlock':'débloquée');
+const tierLbl=s=>s.kind==='item'?(LANG==='en'?'item':'objet'):s.tier?`T${s.tier}`:(LANG==='en'?'unlock':'débloquée');
 const kOf=id=>(IT[id]||{}).key;
-function spikesCompact(){return `<div class="spk">${K().spikes.slice(0,9).map(s=>`<span class="spk__i" tabindex="0" data-id="${s.id}">${img(s.id)}<span>${esc(T(s.id).n)}${kOf(s.id)?` <kbd>${kOf(s.id)}</kbd>`:''} <span class="t">${tierLbl(s)}</span><br><small>${(s.souls/1000).toLocaleString('fr-FR')}k âmes${s.min!=null?` · ≈ ${Math.round(s.min)} min`:''}</small></span></span>`).join('')}</div>`}
+function spikesCompact(){const S=K().spikes,big=S.filter(s=>s.kind==='item'||s.tier===3);return `<div class="spk">${(big.length?big:S).slice(0,10).map(s=>`<span class="spk__i" tabindex="0" data-id="${s.id}">${img(s.id)}<span>${esc(T(s.id).n)}${kOf(s.id)?` <kbd>${kOf(s.id)}</kbd>`:''} <span class="t">${tierLbl(s)}</span><br><small>${(s.souls/1000).toLocaleString('fr-FR')}k âmes${s.min!=null?` · ≈ ${Math.round(s.min)} min`:''}</small></span></span>`).join('')}</div>`}
 function spikesTable(){const S=K().spikes,en=LANG==='en',byMin=S.every(s=>s.min!=null);
   const x=s=>byMin?s.min:s.souls/1000,unit=byMin?' min':'k',top=Math.max(5,Math.ceil(Math.max(...S.map(x))/5)*5),step=top<=20?5:10;
   const pct=v=>(Math.min(v,top)/top*100).toFixed(2)+'%',when=s=>`≈ ${Math.round(x(s))}${unit}`;
-  const lvl=s=>s.tier===0?(en?'New ability':'Nouvelle compétence'):s.tier===3?'Max':(en?`Tier ${s.tier}`:`Palier ${s.tier}`);
+  const lvl=s=>s.kind==='item'?(en?`Key item · ${s.pct}% of games`:`Objet clé · ${s.pct} % des parties`):s.tier===0?(en?'New ability':'Nouvelle compétence'):s.tier===3?'Max':(en?`Tier ${s.tier}`:`Palier ${s.tier}`);
   const ticks=[];for(let v=0;v<=top;v+=step)ticks.push(v);
   const guides=ticks.slice(1,-1).map(v=>`<i class="spl__g" style="--x:${pct(v)}"></i>`).join('');
   const lanes=K().abilities.map(a=>{const ev=S.filter(s=>s.id===a.id);if(!ev.length)return '';
-    return `<div class="spl__r"><span class="spl__k" tabindex="0" data-id="${a.id}">${img(a.id)}<kbd>${a.key}</kbd></span><div class="spl__tr">${guides}<i class="spl__bar" style="--x:${pct(x(ev[0]))}"></i>${ev.map(s=>`<i class="spl__m t${s.tier}" style="--x:${pct(x(s))}" title="${esc(T(s.id).n)} · ${lvl(s)} · ${when(s)}">${s.tier||''}</i>`).join('')}</div></div>`}).join('');
+    return `<div class="spl__r"><span class="spl__k" tabindex="0" data-id="${a.id}">${img(a.id)}<kbd>${a.key}</kbd></span><div class="spl__tr">${guides}<i class="spl__bar" style="--x:${pct(x(ev[0]))}"></i>${ev.map(s=>`<i class="spl__m t${s.tier}" style="--x:${pct(x(s))}" title="${esc(T(s.id).n)} · ${lvl(s)} · ${when(s)}">${s.tier||''}</i>`).join('')}</div></div>`}).join('')
+    +(()=>{const it=S.filter(s=>s.kind==='item');return it.length?`<div class="spl__r"><span class="spl__k spl__k--it">${en?'Items':'Objets'}</span><div class="spl__tr">${guides}${it.map(s=>`<i class="spl__m it" style="--x:${pct(x(s))}" title="${esc(T(s.id).n)} · ${lvl(s)} · ${when(s)}">${img(s.id)}</i>`).join('')}</div></div>`:''})();
   const overview=`<div class="spl" aria-hidden="true">${lanes}<div class="spl__r spl__ax"><span></span><div class="spl__tr">${ticks.map(v=>`<span style="--x:${pct(v)}">${v}${v===top?unit:''}</span>`).join('')}</div></div>
-    <p class="spl__lg"><span><i class="spl__m t0"></i>${en?'unlock':'déblocage'}</span><span><i class="spl__m t1">1</i><i class="spl__m t2">2</i>${en?'tiers':'paliers'}</span><span><i class="spl__m t3">3</i>${en?'maxed':'au max'}</span></p></div>`;
+    <p class="spl__lg"><span><i class="spl__m t0"></i>${en?'unlock':'déblocage'}</span><span><i class="spl__m t1">1</i><i class="spl__m t2">2</i>${en?'tiers':'paliers'}</span><span><i class="spl__m t3">3</i>${en?'maxed':'au max'}</span>${S.some(s=>s.kind==='item')?`<span><i class="spl__m it"></i>${en?'key item (real purchase minute)':'objet clé (minute d’achat réelle)'}</span>`:''}</p></div>`;
   const PH=[[10,'Early game',en?'0 to 10 min':'0 à 10 min'],[20,'Mid game',en?'10 to 20 min':'10 à 20 min'],[1e9,'Late game',en?'after 20 min':'après 20 min']];
   let ph=-1;const rows=spikeGroups().map(g=>{let head='';
     if(byMin){const i=PH.findIndex(p=>g.min<p[0]);if(i!==ph){ph=i;head=`<li class="spt__ph">${PH[i][1]} <small>${PH[i][2]}</small></li>`}}
-    const ev=g.items.map(s=>{const fx=((en&&s.text_en)?s.text_en:s.text||'').split(' · ').filter(Boolean);
+    const ev=g.items.map(s=>{if(s.kind==='item')return `<div class="spt__e it">${img(s.id)}<div><div class="spt__h"><span class="ref ${esc(T(s.id).slot||'')}" tabindex="0" data-id="${s.id}">${esc(T(s.id).n)}</span><span class="spt__lv">${lvl(s)}</span></div><ul class="spt__fx"><li>${s.cost.toLocaleString('fr-FR')} ${en?'souls':'âmes'}</li></ul></div></div>`;const fx=((en&&s.text_en)?s.text_en:s.text||'').split(' · ').filter(Boolean);
       return `<div class="spt__e t${s.tier}">${img(s.id)}<div><div class="spt__h"><span class="ref abil" tabindex="0" data-id="${s.id}">${esc(T(s.id).n)}${kOf(s.id)?`<kbd>${kOf(s.id)}</kbd>`:''}</span>
       ${s.tier?`<span class="pips" aria-hidden="true">${[1,2,3].map(k=>`<i class="${k<=s.tier?'on':''}"></i>`).join('')}</span>`:''}<span class="spt__lv">${lvl(s)}</span></div>
       ${fx.length?`<ul class="spt__fx">${fx.map(f=>`<li>${esc(f)}</li>`).join('')}</ul>`:''}</div></div>`}).join('');
@@ -781,7 +782,7 @@ function abilityCards(full){const P_=(D.plan||{}).abilities||{},fm=K().firstMax;
   ${P_[a.key]?`<p class="how">${lk(P_[a.key])}</p>`:''}
   ${full?(()=>{const t=T(a.id),st=(t.secs||[]).flatMap(s=>s.imp.concat(s.basic));return `<p>${esc(LANG==='en'&&a.desc_en?a.desc_en:a.desc)}</p>${(t.cd||st.length)?`<div class="tab__basic">${t.cd?`<span>⟳ <b>${t.cd}s</b></span>`:''}${st.map(p=>`<span><b>${p.v}</b> ${esc(p.label)}${p.scale?` <span style="color:var(--color-spirit)">✦×${p.scale}</span>`:''}</span>`).join('')}</div>`:''}<ol>${(LANG==='en'&&a.tiers_en.length?a.tiers_en:a.tiers).map((x,k)=>`<li><b style="color:var(--color-accent)">${[1,2,5][k]} pt${k?'s':''}</b> · ${esc(x)||'—'}</li>`).join('')}</ol>`})():''}</div>`).join('')}</div>`}
 function tldrPanel(){const t=D.tldr||{},P_=D.plan||{},b=pickBuild(),f=buildFresh(b),k=K();
-  const btn=b.code?`<button class="copy cham" data-code="${esc(b.code)}">Copier le build →</button>`:`<button class="copy cham" disabled>À traduire</button>`;
+  const btn=b.code?`<button class="copy cham" data-code="${esc(b.code)}">Copier le build</button>`:`<button class="copy cham" disabled>À traduire</button>`;
   const ph=[['early','Early'],['mid','Mid'],['late','Late']].map(([x,l])=>[l,t[x]||P_[x]]).filter(x=>x[1]);
   const keys=t.keys||(P_.tips||[]).slice(0,3);
   const C=D.completeness||{},PD=C.pending||[];const inc=((C.missing||[]).length||PD.length)?`<div class="incomplete"><p><b>Analyse à mettre à jour</b> — ${PD.length?`la méthode a changé depuis cette page (v${C.version} → v${C.current}). Ce qui est nouveau :`:'cette page a été faite avant les dernières améliorations.'}</p>
@@ -833,7 +834,7 @@ function swBlock(full){const P_=D.plan||{},M=D.matchups||{},m=M.matchups;const n
   let h=cols?`<div class="sw">${cols}</div>`:'';
   if(full&&m)h+=`<div class="mu"><div><h5>Meilleurs matchups (écart au résultat attendu ; ${m.base} % de victoires en moyenne)</h5><div class="ctr__vs">${m.best.map(x=>muChip(x)).join('')}</div></div>
     <div><h5>Pires matchups</h5><div class="ctr__vs">${m.worst.map(x=>muChip(x,true)).join('')}</div></div></div>`;
-  if(full&&M.items&&M.items.length)h+=`<div style="margin-top:var(--space-sm)"><h5 style="margin:0 0 6px;font:700 var(--text-xs)/1.2 var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--color-neutral)">Objets qui le battent (gain de victoires quand on l’affronte, au-delà du gain moyen, 14 derniers jours)</h5><div class="ctr__vs">${M.items.map(x=>`<span class="vs"><span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span> <b>+${x.delta} pts</b></span>`).join('')}</div></div>`;
+  if(full&&M.items&&M.items.length)h+=`<div style="margin-top:var(--space-sm)"><h5 style="margin:0 0 6px;font:700 var(--text-xs)/1.2 var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--color-neutral)">Objets qui marchent contre ${esc(D.hero.name)} (gain de victoires quand on l’affronte, au-delà du gain moyen, 14 derniers jours)</h5><div class="ctr__vs">${M.items.map(x=>`<span class="vs"><span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span> <b>+${x.delta} pts</b></span>`).join('')}</div></div>`;
   return h}
 function vidTips(){const V=D.videoTips||[];if(!V.length)return'';
   return `<section class="phase"><h3>L’avis des créateurs</h3><p class="phase__desc">Conseils tirés de vidéos de joueurs reconnus, traduits et résumés. C’est un avis : ✓ indique qu’un objet cité ressort aussi des stats Fantôme+ de cette page.</p>
@@ -843,14 +844,14 @@ function vidTips(){const V=D.videoTips||[];if(!V.length)return'';
 function vsPanel(){const P_=D.plan||{},M=D.matchups||{},m=M.matchups,k=K();
   const list=(t,arr,cls)=>arr&&arr.length?`<div class="${cls}"><h4>${t}</h4><ul>${arr.map(x=>`<li>${lk(x)}</li>`).join('')}</ul></div>`:'';
   const esc_=k.abilities.map(a=>({a,t:T(a.id)})).filter(x=>x.t.cd);
-  const spikes=k.spikes.filter(s=>s.tier===0||s.tier===3).slice(0,8);
+  const spikes=k.spikes.filter(s=>s.kind==='item'?s.cost>=3200:(s.tier===0||s.tier===3)).slice(0,10);
   return `<article class="panel"><p class="panel__src">Tu l’affrontes ?</p><h2>Comment contrer ${esc(D.hero.name)}</h2>
-  <p class="facts">Ses faiblesses, ce qui marche contre lui d’après les parties Fantôme+, et les moments où il devient dangereux.</p>
+  <p class="facts">Ses faiblesses, ce qui marche contre ${esc(D.hero.name)} d’après les parties Fantôme+, et ses moments de puissance.</p>
   ${(P_.vs||P_.weaknesses)?`<div class="sw" style="margin-top:var(--space-md);grid-template-columns:repeat(2,minmax(0,1fr))">${list('Pour le battre',P_.vs,'v')}${list('Ses faiblesses',P_.weaknesses,'w')}</div>`:''}
   ${vidTips()}
-  ${m?`<section class="phase"><h3>Les héros qui le battent</h3><p class="phase__desc">Écart au résultat attendu (le niveau général de chaque héros est retiré). ${esc(D.hero.name)} gagne ${m.base} % de ses parties en moyenne.</p>
+  ${m?`<section class="phase"><h3>Les héros qui battent ${esc(D.hero.name)}</h3><p class="phase__desc">Écart au résultat attendu (le niveau général de chaque héros est retiré). ${esc(D.hero.name)} gagne ${m.base} % de ses parties en moyenne.</p>
     <div class="mu"><div><h5>Le battent le plus (avantage de l’adversaire)</h5><div class="ctr__vs">${m.worst.map(x=>muChip({...x,delta:-x.delta})).join('')}</div></div>
-    <div><h5>Ont le plus de mal contre lui</h5><div class="ctr__vs">${m.best.map(x=>muChip({...x,delta:-x.delta},true)).join('')}</div></div></div>
+    <div><h5>Ont le plus de mal contre ${esc(D.hero.name)}</h5><div class="ctr__vs">${m.best.map(x=>muChip({...x,delta:-x.delta},true)).join('')}</div></div></div>
     ${Math.max(...m.worst.map(x=>Math.abs(x.delta)),0)<3?'<p class="phase__desc">Écarts faibles : à haut niveau, aucun héros ne le contre vraiment. Joue sur ses faiblesses plutôt que sur le pick.</p>':''}</section>`:''}
   ${(()=>{const A=((D.counterplay||{}).against)||[],H=D.hero.name,cls={mystic:'Mystique',marksman:'Tireur'};
     const WHY={heal:a=>`${H} se soigne beaucoup (plus que ${a.pct} % des héros)`,tank:a=>`${H} encaisse beaucoup (plus que ${a.pct} % des héros)`,
@@ -860,12 +861,12 @@ function vsPanel(){const P_=D.plan||{},M=D.matchups||{},m=M.matchups,k=K();
     return `<section class="phase"><h3>Les objets qui le contrent (fin de partie)</h3><p class="phase__desc">Objets de palier III-IV à prendre en fin de partie contre ${esc(H)}.</p>
     <div class="cp">${A.map(a=>`<div class="cp__r"><div class="cp__if"><b>${esc((WHY[a.why]||(()=>a.why))(a))}</b></div>
       <div class="cp__then"><span class="lbl">→ ${TH[a.why]||''}</span>${a.items.map(x=>`<span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span>`).join(' · ')}</div></div>`).join('')}
-    ${meas.length?`<div class="cp__r"><div class="cp__if"><b>Mesuré contre ${esc(H)}</b><small>gain de victoires quand on l’achète après 20 min contre lui, au-delà du gain habituel (14 jours, Fantôme+)</small></div>
+    ${meas.length?`<div class="cp__r"><div class="cp__if"><b>Mesuré contre ${esc(H)}</b><small>gain de victoires quand on l’achète après 20 min contre ${esc(H)}, au-delà du gain habituel (14 jours, Fantôme+)</small></div>
       <div class="cp__then"><span class="lbl">→ Ce qui marche le mieux</span>${meas.map(x=>`<span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span> <small>+${x.delta} pts</small>`).join(' · ')}</div></div>`:''}</div>
     <p class="phase__desc">Profil mesuré chez les Fantôme+ ; objets classés par leurs effets dans le jeu, les plus joués de leur catégorie en fin de partie.</p></section>`})()}
-  ${esc_.length?`<section class="phase"><h3>Ses recharges à surveiller</h3><p class="phase__desc">Engage quand il vient d’utiliser ses outils clés : voilà combien de temps ils mettent à revenir (valeurs de base, sans objets ni améliorations).</p>
+  ${esc_.length?`<section class="phase"><h3>Ses recharges à surveiller</h3><p class="phase__desc">Engage juste après l’utilisation de ses outils clés : voilà combien de temps ils mettent à revenir (valeurs de base, sans objets ni améliorations).</p>
     <div class="spk">${esc_.map(x=>`<span class="spk__i" tabindex="0" data-id="${x.a.id}">${img(x.a.id)}<span>${esc(x.t.n)} <kbd>${x.a.key}</kbd><br><small>⟳ ${x.t.cd} s</small></span></span>`).join('')}</div></section>`:''}
-  ${spikes.length?`<section class="phase"><h3>Quand il devient dangereux</h3><p class="phase__desc">Ses déblocages et ses compétences au max chez ${esc(k.ref||'les meilleurs')}, avec le moment approximatif. Punis-le avant.</p><div class="spk">${spikes.map(s=>`<span class="spk__i" tabindex="0" data-id="${s.id}">${img(s.id)}<span>${esc(T(s.id).n)} <span class="t">${tierLbl(s)}</span><br><small>${s.min!=null?`≈ ${Math.round(s.min)} min · `:''}${(s.souls/1000).toLocaleString('fr-FR')}k âmes</small></span></span>`).join('')}</div></section>`:''}
+  ${spikes.length?`<section class="phase"><h3>Ses moments de puissance</h3><p class="phase__desc">Ses gros objets, ses déblocages et ses compétences au max chez ${esc(k.ref||'les meilleurs')}, avec le moment approximatif. Frappe avant ces moments-là.</p><div class="spk">${spikes.map(s=>`<span class="spk__i" tabindex="0" data-id="${s.id}">${img(s.id)}<span>${esc(T(s.id).n)} <span class="t">${tierLbl(s)}</span><br><small>${s.min!=null?`≈ ${Math.round(s.min)} min · `:''}${(s.souls/1000).toLocaleString('fr-FR')}k âmes</small></span></span>`).join('')}</div></section>`:''}
   ${(k.core||[]).length?`<section class="phase"><h3>Ses objets clés, et quand</h3><div class="tl-items">${k.core.map(c=>`<div class="mod ${esc(T(c.id).slot||'')}" tabindex="0" data-id="${c.id}">${gcard(c.id)}<span class="tl-min">≈ ${c.min} min</span></div>`).join('')}</div></section>`:''}
   </article>`}
 const CPW={heal:['Gros soigneurs en face','Anti-soin'],tank:['Tanks / frontline en face','Anti-tank (% de PV, réduction de résistance)'],
@@ -888,7 +889,7 @@ function statStrip(b){const f=buildFresh(b),t=wrTone(b.winrate);
     <div class="stat" data-lvl="${f.lvl}"><span class="stat__k">${b.source==='OTP'?'Période':'Mis à jour'}</span><span class="stat__v">${esc(f.v)}</span><span class="stat__s">${esc(f.s)}</span></div></div>`}
 
 function buildPanel(b){
-  const btn=b.code?`<button class="copy cham" data-code="${esc(b.code)}">Copier le build →</button>`
+  const btn=b.code?`<button class="copy cham" data-code="${esc(b.code)}">Copier le build</button>`
     :`<button class="copy cham" disabled title="Pas encore traduit : demande à Claude">À traduire</button>`;
   let nn=0;const nTotal=b.cats.reduce((a,c)=>a+c.mods.filter(m=>m.note).length,0);
   const cats=`<div class="cats-bar"><h3>Objets</h3>${nTotal?`<button type="button" class="notes-btn" aria-pressed="${NOTES}">✎ Notes de l’auteur (${nTotal})</button>`:''}</div>
@@ -942,7 +943,7 @@ document.querySelector('.tldr-btn').onclick=()=>show('tldr',true);
 
 /* ---- copy (8 states: default/hover/focus/active/disabled/loading/error/success) ---- */
 function bindCopy(){document.querySelectorAll('.copy[data-code]').forEach(btn=>btn.onclick=async()=>{
-  const label='Copier le build →';btn.dataset.state='loading';btn.textContent='Copie…';let ok=false;
+  const label='Copier le build';btn.dataset.state='loading';btn.textContent='Copie…';let ok=false;
   try{await navigator.clipboard.writeText(btn.dataset.code);ok=true}catch(e){}
   if(!ok){const t=document.createElement('textarea');t.value=btn.dataset.code;document.body.appendChild(t);t.select();
     try{ok=document.execCommand('copy')}catch(e){}t.remove()}

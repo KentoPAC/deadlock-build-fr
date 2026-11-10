@@ -27,6 +27,8 @@ SKILL = os.path.dirname(HERE)
 TEMPLATE = os.path.join(SKILL, "templates", "hero.html")
 GAMEPLAY_PATCH = re.compile(r"update|\d{2}-\d{2}-\d{4}|gameplay|patch", re.I)
 CORE_ITEM_PCT, CORE_ITEM_COST = 90, 1600
+# item power spikes: bought in >= 75% of games from tier II, or >= 60% from tier III (big late items are situational)
+SPIKE_ITEM_RULES = ((75, 1600), (60, 3200))
 
 
 def facts(candidate):
@@ -136,6 +138,35 @@ def souls_to_minute(net_worth, souls):
     return None
 
 
+def minute_to_souls(net_worth, minute):
+    """Average net worth at `minute`, from the curve [[minute, souls], ...]."""
+    previous = (0, 0)
+    for m, value in net_worth:
+        if m >= minute:
+            m0, v0 = previous
+            return int(round(v0 + (value - v0) * (minute - m0) / max(1e-9, m - m0), -1))
+        previous = (m, value)
+    return int(previous[1]) if net_worth else None
+
+
+def item_spikes(ref, all_items):
+    """Key purchases of the reference OTP (real purchase minute) placed on its average net worth curve."""
+    net_worth = (ref.get("play") or {}).get("nw") or [] if ref else []
+    if not net_worth:
+        return []
+    spikes, seen = [], set()
+    for cat in ref["cats"]:
+        for mod in cat["mods"]:
+            pct, minute, cost = mod.get("pct"), mod.get("min"), (all_items.get(mod["id"]) or {}).get("cost", 0)
+            if pct is None or minute is None or mod["id"] in seen:
+                continue
+            if any(pct >= p and cost >= c for p, c in SPIKE_ITEM_RULES):
+                seen.add(mod["id"])
+                spikes.append({"id": mod["id"], "kind": "item", "souls": minute_to_souls(net_worth, minute),
+                               "min": float(minute), "tier": 3 if cost >= 3200 else 2, "pct": pct, "cost": cost})
+    return spikes
+
+
 def reference_build(builds, pick):
     """Build used for power spikes: the TLDR pick first, then an OTP with a measured play style."""
     return (next((b for b in builds if b["key"] == pick and b["order"]), None)
@@ -174,7 +205,7 @@ def power_spikes(hero, ref, all_items, english):
 
 
 def hero_kit(hero_id, all_items, english, builds, pick=None):
-    """The 4 ability cards + power spikes (game level thresholds x an OTP's ability order) + core items."""
+    """The 4 ability cards + power spikes (ability order on level thresholds + key items at their real minute) + core items."""
     try:
         hero = heroes().get(hero_id) or {}
     except Exception:
@@ -202,7 +233,9 @@ def hero_kit(hero_id, all_items, english, builds, pick=None):
                 upgrades[step["id"]] = upgrades.get(step["id"], 0) + 1
                 if upgrades[step["id"]] == 3 and first_max is None:
                     first_max = step["id"]
-    return {"abilities": abilities, "spikes": power_spikes(hero, ref, all_items, english),
+    spikes = sorted(power_spikes(hero, ref, all_items, english) + item_spikes(ref, all_items),
+                    key=lambda x: (x["souls"], x.get("kind") == "item"))
+    return {"abilities": abilities, "spikes": spikes,
             "core": sorted(core, key=lambda x: x["min"])[:6], "ref": ref["author"] if ref else None, "firstMax": first_max}
 
 

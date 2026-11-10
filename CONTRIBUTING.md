@@ -33,7 +33,7 @@ Any change to how information is gathered or what is written on the pages, even 
 
 ## Checks
 
-There is no hosted CI: run the checks locally before pushing.
+GitHub Actions runs the same checks on every push and pull request; run them locally before pushing:
 
 ```sh
 ./check.sh   # ruff (when installed) + unit tests
