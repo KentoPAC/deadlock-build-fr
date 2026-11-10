@@ -1,0 +1,25 @@
+[project]
+name = "deadlock-build-fr"
+version = "0.1.0"
+description = "Claude Code skill: find, explain and translate Deadlock builds into in-game build codes"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.14"
+dependencies = []
+
+[tool.ruff]
+line-length = 140
+target-version = "py314"
+extend-exclude = ["templates"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+ignore = [
+    "E402",   # scripts add their folder to sys.path before importing siblings (they run with python -I)
+    "E731",
+    "B008",
+    "SIM115",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["codec", "common", "status", "textlinks", "tooltips", "report", "guides", "counterplay", "tests"]
