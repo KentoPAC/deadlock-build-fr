@@ -49,8 +49,9 @@ def main():
     done = page_states(root)
     try:
         english = {h["id"]: h for h in get("/v1/assets/heroes")}
+        # "in_development" is not a reliable filter: released heroes such as Violet and Baba keep the flag.
         playable = [h for h in get("/v1/assets/heroes", language="french")
-                    if h.get("player_selectable") and not h.get("disabled") and not h.get("in_development")]
+                    if h.get("player_selectable") and not h.get("disabled")]
     except Exception as e:
         sys.exit(f"Heroes API unavailable: {e}")
     try:
