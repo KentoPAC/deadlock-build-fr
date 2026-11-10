@@ -2,6 +2,7 @@
 import re
 
 from common import heroes
+from i18n import LANGS, table
 
 ACCENTS = {"a": "aàâä", "e": "eéèêë", "i": "iîï", "o": "oôö", "u": "uùûü", "c": "cç", "y": "yÿ"}
 SPACES = "   "  # the API sometimes uses non-breaking spaces ("Chargeur XL")
@@ -66,15 +67,19 @@ def short_names(all_items, texts):
         words = name.split()
         if len(words) > 1 and len(words[0]) >= 5 and words[0][0].isupper():
             heads.setdefault(words[0], []).append(name)
-    single_word = {n for n in full if " " not in n}
+    single_word = {n for n in full if " " not in n} | {r for lang in LANGS for r in table("ranks", lang=lang)}
     pattern = re.compile(r"\b(" + "|".join(map(re.escape, heads)) + r")\b")
+    multi_word = re.compile(r"\b(?:" + "|".join(re.escape(n) for n in full if " " in n) + r")\b")
     out = []
     for text in texts:
         text = unspace(text or "")
+        # Words inside a full name ("Spirit" in "Extra Spirit", "Magic" in "Dispel Magic") are fine in any language.
+        covered = [m.span() for m in multi_word.finditer(text)]
         for m in pattern.finditer(text):
             word = m.group(1)
             if (word in single_word or text[:m.start()].endswith("'s ")  # "Sinner's Sacrifice": a map object
-                    or any(text.startswith(n, m.start()) for n in heads[word])):
+                    or re.search(r"(?:^|[.!?:]\s+)$", text[:m.start()])  # sentence start: "Focus priority targets"
+                    or any(start <= m.start() and m.end() <= end for start, end in covered)):
                 continue
             out.append((word, heads[word][:3], text[max(0, m.start() - 30):m.end() + 30]))
     return out

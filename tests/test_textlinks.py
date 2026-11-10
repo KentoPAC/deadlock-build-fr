@@ -35,6 +35,15 @@ class ShortNamesTest(unittest.TestCase):
     def test_shortened_names_are_flagged(self):
         self.assertEqual(self.flagged("Garde ton Dissipateur pour la Redingote."), ["Dissipateur", "Redingote"])
 
+    def test_words_inside_full_names_and_sentence_starts_pass(self):
+        items = {1: {"id": 1, "type": "upgrade", "shopable": True, "name": "Dispel Magic"},
+                 2: {"id": 2, "type": "upgrade", "shopable": True, "name": "Magic Carpet"},
+                 3: {"id": 3, "type": "upgrade", "shopable": True, "name": "Phantom Strike"}}
+        flagged = [w for w, _, _ in textlinks.short_names(items, ["Buy Dispel Magic. Magic wins. Phantom 2 author."])]
+        self.assertEqual(flagged, [])
+        flagged = [w for w, _, _ in textlinks.short_names(items, ["Keep your Magic for later."])]
+        self.assertEqual(flagged, ["Magic"])
+
     def test_possessive_map_object_is_ignored(self):
         self.assertEqual(self.flagged("Farme autour du Sinner's Malédiction."), [])
 
