@@ -135,8 +135,10 @@ Every page is generated in **English** (`index.html`, the default) and **French*
   `scripts/i18n.py` (`t`, `table`, `pattern`) or the page's `L()` helper; a new language is a new locale file
   plus an entry in `i18n.LANGS`;
 - item, ability and hero names come from the API in the page language;
-- every written text carries its language (`"lang"` in `summaries.json`, on each creator tip). Content that is
-  not translated yet is shown in its original language with a notice.
+- the written analysis exists in both languages (`summaries.json` in French, `summaries.en.json` in English, same
+  text paths and shared sources), creator tips carry their English text, and every build has a code per language
+  (`code.txt`, `code.en.txt`): English authors' words and generated OTP notes need no translation;
+- content that is not translated yet is shown in its original language with a notice.
 
 ## Development
 

@@ -12,8 +12,9 @@ This format has been verified in game.
 `S` = this skill's folder (`.claude/skills/deadlock-build-fr`). Working folders in the project:
 `builds/<id>` for a single build, `builds/search-<hero>` for a search.
 
-Everything written for the pages is **French** (the audience plays the French client). Answer the user in their
-language.
+Pages exist in **English** (default) and **French**: every text is written in French first (`summaries.json`), then
+in English with the same structure (`summaries.en.json`, official English item and ability names). Answer the user in
+their language.
 
 Philosophy: statistical builds from ".gg" sites are not trusted (a win rate does not say *why* to buy an item).
 The goal is builds from strong players, **with early / mid / late explanations**. The win rate is never a ranking
@@ -24,8 +25,8 @@ criterion, only displayed information.
 **An analysis is only complete with ALL these fields** (report.py prints what is missing: "To complete for an
 up-to-date analysis", and the page and home page show "Ancienne analyse" until nothing is missing): `tr` (when there
 are texts to translate), `intro`, one `{resume, points}` per build, `tldr` (pick, why, early, mid, late, keys),
-`plan` (early, mid, late, tips, role, abilities 1-4, strengths, weaknesses, vs), `sources`. Never finish with
-something still missing.
+`plan` (early, mid, late, tips, role, abilities 1-4, strengths, weaknesses, vs), `sources`, and `en` (all of these
+texts in English, same paths). Never finish with something still missing.
 
 **Writing**: full sentences, every item / ability inside a sentence with a verb ("achète Malédiction de
 ralentissement pour…"), never "… pour survivre : Malédiction de ralentissement."; always the **full official name**
@@ -60,10 +61,16 @@ is missing.
    {"tr": {"<key>": ["fr of [0]", "fr of [1]", …]},
     "intro": "What the builds agree on, the real differences, my advice",
     "<key>": {"resume": "2 sentences", "points": ["Early : …", "Mid : …", "Late : …", "Particularité : …"]},
-    "tldr": {…}, "plan": {…}, "sources": {…}}
+    "tldr": {…}, "plan": {…}, "sources": {…},
+    "en": {"intro": "…", "<key>": {…}, "tldr": {…}, "plan": {…}},
+    "tr_en": {"<key>": ["en of [0]", …]}}
    EOF
    ```
    `tr`: one list per key, **in the exact order** of "To translate" (or a partial `{"n": "fr"}`).
+   `en`: the same analysis in English (every path of the French one; sources are shared). Use official English names
+   (compare `/v1/assets/items?language=english` with `?language=french`; e.g. Fléau = Affliction, Scopa = Wraith).
+   `tr_en`: only for builds listed under "To translate into English" (authors who did not write in English); English
+   authors' texts and generated OTP texts are filled in automatically, and finish.py builds the codes in both languages.
    `tldr` (default "L'essentiel" view, readable during a loading screen): `{"pick": "<key of the advised build>",
    "why": "1 sentence", "early": "1-2 sentences", "mid": "…", "late": "…", "keys": ["3 takeaways max"]}`: short and
    concrete (items with their minute, abilities, what to do), like a good player guide (soul thresholds, timings).
@@ -137,7 +144,8 @@ is missing.
   "against" part ("Le contrer" view): hero profile (heals / tanks / spirit / gun) -> most played late items (tier
   III-IV) of the category; matchups.py adds the counter items measured after 20 min.
 - **videos.py**: creator YouTube tips (`fetch <url>` = subtitles via yt-dlp split by chapter; `add <id> -` =
-  translated tips per hero, English hero / item names converted to ids; `list`). Data in `data/videos.json`, shown in
+  tips per hero with `"text"` (French) and `"en"`, English hero / item names converted to ids; fields left out keep
+  their saved value; `list`). Data in `data/videos.json`, shown in
   "Le contrer" ("L'avis des créateurs") with a timestamped link, the date, ⚠ when older than the last big patch, and
   ✓ when a quoted item also stands out in the stats. An opinion is not a statistic: flag disagreements. Adding a
   video = a changelog entry when it changes the method.
@@ -146,7 +154,8 @@ is missing.
 - **counters.py** (background, started by find.py, regenerates the page): items the OTPs buy clearly more against
   some heroes (statistical test). Steam pages are cached for a day (`~/.cache/deadlock-build-fr`).
 - Power spikes and ability cards: computed by report.py (game level thresholds x the OTP's ability order).
-- **apply.py** recomputes category width / height from the text length (the game cuts text with "..."); constants at
+- **apply.py** `--lang fr|en` writes `build_<lang>.json` and the code (`code.txt` in French, `code.en.txt` in English);
+  `--tr -` fills that language's translations. It recomputes category width / height from the text length (the game cuts text with "..."); constants at
   the top of the file, `--keep-layout` keeps the original. It mirrors an in-game copy, with author account id 0: the game
   requires the field to show "Coller le build" but accepts any value, so codes contain nothing personal.
 - **Translation**: official French names of items and abilities (the summary already gives them). Nicknames
