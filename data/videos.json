@@ -1,0 +1,502 @@
+{
+ "videos": {
+  "C3yn9SdVHZ8": {
+   "title": "1 Counter For EVERY Deadlock Hero",
+   "author": "AndrewChicken",
+   "date": "2026-11-03"
+  },
+  "Zb82rYYumbY": {
+   "title": "Counter Buying in Deadlock Made EASY!",
+   "author": "AndrewChicken",
+   "date": "2026-11-08"
+  }
+ },
+ "tips": {
+  "6": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 33,
+    "text": "Achète de l'anti-soin, car il se soigne beaucoup. Le plus dur est d'éviter sa Charge taurine, qui t'attrape, t'étourdit et fait très mal. Contresort la bloque, tout comme les compétences qui bloquent les attaques (la Mallette de passepasse de Pocket, le Cube gélatineux de Myxo). Pierre de distorsion te permet de l'esquiver. Atténuateur d'effets négatifs raccourcit l'étourdissement : tu te relèves à temps pour parer son coup lourd.",
+    "items": [
+     1414025773,
+     3270001687,
+     1047818222
+    ]
+   }
+  ],
+  "77": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 85,
+    "text": "Achète Malédiction de ralentissement : elle bloque trois de ses quatre compétences. Il ne lui reste que Riposte, qu'il lance souvent juste après par panique. Arrête de tirer tant que Riposte est active, puis punis-le.",
+    "items": [
+     1813726886
+    ]
+   }
+  ],
+  "88": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 107,
+    "text": "Joue des dégâts d'arme contre elle : sa puissance spirit lui donne beaucoup de résistance spirit, et sa résistance aux balles est négative. Depuis peu, Dissipateur de magie retire aussi la puissance spirit qu'elle a gagnée avec Fil siphonnant.",
+    "items": [
+     3731635960
+    ]
+   }
+  ],
+  "15": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 132,
+    "text": "Achète Protection d'urgence : elle te donne des PV quand il t'attrape, assez pour encaisser sa bombe. Elle s'améliore ensuite en Indomptable, qui empêche carrément son grappin. Si tu prends son Uppercut explosif, laisse-toi porter pour t'éloigner ; si tu dashes vers lui, tu restes sur place et il te vise facilement.",
+    "items": [
+     1644605047,
+     951866250
+    ]
+   }
+  ],
+  "72": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 171,
+    "text": "Il casse tes déplacements avec Bélier de tête, Matraquage puis Cul sec, et attend que tu gâches ton endurance. Garde ton endurance jusqu'à la fin de son combo, puis fuis. Contresort bloque ses dégâts, et Pierre de distorsion te sort de Bélier de tête ou du combo de Matraquage.",
+    "items": [
+     1414025773,
+     3270001687
+    ]
+   }
+  ],
+  "16": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 212,
+    "text": "Malédiction de ralentissement marche bien contre elle, mais le plus important est de ne pas négliger tes objets verts : son burst exécute vite un héros qui manque de PV. Presque tous ses dégâts sont spirit (Bombes moroses, Bond lacérant, Retour aux ombres). Prends Bouclier spirituel tôt, puis Résilience spirituelle plus tard.",
+    "items": [
+     1813726886,
+     112198670,
+     2163598980
+    ]
+   }
+  ],
+  "81": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 253,
+    "text": "Elle est très mobile, te poursuit sans relâche et a plus d'endurance que toi. La plupart de ses compétences, dont Luminophage, l'obligent à venir près de toi : c'est là qu'il faut la contrôler. Utilise un contrôle de ton kit, Malédiction de ralentissement ou Coup d'enclume dès qu'elle s'approche.",
+    "items": [
+     1813726886,
+     1254091416
+    ]
+   }
+  ],
+  "78": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 287,
+    "text": "Il est redoutable en terrain ouvert grâce à sa mobilité et à son ultime. En intérieur, il poursuit mal et son ultime devient presque inutile. Emmène donc le combat dans une salle ou un couloir étroit.",
+    "items": []
+   }
+  ],
+  "69": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 332,
+    "text": "Si tu réagis vite, Contresort bloque son combo d'enlèvement par la porte. S'il t'envoie quand même de l'autre côté et que tu es ralenti, utilise Contresort ou une compétence qui bloque les dégâts. Sinon, rebondis sur un mur (saut mural) pour sortir en économisant ton endurance.",
+    "items": [
+     1414025773
+    ]
+   }
+  ],
+  "64": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 361,
+    "text": "Ne l'affronte jamais seul : Odeur du sang lui donne un énorme bonus de dégâts contre les cibles isolées et lui montre où tu vas. Reste groupé avec ton équipe. Surtout, Dissipateur de magie retire sa Marque du rôdeur, ce qui l'empêche de se téléporter sur toi.",
+    "items": [
+     3731635960
+    ]
+   }
+  ],
+  "11": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 392,
+    "text": "Intrication quantique peut le sauver, lui et ses alliés, des pires compétences. Mets-lui la pression pour qu'il l'utilise avant que tu lances ton ultime. Pour être sûr qu'il ne puisse pas s'en servir, touche-le d'abord avec Malédiction de ralentissement ou Onde de silence : les deux la désactivent complètement.",
+    "items": [
+     1813726886,
+     619484391
+    ]
+   }
+  ],
+  "76": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 434,
+    "text": "Balles antimonstres augmentent tes dégâts d'arme contre les PNJ : tu tues ses crânes et surtout ses goules bien plus vite. En build arme, Ricochet règle presque entièrement le problème des crânes. Sans ces objets, regroupe les crânes et frappe-les tous d'un coup au corps à corps. Contre les goules, monte en hauteur : elles ne savent ni grimper ni sauter.",
+    "items": [
+     1009965641,
+     2480592370
+    ]
+   }
+  ],
+  "17": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 496,
+    "text": "Contre son Hibou guidé, attire-le dans un couloir étroit où il tourne mal, ou cache-toi dans un coin. Contresort le bloque, tout comme Intrication quantique ou la Mallette de passepasse de Pocket. Attention, un bon Serregrise feinte pour te faire utiliser ta parade : ne l'utilise que quand l'impact est certain.",
+    "items": [
+     1414025773
+    ]
+   }
+  ],
+  "13": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 548,
+    "text": "Achète Cuir blindé : il te rend insensible aux balles pendant environ 5 secondes, à peu près la durée de sa Danse balistique. Dès qu'elle te tombe dessus et lance sa Danse balistique, active-le.",
+    "items": [
+     1378931225
+    ]
+   }
+  ],
+  "14": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 593,
+    "text": "Avec de bons réflexes, Contresort bloque son Lasso spirituel. Plus simple : Atténuateur d'effets négatifs raccourcit le Lasso spirituel et presque tous ses autres effets, comme la projection et la brûlure du Baril de poudre, l'étourdissement du Trampoline au palier 3 et le ralentissement d'As de la gâchette.",
+    "items": [
+     1414025773,
+     1047818222
+    ]
+   }
+  ],
+  "1": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 628,
+    "text": "Regarde d'abord son build. S'il joue Ignition persistante avec des objets d'arme, achète en priorité Dissipateur de magie : il retire Ignition persistante et Balles toxiques, l'essentiel de ses dégâts. S'il joue Élanflammé avec Recharge rapide, achète en priorité Malédiction de ralentissement pour l'empêcher de lancer son dash. Les deux objets restent utiles contre les deux builds.",
+    "items": [
+     3731635960,
+     1813726886
+    ]
+   }
+  ],
+  "20": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 697,
+    "text": "Sa Pétrification se voit venir de loin. Pousse-la à l'utiliser avant de lancer tes grosses compétences ; quand elle se termine, tu sais exactement où elle sera pour enchaîner dégâts et contrôles. Pour l'éviter, utilise Contresort ou Pierre de distorsion.",
+    "items": [
+     1414025773,
+     3270001687
+    ]
+   }
+  ],
+  "12": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 723,
+    "text": "Achète d'abord de l'anti-soin, comme Châtiment curatif, contre ses soins de Grenade de givre et de Dôme gelé. Ensuite, protège-toi de ses ralentissements (Rayon arctique, Grenade de givre) avec Vitesse persistante ou Pied plume.",
+    "items": [
+     2603935618,
+     2447176615,
+     3403085434
+    ]
+   }
+  ],
+  "4": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 749,
+    "text": "Tout dépend de son ultime. Si elle ne l'a pas, fonce. Si elle l'a et qu'elle est à moitié vie ou moins, reste loin : Échange d'âmes a très peu de portée, et c'est toi qui mourras à sa place. Si ton héros doit aller au contact (Abrams, Billy, Cravache), achète Onde de silence pour l'empêcher de le lancer.",
+    "items": [
+     619484391
+    ]
+   }
+  ],
+  "31": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 796,
+    "text": "C'est le héros le plus prévisible du jeu, donc Contresort est l'objet le plus rentable contre lui : il bloque Frappe au sol et Placage mortel. Plus cher, Refuge céleste fonctionne aussi, tout comme Indomptable, qui l'empêche de te soulever avec son ultime. Prends Intouchable si tu dois absolument garantir ton propre ultime.",
+    "items": [
+     1414025773,
+     2533252781,
+     951866250,
+     3357231760
+    ]
+   }
+  ],
+  "8": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 827,
+    "text": "Deux coups lourds cassent un segment de son Mur spectral, mais en plein combat ça prend trop de temps. Pierre de distorsion te fait passer par-dessus le mur, et même à travers avant qu'il se déploie si tu réagis assez vite.",
+    "items": [
+     3270001687
+    ]
+   }
+  ],
+  "63": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 863,
+    "text": "C'est l'héroïne la plus fragile du jeu, et Retraite sanguine est sa seule façon de survivre. Achète Malédiction de ralentissement pour l'empêcher de la lancer. Mais les Mina ont presque toujours Dissipateur de magie, qui retire la malédiction : il faut donc deux joueurs avec Malédiction de ralentissement dans ton équipe, le premier pour lui faire utiliser Dissipateur de magie, le second pour la vraie tentative.",
+    "items": [
+     1813726886
+    ]
+   }
+  ],
+  "52": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 892,
+    "text": "Sa Marque de Djinn à 5 charges est le plus gros burst du jeu en fin de partie. C'est un effet négatif : utilise Dissipateur de magie vers 3 ou 4 charges pour effacer ses dégâts, ainsi que ses Balles toxiques, qu'il prend souvent avec. Sans la marque, il fait peu de dégâts.",
+    "items": [
+     3731635960
+    ]
+   }
+  ],
+  "18": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 926,
+    "text": "Indomptable empêche complètement sa Dérouillée. Contresort marche aussi, mais il est très dur de réagir à temps. Atténuateur d'effets négatifs raccourcit beaucoup la Dérouillée. Le mieux reste de garder tes distances, car Intimidation et Dérouillée ont une portée très courte ; Pierre de distorsion, Maitrise d'endurance et Vitesse persistante t'y aident.",
+    "items": [
+     951866250,
+     1047818222,
+     3270001687,
+     334300056,
+     2447176615
+    ]
+   }
+  ],
+  "87": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 963,
+    "text": "Achète de l'anti-soin sans hésiter, d'autant qu'il a été renforcé ce patch. Plusieurs joueurs avec Châtiment curatif, des Balles toxiques, un Brise-tête : prenez tout ce qu'il faut pour pouvoir la tuer.",
+    "items": [
+     2603935618,
+     3696726732,
+     3884003354
+    ]
+   }
+  ],
+  "67": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 987,
+    "text": "La plupart de ses compétences agissent au sol (le feu, les racines, Charge de ralliement) : reste en l'air ou en hauteur. Si ce n'est pas possible, trois objets contrent Récit captivant. Contresort le bloque, Dissipateur de magie te libère une fois enraciné, et Pierre de distorsion te permet de fuir.",
+    "items": [
+     1414025773,
+     3731635960,
+     3270001687
+    ]
+   }
+  ],
+  "10": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1016,
+    "text": "Sa Carabine cinétique augmente avec ses dégâts d'arme, mais elle inflige des dégâts spirit. Résilience spirituelle la contre donc, et Brise-magie encore mieux : ce gros coup suffit à déclencher sa forte réduction de dégâts spirit.",
+    "items": [
+     2163598980,
+     1955841979
+    ]
+   }
+  ],
+  "50": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1057,
+    "text": "Son ultime Fléau empêche tout soin au palier 3, et Dissipateur de magie ne l'enlève pas. Achète plutôt Protection divine, qui nettoie l'affliction. Si tu joues support, lance-la sur les alliés touchés. Contresort permet aussi de bloquer Fléau.",
+    "items": [
+     1662311306,
+     1414025773
+    ]
+   }
+  ],
+  "84": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1098,
+    "text": "Il a beaucoup de PV : sa progression est forte, et il achète souvent Colosse ou Fortitude pour renforcer le bouclier d'Apparat royal. Les objets à % de PV marchent bien contre lui (Antichar, Décomposition, Balles toxiques), mais le meilleur est Balles drainantes. Tu voles ses PV max, tu te soignes beaucoup, et ses boucliers suivants sont plus faibles.",
+    "items": [
+     1282141666,
+     2121044373,
+     3144988365,
+     3696726732
+    ]
+   }
+  ],
+  "79": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1152,
+    "text": "Pendant Sieste ambulante, on ne peut pas le toucher, mais il est très vulnérable en dehors. Empêche-le d'y entrer avec Malédiction de ralentissement ou Onde de silence. S'il y est déjà, étourdis l'allié qu'il accompagne (avec l'ultime d'Abrams par exemple) pour l'en faire sortir.",
+    "items": [
+     1813726886,
+     619484391
+    ]
+   }
+  ],
+  "2": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1192,
+    "text": "C'est le carry par excellence : fragile en début de partie, presque imbattable s'il arrive en late avec de l'avance. Harcèle-le en early et en mid : envahis sa jungle, vole ses camps, joue agressif avant que ses objets arrivent. En late, Résilience spirituelle aide, mais ça ne suffit pas.",
+    "items": [
+     2163598980
+    ]
+   }
+  ],
+  "19": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1240,
+    "text": "Les objets qui marchent contre Infernus marchent aussi contre lui. Dissipateur de magie retire l'effet de ses couteaux, et Malédiction de ralentissement l'empêche d'utiliser son dash et son ultime.",
+    "items": [
+     3731635960,
+     1813726886
+    ]
+   }
+  ],
+  "80": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1253,
+    "text": "En Lycanthropie, elle est très rapide (vitesse et dash horizontal), mais elle n'a rien pour monter. Grimpe en hauteur, par exemple sur un toit, avec Maitrise d'endurance ou Pierre de distorsion. Sinon, contrôle-la avec Souffle glacial, Malédiction de ralentissement ou Coup d'enclume.",
+    "items": [
+     334300056,
+     3270001687,
+     1976391348,
+     1813726886,
+     1254091416
+    ]
+   }
+  ],
+  "60": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1292,
+    "text": "Ne gâche pas ton endurance en voyant ses éclairs voler. Attends qu'il les redirige (un cercle apparaît au sol), puis esquive d'une roulade.",
+    "items": []
+   }
+  ],
+  "85": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1325,
+    "text": "Toutes ses compétences offensives frappent au sol (le fou, les tours, la dame) : joue en hauteur, ou en l'air si ton héros vole. Si ses tours t'immobilisent, utilise Dissipateur de magie pour te libérer et fuir. Contresort permet aussi de bloquer les tours ou la dame.",
+    "items": [
+     3731635960,
+     1414025773
+    ]
+   }
+  ],
+  "65": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1353,
+    "text": "Au contact, éloigne-toi des murs : il te projette contre le mur, ce qui t'étourdit, puis il enchaîne. Loin d'un mur, son tir te repousse sans plus. S'il fuit dans un couloir étroit, ne le suis pas : contourne-le, ou passe d'un coup avec Pierre de distorsion.",
+    "items": [
+     3270001687
+    ]
+   }
+  ],
+  "66": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1412,
+    "text": "Achète beaucoup d'anti-soin et de réduction de résistance. Le meilleur objet est Brise-tête ; moins cher, Tirs entêtants, Vulnérabilité mystique et Châtiment curatif marchent aussi. Reste aussi hors de son Aura de souffrance : selon AndrewChicken, elle fait 90 % de ses dégâts et la plupart de ses soins, surtout en late avec Régénération radieuse, Vol de vie spirituel et Second souffle.",
+    "items": [
+     3884003354,
+     1770441818,
+     2081037738,
+     2603935618
+    ]
+   }
+  ],
+  "3": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1449,
+    "text": "Coup d'enclume la fait tomber du ciel, mais les Vindicta prennent souvent Contresort ou Dissipateur de magie, qui l'annulent. Frappe spectrale est un meilleur choix, car elle est bien plus dure à anticiper. Sinon, prévoyez plusieurs joueurs avec Coup d'enclume ou Malédiction désarmante dans l'équipe, comme contre Mina, mais en plus cher.",
+    "items": [
+     1371725689,
+     1254091416,
+     2061878743
+    ]
+   }
+  ],
+  "86": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1494,
+    "text": "Contre Nature morte, joue près d'un mur : couper sa ligne de vue un instant suffit. Sinon, utilise Dissipateur de magie dès qu'elle l'active sur toi (comme contre l'étourdissement de Seven), ou bloque-la avec Contresort.",
+    "items": [
+     3731635960,
+     1414025773
+    ]
+   }
+  ],
+  "35": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1531,
+    "text": "Pour parer son Poing poisseux, écoute le son : s'il est fort et proche, pare, même s'il arrive de dos. Réfutation réduit la recharge de ta parade, et une parade réussie lui renvoie les dégâts et te soigne.",
+    "items": [
+     4204808176
+    ]
+   }
+  ],
+  "58": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1570,
+    "text": "Elle a les plus gros dégâts d'arme du jeu, mais à courte portée et avec un chargeur vite vide. Contrôle-la pendant qu'elle glisse pour qu'elle gâche ses munitions, et garde tes distances. Si elle est au contact, achète Cuir blindé (le meilleur choix) ou Malédiction désarmante.",
+    "items": [
+     1378931225,
+     2061878743
+    ]
+   }
+  ],
+  "25": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1614,
+    "text": "Il te vole de l'endurance, puis Mitard t'oblige à en dépenser pour sortir. Prends Surplus d'endurance ou Maitrise d'endurance, Vitesse persistante, ou Pierre de distorsion pour pouvoir t'échapper. Au palier 3, Mitard te réduit au silence : Dissipateur de magie te sauve alors la vie.",
+    "items": [
+     4139877411,
+     334300056,
+     2447176615,
+     3270001687,
+     3731635960
+    ]
+   }
+  ],
+  "7": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1669,
+    "text": "Elle joue beaucoup à l'arme, mais l'essentiel de ses dégâts est spirit (Balles teslas, Magnum mercuriel, ses cartes, Salve automatique) : Cuir blindé sert donc peu. Désarme-la plutôt avec Malédiction désarmante, ou réduis sa cadence de tir avec Implacable ou Sabotage.",
+    "items": [
+     2061878743,
+     1250307611,
+     1925087134
+    ]
+   }
+  ],
+  "27": [
+   {
+    "video": "C3yn9SdVHZ8",
+    "t": 1687,
+    "text": "Dissipateur de magie l'empêche de s'accrocher à toi avec Accroche tranchante. C'est cette compétence qui lui permet d'enchaîner tout le reste : garde-la à distance.",
+    "items": [
+     3731635960
+    ]
+   }
+  ]
+ }
+}
