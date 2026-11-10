@@ -147,7 +147,7 @@ function render(){const q=$('q').value.trim().toLowerCase();
       <div class="meta__top"><span class="meta__cls">${esc(CLS[h.type]||'')}</span>${p?`<span class="meta__n">${p.n} build${p.n>1?'s':''}</span>`:''}</div>
       ${p?`<div class="meta__date">Analysé <time title="${fmt(p.generated)}">${ago(p.generated)}</time></div>`:''}
       ${p&&(p.missing||[]).length?`<p class="meta__miss">Il manque ${esc(p.missing.slice(0,3).join(', '))}${p.missing.length>3?'…':'.'}</p>`:''}
-      ${p&&(p.pending||[]).length?`<p class="meta__miss">Nouveau depuis : ${esc(p.pending.join(', '))}</p>`:''}</div>
+      ${p&&(p.pending||[]).length?`<p class="meta__miss" title="${esc(p.pending.join(' · '))}">${p.pending.length} nouveauté${p.pending.length>1?'s':''} de méthode depuis</p>`:''}</div>
       <div class="acts">${p?`<a class="btn btn--main" href="${esc(p.dir)}/index.html#tldr">TLDR</a><a class="btn" href="${esc(p.dir)}/index.html#vs">Le contrer</a>`:''}
       ${(!p||st!=='ok')?`<button type="button" class="btn${p?'':' btn--main'}" data-ask="${esc(ask)}">${p?'Mettre à jour':'Demander à Claude'}</button>`:''}</div></div></article>`}).join('');
   $('empty').hidden=list.length>0;
