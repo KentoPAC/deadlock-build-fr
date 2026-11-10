@@ -22,7 +22,10 @@
      1414025773,
      3270001687,
      1047818222
-    ]
+    ],
+    "translations": {
+     "en": "Buy anti-heal, since he heals a lot. The hardest part is avoiding his Shoulder Charge, which grabs you, stuns you and hits hard. Counterspell blocks it, as do abilities that block attacks (Pocket's Enchanter's Satchel, Viscous's The Cube). Warp Stone lets you dodge it. Debuff Reducer shortens the stun so you get up in time to parry his heavy melee."
+    }
    }
   ],
   "77": [
@@ -33,7 +36,10 @@
     "lang": "fr",
     "items": [
      1813726886
-    ]
+    ],
+    "translations": {
+     "en": "Buy Slowing Hex: it shuts down three of his four abilities. Only Riposte is left, which he often casts right after the hex out of panic. Stop shooting while Riposte is active, then punish him."
+    }
    }
   ],
   "88": [
@@ -44,7 +50,10 @@
     "lang": "fr",
     "items": [
      3731635960
-    ]
+    ],
+    "translations": {
+     "en": "Play gun damage against her: her spirit power gives her a lot of spirit resistance, and her bullet resistance is negative. Recently, Dispel Magic also removes the spirit power she gained with Threadsap."
+    }
    }
   ],
   "15": [
@@ -56,7 +65,10 @@
     "items": [
      1644605047,
      951866250
-    ]
+    ],
+    "translations": {
+     "en": "Buy Reactive Barrier: it gives you HP when he hooks you, enough to survive his bomb. It later upgrades into Indomitable, which stops his hook entirely. If you get hit by his Exploding Uppercut, go with the flow to get away; dashing back toward him keeps you in place and easy to hit."
+    }
    }
   ],
   "72": [
@@ -68,7 +80,10 @@
     "items": [
      1414025773,
      3270001687
-    ]
+    ],
+    "translations": {
+     "en": "He wrecks your movement with Rising Ram, Bashdown and then Blasted, waiting for you to waste your stamina. Save your stamina until his combo is over, then escape. Counterspell blocks his damage, and Warp Stone gets you out of Rising Ram or the Bashdown combo."
+    }
    }
   ],
   "16": [
@@ -81,7 +96,10 @@
      1813726886,
      112198670,
      2163598980
-    ]
+    ],
+    "translations": {
+     "en": "Slowing Hex works well against her, but the most important thing is not to skip your green items: her burst quickly executes heroes who lack HP. Almost all her damage is spirit (Gloom Bombs, Leaping Slash, Return to Shadows). Get Spirit Shielding early, then Spirit Resilience later."
+    }
    }
   ],
   "81": [
@@ -93,7 +111,10 @@
     "items": [
      1813726886,
      1254091416
-    ]
+    ],
+    "translations": {
+     "en": "She is very mobile, chases you relentlessly and has more stamina than you. Most of her abilities, Light Eater included, require her to come close: that is when to lock her down. Use crowd control from your kit, Slowing Hex or Knockdown as soon as she gets close."
+    }
    }
   ],
   "78": [
@@ -102,7 +123,10 @@
     "t": 287,
     "text": "Il est redoutable en terrain ouvert grâce à sa mobilité et à son ultime. En intérieur, il poursuit mal et son ultime devient presque inutile. Emmène donc le combat dans une salle ou un couloir étroit.",
     "lang": "fr",
-    "items": []
+    "items": [],
+    "translations": {
+     "en": "He is dangerous in open areas thanks to his mobility and his ultimate. Indoors, he chases poorly and his ultimate becomes almost useless. Take the fight into a room or a tight hallway."
+    }
    }
   ],
   "69": [
@@ -113,7 +137,10 @@
     "lang": "fr",
     "items": [
      1414025773
-    ]
+    ],
+    "translations": {
+     "en": "If you react fast, Counterspell blocks his door kidnap combo. If he still sends you to the other side and you are slowed, use Counterspell or an ability that blocks damage. Otherwise, wall-jump to get out while saving stamina."
+    }
    }
   ],
   "64": [
@@ -124,7 +151,10 @@
     "lang": "fr",
     "items": [
      3731635960
-    ]
+    ],
+    "translations": {
+     "en": "Never fight him alone: Bloodscent gives him a huge damage bonus against isolated targets and shows him where you are going. Stay grouped with your team. Above all, Dispel Magic removes his Stalker's Mark, which stops him from teleporting to you."
+    }
    }
   ],
   "11": [
@@ -136,7 +166,10 @@
     "items": [
      1813726886,
      619484391
-    ]
+    ],
+    "translations": {
+     "en": "Quantum Entanglement can save him and his allies from the worst abilities. Pressure him so he uses it before you cast your ultimate. To be sure he cannot use it, hit him first with Slowing Hex or Silence Wave: both disable it completely."
+    }
    }
   ],
   "76": [
@@ -148,7 +181,10 @@
     "items": [
      1009965641,
      2480592370
-    ]
+    ],
+    "translations": {
+     "en": "Monster Rounds raise your gun damage against NPCs: you kill her skulls and especially her ghouls much faster. In a gun build, Ricochet almost solves the skulls entirely. Without those items, group the skulls up and melee them all at once. Against the ghouls, take the high ground: they can neither climb nor jump."
+    }
    }
   ],
   "17": [
@@ -159,7 +195,10 @@
     "lang": "fr",
     "items": [
      1414025773
-    ]
+    ],
+    "translations": {
+     "en": "Against his Guided Owl, bait it into a tight hallway where it turns poorly, or hide in a corner. Counterspell blocks it, as do Quantum Entanglement or Pocket's Enchanter's Satchel. Careful, a good Grey Talon feints to bait out your block: only use it when the hit is certain."
+    }
    }
   ],
   "13": [
@@ -170,7 +209,10 @@
     "lang": "fr",
     "items": [
      1378931225
-    ]
+    ],
+    "translations": {
+     "en": "Buy Metal Skin: it makes you immune to bullets for about 5 seconds, roughly the length of her Bullet Dance. As soon as she jumps you and casts Bullet Dance, activate it."
+    }
    }
   ],
   "14": [
@@ -182,7 +224,10 @@
     "items": [
      1414025773,
      1047818222
-    ]
+    ],
+    "translations": {
+     "en": "With good reflexes, Counterspell blocks her Spirit Lasso. Easier: Debuff Reducer shortens Spirit Lasso and almost all her other effects, such as the knock-up and burn of Powder Keg, the stun of the tier 3 Bounce Pad and the slow of Crackshot."
+    }
    }
   ],
   "1": [
@@ -194,7 +239,10 @@
     "items": [
      3731635960,
      1813726886
-    ]
+    ],
+    "translations": {
+     "en": "Check his build first. If he plays Afterburn with gun items, buy Dispel Magic first: it removes Afterburn and Toxic Bullets, most of his damage. If he plays Flame Dash with Rapid Recharge, buy Slowing Hex first to stop him from casting his dash. Both items stay useful against both builds."
+    }
    }
   ],
   "20": [
@@ -206,7 +254,10 @@
     "items": [
      1414025773,
      3270001687
-    ]
+    ],
+    "translations": {
+     "en": "Her Stone Form is telegraphed. Make her use it before you cast your big abilities; when it ends, you know exactly where she will be to chain damage and crowd control. To avoid it, use Counterspell or Warp Stone."
+    }
    }
   ],
   "12": [
@@ -219,7 +270,10 @@
      2603935618,
      2447176615,
      3403085434
-    ]
+    ],
+    "translations": {
+     "en": "Buy anti-heal first, such as Healbane, against the healing of Frost Grenade and Frozen Shelter. Then protect yourself from his slows (Arctic Beam, Frost Grenade) with Enduring Speed or Fleetfoot."
+    }
    }
   ],
   "4": [
@@ -230,7 +284,10 @@
     "lang": "fr",
     "items": [
      619484391
-    ]
+    ],
+    "translations": {
+     "en": "Everything depends on her ultimate. If she does not have it, go in. If she has it and is at half health or lower, stay away: Soul Exchange has very short range, and you will die in her place. If your hero must fight up close (Abrams, Billy, Lash), buy Silence Wave to stop her from casting it."
+    }
    }
   ],
   "31": [
@@ -244,7 +301,10 @@
      2533252781,
      951866250,
      3357231760
-    ]
+    ],
+    "translations": {
+     "en": "He is the most predictable hero in the game, so Counterspell is the best-value item against him: it blocks Ground Strike and Death Slam. More expensive, Ethereal Shift also works, as does Indomitable, which stops him from lifting you with his ultimate. Take Unstoppable if you absolutely need to land your own ultimate."
+    }
    }
   ],
   "8": [
@@ -255,7 +315,10 @@
     "lang": "fr",
     "items": [
      3270001687
-    ]
+    ],
+    "translations": {
+     "en": "Two heavy melees break a segment of her Spectral Wall, but in the middle of a fight that takes too long. Warp Stone takes you over the wall, and even through it before it deploys if you react fast enough."
+    }
    }
   ],
   "63": [
@@ -266,7 +329,10 @@
     "lang": "fr",
     "items": [
      1813726886
-    ]
+    ],
+    "translations": {
+     "en": "She is the squishiest hero in the game, and Sanguine Retreat is her only way to survive. Buy Slowing Hex to stop her from casting it. But Minas almost always buy Dispel Magic, which removes the hex: your team needs two players with Slowing Hex, the first to make her use Dispel Magic, the second for the real attempt."
+    }
    }
   ],
   "52": [
@@ -277,7 +343,10 @@
     "lang": "fr",
     "items": [
      3731635960
-    ]
+    ],
+    "translations": {
+     "en": "His Djinn's Mark at 5 stacks is the biggest burst in the late game. It is a debuff: use Dispel Magic at 3 or 4 stacks to erase his damage, along with the Toxic Bullets he often buys with it. Without the mark, he deals little damage."
+    }
    }
   ],
   "18": [
@@ -292,7 +361,10 @@
      3270001687,
      334300056,
      2447176615
-    ]
+    ],
+    "translations": {
+     "en": "Indomitable fully prevents his Combo. Counterspell works too, but it is very hard to react in time. Debuff Reducer greatly shortens Combo. The best option is still to keep your distance, because Scorn and Combo have very short range; Warp Stone, Stamina Mastery and Enduring Speed help with that."
+    }
    }
   ],
   "87": [
@@ -305,7 +377,10 @@
      2603935618,
      3696726732,
      3884003354
-    ]
+    ],
+    "translations": {
+     "en": "Buy anti-heal, no question, especially since it was buffed this patch. Several players with Healbane, Toxic Bullets, a Crippling Headshot: get whatever it takes to be able to kill her."
+    }
    }
   ],
   "67": [
@@ -318,7 +393,10 @@
      1414025773,
      3731635960,
      3270001687
-    ]
+    ],
+    "translations": {
+     "en": "Most of her abilities hit the ground (the fire, the roots, Rallying Charge): stay in the air or on high ground. If you cannot, three items counter Captivating Read. Counterspell blocks it, Dispel Magic frees you once rooted, and Warp Stone lets you escape."
+    }
    }
   ],
   "10": [
@@ -330,7 +408,10 @@
     "items": [
      2163598980,
      1955841979
-    ]
+    ],
+    "translations": {
+     "en": "Her Kinetic Carbine scales with her gun damage, but it deals spirit damage. Spirit Resilience counters it, and Spellbreaker even more: that big hit is enough to trigger its strong spirit damage reduction."
+    }
    }
   ],
   "50": [
@@ -342,7 +423,10 @@
     "items": [
      1662311306,
      1414025773
-    ]
+    ],
+    "translations": {
+     "en": "His ultimate Affliction prevents all healing at tier 3, and Dispel Magic does not remove it. Buy Divine Barrier instead, which cleanses the affliction. If you play support, cast it on the affected allies. Counterspell can also block Affliction."
+    }
    }
   ],
   "84": [
@@ -356,7 +440,10 @@
      2121044373,
      3144988365,
      3696726732
-    ]
+    ],
+    "translations": {
+     "en": "He has a lot of HP: his scaling is strong, and he often buys Colossus or Fortitude to strengthen the barrier of Royal Pestments. Percent-HP items work well against him (Tankbuster, Decay, Toxic Bullets), but the best one is Siphon Bullets. You steal his max HP, heal a lot, and his next barriers are weaker."
+    }
    }
   ],
   "79": [
@@ -368,7 +455,10 @@
     "items": [
      1813726886,
      619484391
-    ]
+    ],
+    "translations": {
+     "en": "He cannot be hit during Tag Along, but he is very vulnerable outside of it. Stop him from entering it with Slowing Hex or Silence Wave. If he is already in, stun the ally he is riding (with Abrams's ultimate, for example) to kick him out."
+    }
    }
   ],
   "2": [
@@ -379,7 +469,10 @@
     "lang": "fr",
     "items": [
      2163598980
-    ]
+    ],
+    "translations": {
+     "en": "He is the archetypal carry: squishy early, almost unbeatable if he reaches the late game with a lead. Harass him in the early and mid game: invade his jungle, steal his camps, play aggressively before his items come online. Late, Spirit Resilience helps, but it is not enough."
+    }
    }
   ],
   "19": [
@@ -391,7 +484,10 @@
     "items": [
      3731635960,
      1813726886
-    ]
+    ],
+    "translations": {
+     "en": "The items that work against Infernus also work against him. Dispel Magic removes the effect of his knives, and Slowing Hex stops him from using his dash and his ultimate."
+    }
    }
   ],
   "80": [
@@ -406,7 +502,10 @@
      1976391348,
      1813726886,
      1254091416
-    ]
+    ],
+    "translations": {
+     "en": "In Lycan Curse she is very fast (move speed and a horizontal dash), but she has nothing to go up. Climb to high ground, a rooftop for example, with Stamina Mastery or Warp Stone. Otherwise, lock her down with Cold Front, Slowing Hex or Knockdown."
+    }
    }
   ],
   "60": [
@@ -415,7 +514,10 @@
     "t": 1292,
     "text": "Ne gâche pas ton endurance en voyant ses éclairs voler. Attends qu'il les redirige (un cercle apparaît au sol), puis esquive d'une roulade.",
     "lang": "fr",
-    "items": []
+    "items": [],
+    "translations": {
+     "en": "Do not waste your stamina when you see his bolts flying. Wait until he redirects them (a circle appears on the ground), then dodge with a roll."
+    }
    }
   ],
   "85": [
@@ -427,7 +529,10 @@
     "items": [
      3731635960,
      1414025773
-    ]
+    ],
+    "translations": {
+     "en": "All his damaging abilities hit the ground (the bishop, the rooks, the queen): play on high ground, or in the air if your hero flies. If his rooks immobilise you, use Dispel Magic to break free and escape. Counterspell can also block the rooks or the queen."
+    }
    }
   ],
   "65": [
@@ -438,7 +543,10 @@
     "lang": "fr",
     "items": [
      3270001687
-    ]
+    ],
+    "translations": {
+     "en": "Up close, stay away from walls: he knocks you into the wall, which stuns you, then follows up. Away from a wall, his shot only pushes you back. If he runs into a tight hallway, do not follow him: go around, or get past him at once with Warp Stone."
+    }
    }
   ],
   "66": [
@@ -452,7 +560,10 @@
      1770441818,
      2081037738,
      2603935618
-    ]
+    ],
+    "translations": {
+     "en": "Buy a lot of anti-heal and resistance shred. The best item is Crippling Headshot; cheaper, Weakening Headshot, Mystic Vulnerability and Healbane work too. Also stay out of his Aura of Suffering: according to AndrewChicken it deals 90% of his damage and most of his healing, especially late with Radiant Regeneration, Spirit Lifesteal and Infuser."
+    }
    }
   ],
   "3": [
@@ -465,7 +576,10 @@
      1371725689,
      1254091416,
      2061878743
-    ]
+    ],
+    "translations": {
+     "en": "Knockdown brings her down from the sky, but Vindictas often buy Counterspell or Dispel Magic, which cancel it. Phantom Strike is a better choice, because it is much harder to see coming. Otherwise, have several players with Knockdown or Disarming Hex on the team, as against Mina, but more expensive."
+    }
    }
   ],
   "86": [
@@ -477,7 +591,10 @@
     "items": [
      3731635960,
      1414025773
-    ]
+    ],
+    "translations": {
+     "en": "Against Still Life, play near a wall: breaking her line of sight for a moment is enough. Otherwise, use Dispel Magic as soon as she casts it on you (as against Seven's stun), or block it with Counterspell."
+    }
    }
   ],
   "35": [
@@ -488,7 +605,10 @@
     "lang": "fr",
     "items": [
      4204808176
-    ]
+    ],
+    "translations": {
+     "en": "To parry his Puddle Punch, listen to the sound: if it is loud and close, parry, even if it comes from behind. Rebuttal lowers your parry cooldown, and a successful parry reflects the damage back to him and heals you."
+    }
    }
   ],
   "58": [
@@ -500,7 +620,10 @@
     "items": [
      1378931225,
      2061878743
-    ]
+    ],
+    "translations": {
+     "en": "She has the highest gun damage in the game, but at short range and with a magazine that empties fast. Lock her down while she slides so she wastes her ammo, and keep your distance. If she is in your face, buy Metal Skin (the best choice) or Disarming Hex."
+    }
    }
   ],
   "25": [
@@ -515,7 +638,10 @@
      2447176615,
      3270001687,
      3731635960
-    ]
+    ],
+    "translations": {
+     "en": "He steals your stamina, then Binding Word forces you to spend some to get out. Buy Extra Stamina or Stamina Mastery, Enduring Speed, or Warp Stone so you can escape. At tier 3, Binding Word silences you: Dispel Magic then saves your life."
+    }
    }
   ],
   "7": [
@@ -528,7 +654,10 @@
      2061878743,
      1250307611,
      1925087134
-    ]
+    ],
+    "translations": {
+     "en": "She plays a lot with her gun, but most of her damage is spirit (Tesla Bullets, Mercurial Magnum, her cards, Full Auto): Metal Skin is not very useful. Disarm her instead with Disarming Hex, or cut her fire rate with Juggernaut or Suppressor."
+    }
    }
   ],
   "27": [
@@ -539,7 +668,10 @@
     "lang": "fr",
     "items": [
      3731635960
-    ]
+    ],
+    "translations": {
+     "en": "Dispel Magic stops her from grappling to you with Flying Slash. That ability is what lets her chain everything else: keep her at a distance."
+    }
    }
   ]
  }

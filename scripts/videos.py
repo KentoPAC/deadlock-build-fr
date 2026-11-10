@@ -3,7 +3,9 @@
 Usage :
   python3 -I videos.py fetch <url_or_id>      transcript (subtitles, via yt-dlp) split by chapter
   python3 -I videos.py add <id> - <<'EOF'      save the translated tips (JSON on stdin):
-     {"<English hero name>": {"t": "14:23", "text": "tip in French", "items": ["Slowing Hex", ...]}, ...}
+     {"<English hero name>": {"t": "14:23", "text": "tip in French", "en": "the same tip in English",
+                              "items": ["Slowing Hex", ...]}, ...}
+     Fields left out keep their saved value: {"Mina": {"en": "..."}} only adds the English text.
   python3 -I videos.py list                    videos and number of heroes covered
 
 English hero and item names are converted to ids when saving (loud failure when unknown): the page then
@@ -22,7 +24,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import get, read_json, write_json  # noqa: E402
-from i18n import CONTENT_LANG  # noqa: E402
+from i18n import CONTENT_LANG, LANGS  # noqa: E402
 
 SKILL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(SKILL, "data", "videos.json")
@@ -87,10 +89,20 @@ def add(v, src):
         if not h or miss:
             bad.append(f"{name}: {'unknown hero' if not h else 'unknown items ' + ', '.join(miss)}")
             continue
-        mm, ss = map(int, tip["t"].split(":"))
-        lst = [x for x in d["tips"].get(str(h), []) if x["video"] != v]
-        lst.append({"video": v, "t": mm * 60 + ss, "text": tip["text"], "lang": tip.get("lang", CONTENT_LANG), "items": ids})
-        d["tips"][str(h)] = lst
+        previous = next((x for x in d["tips"].get(str(h), []) if x["video"] == v), {})
+        translations = dict(previous.get("translations") or {})
+        translations.update({lang: tip[lang] for lang in LANGS if lang != CONTENT_LANG and tip.get(lang)})
+        if "t" in tip:
+            mm, ss = map(int, tip["t"].split(":"))
+            seconds = mm * 60 + ss
+        else:
+            seconds = previous.get("t", 0)
+        entry = {"video": v, "t": seconds, "text": tip.get("text", previous.get("text")),
+                 "lang": tip.get("lang", previous.get("lang", CONTENT_LANG)),
+                 "items": ids if "items" in tip else previous.get("items", [])}
+        if translations:
+            entry["translations"] = translations
+        d["tips"][str(h)] = [x for x in d["tips"].get(str(h), []) if x["video"] != v] + [entry]
     write_json(DATA, d, indent=1)
     print(f"{len(d['tips'])} heroes with at least one video tip.")
     if bad:
