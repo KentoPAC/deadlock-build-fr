@@ -3,7 +3,6 @@
 A [Claude Code](https://claude.com/claude-code) skill that finds the best **Deadlock** builds for a hero, explains
 how to play and counter it, and generates a French web page with build codes you can paste straight into the game.
 
-[![CI](https://github.com/KentoPAC/deadlock-build-fr/actions/workflows/ci.yml/badge.svg)](https://github.com/KentoPAC/deadlock-build-fr/actions/workflows/ci.yml)
 ![Python 3.14+](https://img.shields.io/badge/python-3.14%2B-blue)
 ![No dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
 [![License: MIT](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
@@ -104,8 +103,7 @@ tests/              unit tests (no network)
 ## Development
 
 ```sh
-python3 -I -m unittest discover -s tests -t .
-ruff check .
+./check.sh   # ruff (when installed) + unit tests
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for branch and commit conventions.
