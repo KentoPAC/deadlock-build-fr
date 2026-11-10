@@ -16,8 +16,24 @@ class I18nTest(unittest.TestCase):
         self.assertTrue(used)
         self.assertEqual(sorted(used - set(i18n.strings())), [])
 
+    def test_locales_have_the_same_keys(self):
+        fr, en = i18n.strings("fr"), i18n.strings("en")
+        self.assertEqual(sorted(set(fr) ^ set(en)), [])
+        for key, value in fr.items():
+            if isinstance(value, dict):
+                self.assertEqual(sorted(set(value) ^ set(en[key])), [], key)
+
+    def test_template_ui_keys_exist(self):
+        ui = set(i18n.strings("en")["ui"])
+        for name in ("hero.html", "hub.html"):
+            with open(os.path.join(os.path.dirname(helpers.SCRIPTS), "templates", name), encoding="utf-8") as f:
+                text = f.read()
+            used = set(re.findall(r"\{\{ui:([\w.]+)\}\}", text)) | set(re.findall(r"\bL\('([\w.]+)'", text))
+            self.assertEqual(sorted(k for k in used - ui if not k.endswith(".")), [], name)
+
     def test_t_fills_placeholders(self):
-        self.assertEqual(i18n.t("otp.note", pct=98, minute=4), "Pris dans 98 % de ses parties, vers 4 min.")
+        self.assertEqual(i18n.t("otp.note", lang="fr", pct=98, minute=4), "Pris dans 98 % de ses parties, vers 4 min.")
+        self.assertEqual(i18n.t("otp.note", lang="en", pct=98, minute=4), "Bought in 98% of their games, around 4 min.")
 
     def test_pattern_matches_its_own_template(self):
         text = i18n.t("otp.cat.mid", start=10, end=22)

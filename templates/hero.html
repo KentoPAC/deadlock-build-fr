@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="__LANG__">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -123,7 +123,12 @@ button{font:inherit;color:inherit}
 .lang__k{font:700 var(--text-xs)/1 var(--font-display);letter-spacing:.2em;text-transform:uppercase;color:var(--color-neutral);margin-right:var(--space-xs)}
 .lang button{cursor:pointer;border:1px solid var(--color-rule);background:var(--color-paper-2);color:var(--color-muted);
   padding:5px 12px;font:700 var(--text-sm)/1 var(--font-display);letter-spacing:.14em;transition:background-color var(--dur-micro) var(--ease-out)}
-.lang button+button{border-left:0}
+.lang a{cursor:pointer;border:1px solid var(--color-rule);background:var(--color-paper-2);color:var(--color-muted);text-decoration:none;
+  padding:5px 12px;font:700 var(--text-sm)/1 var(--font-display);letter-spacing:.14em}
+.lang a+a,.lang button+button{border-left:0}
+.rail__note{margin:0 0 var(--space-sm);padding:var(--space-xs) var(--space-sm);border-left:3px solid var(--color-warn);background:var(--color-paper-2);font-size:var(--text-xs);color:var(--color-muted)}
+.lang a:hover{background:var(--color-paper-3);color:var(--color-ink)}
+.lang a[aria-current=true]{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-accent-ink)}
 .lang button:hover{background:var(--color-paper-3);color:var(--color-ink)}
 .lang button[aria-pressed=true]{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-accent-ink)}
 .play__tags{display:flex;flex-wrap:wrap;gap:var(--space-2xs);margin-top:var(--space-sm)}
@@ -588,44 +593,46 @@ footer::before{content:"";display:block;height:5px;margin-bottom:var(--space-sm)
 </style>
 </head>
 <body>
-<a class="home" href="../index.html" title="Tous les héros"><span class="home__i">▦</span><span class="home__t">Tous les héros</span></a>
+<a class="home" href="../__HOME__" title="{{ui:nav.all_heroes}}"><span class="home__i">▦</span><span class="home__t">{{ui:nav.all_heroes}}</span></a>
 <header class="mast">
   <div class="mast__art" aria-hidden="true"><img id="heroBg" alt=""></div>
   <div class="mast__in">
     <figure class="mast__frame"><img class="mast__hero" id="heroImg" alt=""></figure>
-    <div><p class="mast__kicker">Builds traduits · prêts à coller</p><h1 id="title"></h1><ul class="tags" id="tags"></ul><div class="fresh" id="fresh" data-lvl="ok"></div></div>
+    <div><p class="mast__kicker">{{ui:mast.kicker}}</p><h1 id="title"></h1><ul class="tags" id="tags"></ul><div class="fresh" id="fresh" data-lvl="ok"></div></div>
   </div>
 </header>
 <div class="stack">
   <aside class="rail" aria-label="Builds">
-    <button type="button" class="pick tldr-btn" data-v="tldr"><span class="tldr-btn__k">À lire pendant le chargement</span><span class="tldr-btn__t">TLDR</span><span class="tldr-btn__s">Le build à prendre + quoi faire</span></button>
-    <details class="intro" id="introBox" open><summary class="label">Analyse</summary><p class="rail__intro" id="intro"></p></details><div class="lang" role="group" aria-label="Langue des objets"><span class="lang__k">Objets</span><button type="button" data-l="fr">FR</button><button type="button" data-l="en">EN</button></div><p class="label">Builds</p>
+    <button type="button" class="pick tldr-btn" data-v="tldr"><span class="tldr-btn__k">{{ui:tldr.kicker}}</span><span class="tldr-btn__t">TLDR</span><span class="tldr-btn__s">{{ui:tldr.sub}}</span></button>
+    <details class="intro" id="introBox" open><summary class="label">{{ui:intro.label}}</summary><p class="rail__intro" id="intro"></p></details><nav class="lang" aria-label="{{ui:lang.label}}"><span class="lang__k">{{ui:lang.label}}</span>__LANG_LINKS__</nav><p class="label">Builds</p>
     <ul class="rail__list" id="list"></ul>
   </aside>
   <main id="main"></main>
 </div>
 <footer id="foot"></footer>
 <div id="tip" class="cham" role="tooltip"></div>
+<script type="application/json" id="ui">__UI__</script>
 <script type="application/json" id="data">__DATA__</script>
 <script>
 const D=JSON.parse(document.getElementById('data').textContent),IT=D.items;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const $=id=>document.getElementById(id);
+const UI=JSON.parse($('ui').textContent),LANG=document.documentElement.lang,LOC=UI['fmt.locale'];
+const L=(k,v)=>{let s=UI[k]??k;if(v)for(const[a,b]of Object.entries(v))s=s.split('{'+a+'}').join(b);return s};
+const pc=n=>L('pct',{n});
 const PH={'#Citadel_HeroBuilds_EarlyGame':'Early game','#Citadel_HeroBuilds_MidGame':'Mid game','#Citadel_HeroBuilds_LateGame':'Late game'};
 const BUILTIN={EarlyGame:'Early game',MidGame:'Mid game',LateGame:'Late game',Early:'Early game',Mid:'Mid game',Late:'Late game',
-  Lane:'Lane',Laning:'Lane',Core:'Core',Situational:'Situationnel',Optional:'Optionnel',Flex:'Flex',Utility:'Utilitaire',Defense:'Défense',Offense:'Attaque'};
+  Lane:'Lane',Laning:'Lane',Core:'Core',Situational:L('cat.situational'),Optional:L('cat.optional'),Flex:'Flex',Utility:L('cat.utility'),Defense:L('cat.defense'),Offense:L('cat.offense')};
 const catName=n=>{if(PH[n])return PH[n];const m=/^#Citadel_HeroBuilds_(.+)$/i.exec(n||'');
-  return m?(BUILTIN[m[1]]||m[1].replace(/_/g,' ')):(n||'Sans nom')};
+  return m?(BUILTIN[m[1]]||m[1].replace(/_/g,' ')):(n||L('cat.unnamed'))};
 let NOTES=false;try{NOTES=localStorage.getItem('dl-notes')==='1'}catch(e){}
-let LANG='fr';try{LANG=localStorage.getItem('dl-lang')==='en'?'en':'fr'}catch(e){}
-const qLang=new URLSearchParams(location.search).get('lang');if(qLang==='en'||qLang==='fr')LANG=qLang;
-const T=id=>{const i=IT[id]||{};return LANG==='en'&&i.en?{...i,...i.en}:i};
+const T=id=>IT[id]||{};
 const LINKS=(D.links||[]).slice().sort((a,b)=>b.name.length-a.name.length);
 const LRE=LINKS.length?new RegExp('(?<![\\p{L}\\p{N}])('+LINKS.map(l=>esc(l.name).replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')(?![\\p{L}\\p{N}])','gu'):null;
 const LBY=Object.fromEntries(LINKS.map(l=>[esc(l.name),l]));
 function lk(t){const h=esc(t);if(!LRE)return h;return h.replace(LRE,m=>{const l=LBY[m];if(!l)return m;const i=IT[l.id]||{};
-  const shown=LANG==='en'&&i.en&&i.en.n?`<span lang="en">${esc(i.en.n)}</span>`:m;
-  return `<span class="ref ${l.key?'abil':esc(i.slot||'')}" tabindex="0" data-id="${l.id}"><img src="${esc(l.key?(i.icon||i.img):(i.img||i.icon)||'')}" alt="">${shown}${l.key?`<kbd title="Touche ${l.key}${l.key===4?' (ultime)':''}">${l.key}</kbd>`:''}</span>`})}
+  const shown=m;
+  return `<span class="ref ${l.key?'abil':esc(i.slot||'')}" tabindex="0" data-id="${l.id}"><img src="${esc(l.key?(i.icon||i.img):(i.img||i.icon)||'')}" alt="">${shown}${l.key?`<kbd title="${L('kbd.key',{n:l.key})}${l.key===4?L('kbd.ult'):''}">${l.key}</kbd>`:''}</span>`})}
 function img(id,cls){const i=IT[id]||{};return `<img class="${cls||''}" src="${esc(i.img||i.icon||'')}" data-alt="${esc(i.icon||'')}" alt="" loading="lazy" onerror="fb(this)">`}
 function fb(el){if(el.dataset.alt&&el.src!==el.dataset.alt)el.src=el.dataset.alt;else el.style.visibility='hidden'}
 
@@ -640,36 +647,37 @@ $('heroImg').src=H.portrait||H.image||'';$('heroImg').onerror=function(){if(H.im
 const bg=$('heroBg');bg.src=H.bg||'../_assets/banner.webp';if(!H.bg)bg.className='fallback';
 bg.onerror=function(){if(!this.classList.contains('fallback')){this.className='fallback';this.src='../_assets/banner.webp'}else this.remove()};
 $('tags').innerHTML=(H.tags||[]).map(t=>`<li>${esc(t)}</li>`).join('');
-document.title='Builds '+H.name;
+document.title=L('doc.title',{hero:H.name});
 $('intro').innerHTML=lk(D.intro||'');if(!D.intro)$('introBox').hidden=true;else if(matchMedia('(max-width:900px)').matches)$('introBox').open=false;
-$('foot').textContent='En jeu : builds du héros → « Coller le build ». Données deadlock-api.com.';
+$('foot').textContent=L('foot');
 
 /* ---- freshness: everything is computed against today's date, at view time ---- */
 const DAY=86400,NOW=()=>Date.now()/1000;
 let P=(D.patches||[]).slice(),LIVE='pending';
-const fmt=t=>new Date(t*1000).toLocaleDateString('fr-FR');
+const fmt=t=>new Date(t*1000).toLocaleDateString(LOC);
 function ago(t){const day=x=>{const d=new Date(x);return Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5};
   const d=Math.round(day(Date.now())-day(t*1000));
-  return d<=0?'aujourd’hui':d===1?'hier':d<45?`il y a ${d} jours`:d<540?`il y a ${Math.round(d/30)} mois`:`il y a ${Math.round(d/365)} ans`}
+  return d<=0?L('ago.today'):d===1?L('ago.yesterday'):d<45?L('ago.days',{n:d}):d<540?L('ago.months',{n:Math.round(d/30)}):L('ago.years',{n:Math.round(d/365)})}
 const after=(t,big)=>P.filter(p=>p.t>t&&p.t<=NOW()&&(big==null||p.big===big)).sort((a,b)=>a.t-b.t);
 function pageFresh(){const pa=after(D.generatedTs),age=(NOW()-D.generatedTs)/DAY;
-  if(pa.length){const l=pa[pa.length-1];return{lvl:'bad',stamp:'Patch sorti',main:`${pa.length>1?pa.length+' mises à jour sorties':'Mise à jour sortie'} depuis la récupération`,
-    sub:`« ${l.title} » le ${fmt(l.t)} · relance la recherche pour des builds à jour`}}
-  const miss=((D.completeness||{}).missing||[]);if(miss.length)return{lvl:'warn',stamp:'Ancienne analyse',main:`Données récupérées ${ago(D.generatedTs)}, analyse incomplète`,sub:`il manque : ${miss.slice(0,4).join(', ')}${miss.length>4?'…':''}`};const pend=((D.completeness||{}).pending||[]);if(pend.length)return{lvl:'warn',stamp:'Méthode changée',main:`Analyse faite avec une méthode plus ancienne (v${D.completeness.version})`,sub:`nouveau : ${pend.map(x=>x.title).join(', ')}`};
-  if(age>7)return{lvl:'warn',stamp:'À vérifier',main:`Données récupérées ${ago(D.generatedTs)}`,sub:'Pas de patch depuis, mais les tendances bougent : relance si besoin'};
-  return{lvl:'ok',stamp:'À jour',main:`Données récupérées ${ago(D.generatedTs)}`,sub:`le ${fmt(D.generatedTs)} · `+(LIVE==='ok'?'aucun patch sorti depuis (vérifié à l’instant)':LIVE==='fail'?'patchs non vérifiés (API injoignable)':'vérification des patchs…')}}
+  if(pa.length){const l=pa[pa.length-1];return{lvl:'bad',stamp:L('stamp.patch'),main:pa.length>1?L('fresh.patch_many',{n:pa.length}):L('fresh.patch_one'),
+    sub:L('fresh.patch_sub',{title:l.title,date:fmt(l.t)})}}
+  const miss=((D.completeness||{}).missing||[]);if(miss.length)return{lvl:'warn',stamp:L('stamp.outdated'),main:L('fresh.incomplete',{ago:ago(D.generatedTs)}),sub:L('fresh.missing',{list:miss.slice(0,4).join(', ')+(miss.length>4?'…':'')})};const pend=((D.completeness||{}).pending||[]);if(pend.length)return{lvl:'warn',stamp:L('stamp.method'),main:L('fresh.old_method',{v:D.completeness.version}),sub:L('fresh.new',{list:pend.map(x=>x.title).join(', ')})};
+  if(age>7)return{lvl:'warn',stamp:L('stamp.check'),main:L('fresh.fetched',{ago:ago(D.generatedTs)}),sub:L('fresh.trends')};
+  return{lvl:'ok',stamp:L('stamp.ok'),main:L('fresh.fetched',{ago:ago(D.generatedTs)}),sub:L('fresh.on',{date:fmt(D.generatedTs)})+(LIVE==='ok'?L('fresh.live_ok'):LIVE==='fail'?L('fresh.live_fail'):L('fresh.live_pending'))}}
 function buildFresh(b){
   if(b.source==='OTP'){const bigIn=P.filter(p=>p.big&&p.t>D.since&&p.t<D.generatedTs);
-    if(bigIn.length)return{lvl:'warn',v:`${Math.round((D.generatedTs-D.since)/DAY)} j`,s:`⚠ Mélange avant/après le gros patch du ${fmt(bigIn[0].t)}`};
-    return{lvl:'ok',v:`${Math.round((D.generatedTs-D.since)/DAY)} j`,s:`Parties depuis le ${fmt(D.since)}`}}
-  if(!b.updated)return{lvl:'',v:'—',s:'date inconnue'};
+    if(bigIn.length)return{lvl:'warn',v:L('days.short',{n:Math.round((D.generatedTs-D.since)/DAY)}),s:L('bf.mixed',{date:fmt(bigIn[0].t)})};
+    return{lvl:'ok',v:L('days.short',{n:Math.round((D.generatedTs-D.since)/DAY)}),s:L('bf.since',{date:fmt(D.since)})}}
+  if(!b.updated)return{lvl:'',v:'—',s:L('bf.unknown')};
   const big=after(b.updated,true),minor=after(b.updated,false);
-  if(big.length>=2)return{lvl:'bad',v:ago(b.updated),s:`⛔ Antérieur à ${big.length} gros patchs (dernier le ${fmt(big[big.length-1].t)})`};
-  if(big.length)return{lvl:'warn',v:ago(b.updated),s:`⚠ Antérieur au gros patch du ${fmt(big[0].t)}`};
-  if(minor.length)return{lvl:'ok',v:ago(b.updated),s:`${minor.length} petite${minor.length>1?'s':''} mise${minor.length>1?'s':''} à jour depuis`};
-  return{lvl:'ok',v:ago(b.updated),s:'Après la dernière mise à jour'}}
+  if(big.length>=2)return{lvl:'bad',v:ago(b.updated),s:L('bf.many_big',{n:big.length,date:fmt(big[big.length-1].t)})};
+  if(big.length)return{lvl:'warn',v:ago(b.updated),s:L('bf.one_big',{date:fmt(big[0].t)})};
+  if(minor.length)return{lvl:'ok',v:ago(b.updated),s:minor.length>1?L('bf.minor_many',{n:minor.length}):L('bf.minor_one')};
+  return{lvl:'ok',v:ago(b.updated),s:L('bf.latest')}}
 const wrTone=w=>w==null?'none':w>=55?'good':w<50?'bad':'mid';
-const flag=f=>f.lvl==='bad'?'<i class="flag flag--bad" title="Build dépassé">⛔</i>':f.lvl==='warn'?'<i class="flag flag--warn" title="À vérifier">⚠</i>':'';
+const flag=f=>f.lvl==='bad'?`<i class="flag flag--bad" title="${L('flag.bad')}">⛔</i>`:f.lvl==='warn'?`<i class="flag flag--warn" title="${L('flag.warn')}">⚠</i>`:'';
+const srcName=s=>L('src.'+s);
 function renderFresh(){const f=pageFresh(),el=$('fresh');el.dataset.lvl=f.lvl;
   el.innerHTML=`<span class="stamp">${esc(f.stamp)}</span><span class="fresh__txt"><b>${esc(f.main)}</b><br>${esc(f.sub)}</span>`}
 
@@ -678,15 +686,15 @@ const HASPLAN=!!(D.plan||D.baseline||(D.guides&&D.guides.guides&&D.guides.guides
 const HASVS=!!((D.plan||{}).vs||(D.plan||{}).weaknesses||D.matchups||(D.videoTips||[]).length);
 const views=['tldr'].concat(D.builds.map(b=>b.key),HASPLAN?['plan']:[],HASVS?['vs']:[],D.builds.length>1?['compare']:[]);
 function renderRail(){$('list').innerHTML=D.builds.map(b=>{const f=buildFresh(b),t=wrTone(b.winrate);
-  const sub=[b.rank?rankImg(b,'rank--sm')+esc(b.rank):'',b.winrate!=null?`<span class="wr-${t}">${b.winrate} % V</span>`:b.favorites?`${b.favorites} fav.`:''].filter(Boolean).join(' · ');
+  const sub=[b.rank?rankImg(b,'rank--sm')+esc(b.rank):'',b.winrate!=null?`<span class="wr-${t}">${L('wr.short',{n:b.winrate})}</span>`:b.favorites?L('fav.short',{n:b.favorites}):''].filter(Boolean).join(' · ');
   return `<li><button class="pick cham" data-v="${esc(b.key)}">
-  <span class="pick__src">${esc(b.source)}${flag(f)}</span><span class="pick__who">${esc(b.author)}</span>
+  <span class="pick__src">${esc(srcName(b.source))}${flag(f)}</span><span class="pick__who">${esc(b.author)}</span>
   <span class="pick__sub">${sub}</span></button></li>`}).join('')
- +(HASPLAN?`<li><button class="pick pick--compare cham" data-v="plan"><span class="pick__src">Stats + commu</span>
-  <span class="pick__who">Comment le jouer</span><span class="pick__sub">Early, mid, late · farm, fights, push</span></button></li>`:'')
- +(HASVS?`<li><button class="pick pick--compare cham" data-v="vs"><span class="pick__src">Tu l’affrontes ?</span><span class="pick__who">Le contrer</span><span class="pick__sub">Faiblesses, contres et objets à prendre</span></button></li>`:'')
- +(D.builds.length>1?`<li><button class="pick pick--compare cham" data-v="compare"><span class="pick__src">Vue d’ensemble</span>
-  <span class="pick__who">Comparer les builds</span><span class="pick__sub">Objets en commun, différences</span></button></li>`:'');}
+ +(HASPLAN?`<li><button class="pick pick--compare cham" data-v="plan"><span class="pick__src">${L('rail.plan_src')}</span>
+  <span class="pick__who">${L('rail.plan')}</span><span class="pick__sub">${L('rail.plan_sub')}</span></button></li>`:'')
+ +(HASVS?`<li><button class="pick pick--compare cham" data-v="vs"><span class="pick__src">${L('rail.vs_src')}</span><span class="pick__who">${L('rail.vs')}</span><span class="pick__sub">${L('rail.vs_sub')}</span></button></li>`:'')
+ +(D.builds.length>1?`<li><button class="pick pick--compare cham" data-v="compare"><span class="pick__src">${L('rail.cmp_src')}</span>
+  <span class="pick__who">${L('rail.cmp')}</span><span class="pick__sub">${L('rail.cmp_sub')}</span></button></li>`:'');}
 
 /* ---- build panel ---- */
 const ROMAN=['','I','II','III','IV','V'];
@@ -695,8 +703,8 @@ function gcard(id){const i=T(id);
   ${i.imb?'<i class="gcard__imbue">IMBUE</i>':''}<div class="gcard__name">${esc(i.n||id)}</div></div>`}
 function modCard(m,num){const i=T(m.id);
   let chips='';
-  if(m.pct!=null)chips=`<div class="mod__chips"><span class="chip chip--hi num">${m.pct} %</span><span class="chip num">${m.min} min</span>`
-    +(m.sold!=null?`<span class="chip" title="Revendu vers ${m.sold} min">revendu ${m.sold}</span>`:'')+'</div>';
+  if(m.pct!=null)chips=`<div class="mod__chips"><span class="chip chip--hi num">${pc(m.pct)}</span><span class="chip num">${m.min} min</span>`
+    +(m.sold!=null?`<span class="chip" title="${L('mod.sold_title',{n:m.sold})}">${L('mod.sold',{n:m.sold})}</span>`:'')+'</div>';
   return `<div class="mod ${esc(i.slot||'')}" tabindex="0" data-id="${m.id}"${m.note?` data-note="${esc(m.note)}"`:''}>${num?`<span class="nmark">${num}</span>`:''}${gcard(m.id)}${chips}</div>`}
 
 function abilityGrid(order){if(!order.length)return'';
@@ -704,8 +712,8 @@ function abilityGrid(order){if(!order.length)return'';
   const head='<tr><th></th>'+order.map((_,k)=>`<th class="num">${k+1}</th>`).join('')+'</tr>';
   const cells={};order.forEach((o,k)=>{lvl[o.id]=(lvl[o.id]??-1)+1;cells[o.id+':'+k]=lvl[o.id]});
   const rows=ids.map(id=>`<tr><th><div tabindex="0" data-id="${id}">${img(id)}${esc(T(id).n||id)}${IT[id]&&IT[id].key?`<kbd>${IT[id].key}</kbd>`:''}</div></th>`
-    +order.map((_,k)=>{const v=cells[id+':'+k];return v==null?'<td></td>':v===0?'<td class="u" title="Débloquer">◇</td>':`<td class="p num" title="Amélioration ${v}">${v}</td>`}).join('')+'</tr>').join('');
-  return `<section class="phase"><h3>Ordre des compétences</h3><p class="phase__desc">◇ = débloquer, chiffre = palier d’amélioration. Survole une compétence pour son détail.</p>
+    +order.map((_,k)=>{const v=cells[id+':'+k];return v==null?'<td></td>':v===0?`<td class="u" title="${L('grid.unlock')}">◇</td>`:`<td class="p num" title="${L('grid.upgrade',{n:v})}">${v}</td>`}).join('')+'</tr>').join('');
+  return `<section class="phase"><h3>${L('grid.title')}</h3><p class="phase__desc">${L('grid.desc')}</p>
   <div class="grid-wrap"><table class="abil"><thead>${head}</thead><tbody>${rows}</tbody></table></div></section>`}
 
 const cap=t=>t?t.charAt(0).toUpperCase()+t.slice(1):t;
@@ -713,196 +721,190 @@ function takeBlock(b){if(!b.resume&&!(b.points||[]).length)return'';
   const rows=(b.points||[]).map(p=>{const m=p.match(/^([^:]{1,26}?)\s*:\s*(.+)$/s);
     const lab=m&&!/[.,;!?]/.test(m[1])?m[1].trim():'',txt=lab?m[2]:p;
     return `<li><span class="lbl${lab?'':' lbl--none'}" title="${esc(lab)}">${esc(lab)}</span><p>${lk(cap(txt.trim()))}</p></li>`}).join('');
-  return `<div class="take cham"><span class="take__k">L’analyse</span>${b.resume?`<p class="take__lead">${lk(b.resume)}</p>`:''}${rows?`<ul class="take__pts">${rows}</ul>`:''}</div>`}
+  return `<div class="take cham"><span class="take__k">${L('take.label')}</span>${b.resume?`<p class="take__lead">${lk(b.resume)}</p>`:''}${rows?`<ul class="take__pts">${rows}</ul>`:''}</div>`}
 
 const rankImg=(b,cls)=>b.rankImg?`<img class="rank ${cls}" src="${esc(b.rankImg)}" alt="" loading="lazy" onerror="this.remove()">`:'';
-const SRC=[['lane','Lane'],['jungle','Jungle'],['fights','Fights (kills, assists)'],['obj','Objectifs']];
+const SRC=['lane','jungle','fights','obj'].map(k=>[k,L('srcbar.'+k)]);
 const bar=(src,cls)=>`<div class="bar ${cls||''}">${SRC.map(([k])=>`<span class="${k}" style="width:${src[k]||0}%" title="${k} ${src[k]||0} %"></span>`).join('')}</div>`;
 function delta(v,b,inv){if(b==null||!b)return'';const r=v/b;if(Math.abs(r-1)<.1)return'';
   const good=inv?r<1:r>1;return ` <span class="${good?'up':'down'}">${r>1?'▲':'▼'}${Math.round(Math.abs(r-1)*100)} %</span>`}
 function playRows(p){const B=(D.baseline||{}).phases||[];
   return p.phases.map((ph,i)=>{const b=B[i]||{};return `<div class="prow"><div class="prow__ph">${esc(ph.name)}<small>${ph.from}–${ph.to} min</small></div>
   <div>${bar(ph.src)}${b.src?bar(b.src,'bar--base'):''}</div>
-  <div class="prow__nums"><b class="num">${ph.spm}</b> âmes/min${delta(ph.spm,b.spm)} · jungle <b class="num">${ph.src.jungle} %</b>${b.src?` (moy. ${b.src.jungle} %)`:''}<br>
-  K/D/A <b class="num">${ph.kpm}/${ph.dpm}/${ph.apm}</b> par 10 min · morts${delta(ph.dpm,b.dpm,true)||' ='} · assists${delta(ph.apm,b.apm)||' ='}<br>
-  dégâts aux héros <b class="num">${ph.hero_dmg}</b>/min${delta(ph.hero_dmg,b.hero_dmg)} · objectifs <b class="num">${ph.obj_dmg}</b>/min${delta(ph.obj_dmg,b.obj_dmg)}</div></div>`}).join('')}
-const legendSrc=base=>`<div class="legend-src">${SRC.map(([k,l])=>`<span><i class="bar ${k}" style="background:var(--src-${k})"></i>${l}</span>`).join('')}${base?`<span>barre fine = moyenne Fantôme+ sur ${esc(D.hero.name)}</span>`:''}</div>`;
+  <div class="prow__nums"><b class="num">${ph.spm}</b> ${L('play.spm')}${delta(ph.spm,b.spm)} · ${L('play.jungle')} <b class="num">${pc(ph.src.jungle)}</b>${b.src?` (${L('play.avg',{x:pc(b.src.jungle)})})`:''}<br>
+  K/D/A <b class="num">${ph.kpm}/${ph.dpm}/${ph.apm}</b> ${L('play.per10')} · ${L('play.deaths')}${delta(ph.dpm,b.dpm,true)||' ='} · ${L('play.assists')}${delta(ph.apm,b.apm)||' ='}<br>
+  ${L('play.hero_dmg')} <b class="num">${ph.hero_dmg}</b>/min${delta(ph.hero_dmg,b.hero_dmg)} · ${L('play.obj')} <b class="num">${ph.obj_dmg}</b>/min${delta(ph.obj_dmg,b.obj_dmg)}</div></div>`}).join('')}
+const legendSrc=base=>`<div class="legend-src">${SRC.map(([k,l])=>`<span><i class="bar ${k}" style="background:var(--src-${k})"></i>${l}</span>`).join('')}${base?`<span>${L('play.legend_base',{hero:esc(D.hero.name)})}</span>`:''}</div>`;
+const tag=t=>(UI.style_tags||{})[t]||t;
 function playSection(b){if(!b.play)return'';
-  return `<section class="phase"><h3>Son style de jeu</h3><p class="phase__desc">Mesuré sur ses parties de ${esc(D.hero.name)} depuis le ${fmt(D.since)} : d’où viennent ses âmes, ses combats, sa pression sur les objectifs, comparés à la moyenne des joueurs Fantôme+.</p>
-  <div class="play__tags">${(b.play.tags.length?b.play.tags:['Style proche de la moyenne']).map(t=>`<span class="ptag${b.play.tags.length?'':' ptag--none'}">${esc(t)}</span>`).join('')}</div>
+  return `<section class="phase"><h3>${L('play.title')}</h3><p class="phase__desc">${L('play.desc',{hero:esc(D.hero.name),date:fmt(D.since)})}</p>
+  <div class="play__tags">${(b.play.tags.length?b.play.tags.map(tag):[L('play.close')]).map(t=>`<span class="ptag${b.play.tags.length?'':' ptag--none'}">${esc(t)}</span>`).join('')}</div>
   ${playRows(b.play)}${legendSrc(true)}</section>`}
 function planPanel(){const P_=D.plan||{},G=(D.guides&&D.guides.guides)||[],measured=D.builds.filter(b=>b.play);
   const phases=[['early','Early'],['mid','Mid'],['late','Late']].filter(([k])=>P_[k]);
-  const table=measured.length?`<div class="cmp-wrap"><table class="cmp ptable"><thead><tr><th>Joueur</th><th>Style mesuré</th><th>Early</th><th>Mid</th><th>Late</th></tr></thead><tbody>
-    ${measured.map(b=>`<tr><th>${esc(b.author)}<small style="display:block;color:var(--color-neutral)">${esc(b.rank||'')}</small></th><td>${esc(b.play.tags.join(', ')||'proche de la moyenne')}</td>
-    ${b.play.phases.map((ph,i)=>`<td style="min-width:150px">${bar(ph.src)}<span class="num" style="font-size:var(--text-xs);color:var(--color-muted)">${ph.spm} âmes/min · K/D/A ${ph.kpm}/${ph.dpm}/${ph.apm}<br>dégâts héros ${ph.hero_dmg}/min${(()=>{const B=((D.baseline||{}).phases||[])[i]||{};return delta(ph.hero_dmg,B.hero_dmg)})()}</span></td>`).join('')}</tr>`).join('')}
+  const table=measured.length?`<div class="cmp-wrap"><table class="cmp ptable"><thead><tr><th>${L('plan.player')}</th><th>${L('plan.measured_style')}</th><th>Early</th><th>Mid</th><th>Late</th></tr></thead><tbody>
+    ${measured.map(b=>`<tr><th>${esc(b.author)}<small style="display:block;color:var(--color-neutral)">${esc(b.rank||'')}</small></th><td>${esc(b.play.tags.map(tag).join(', ')||L('play.close_lc'))}</td>
+    ${b.play.phases.map((ph,i)=>`<td style="min-width:150px">${bar(ph.src)}<span class="num" style="font-size:var(--text-xs);color:var(--color-muted)">${ph.spm} ${L('play.spm')} · K/D/A ${ph.kpm}/${ph.dpm}/${ph.apm}<br>${L('play.hero_dmg_short')} ${ph.hero_dmg}/min${(()=>{const B=((D.baseline||{}).phases||[])[i]||{};return delta(ph.hero_dmg,B.hero_dmg)})()}</span></td>`).join('')}</tr>`).join('')}
     </tbody></table></div>${legendSrc()}`:'';
-  const srcs=G.map(g=>`<li><b>${esc(g.title)}</b> — ${g.kind==='steam'?`guide Steam · <a href="${esc(g.url)}" target="_blank" rel="noopener">lire</a>`:`build de ${esc(g.author||'?')} (${esc(g.rank||'')}${g.favorites?`, ${g.favorites} fav.`:''})${g.build_id?` · build <span class="num">${g.build_id}</span>`:''}`} · ${fmt(g.updated)}</li>`).join('');
-  return `<article class="panel"><p class="panel__src">Stats mesurées + conseils de la commu</p><h2>Comment jouer ${esc(D.hero.name)}</h2>
-   <p class="facts">Synthèse croisant le style mesuré des meilleurs joueurs et les explications de la communauté publiées depuis le dernier gros patch.</p>
+  const srcs=G.map(g=>`<li><b>${esc(g.title)}</b> — ${g.kind==='steam'?`${L('plan.steam')} · <a href="${esc(g.url)}" target="_blank" rel="noopener">${L('plan.read')}</a>`:`${L('plan.build_by',{author:esc(g.author||'?')})} (${esc(g.rank||'')}${g.favorites?`, ${g.favorites} fav.`:''})${g.build_id?` · build <span class="num">${g.build_id}</span>`:''}`} · ${fmt(g.updated)}</li>`).join('');
+  return `<article class="panel"><p class="panel__src">${L('plan.kicker')}</p><h2>${L('plan.title',{hero:esc(D.hero.name)})}</h2>
+   <p class="facts">${L('plan.desc')}</p>
    ${phases.length?`<div class="plan">${phases.map(([k,l])=>`<div class="plan__ph cham"><h3>${l}</h3><p>${lk(P_[k])}</p></div>`).join('')}</div>`:''}
    ${(P_.tips||[]).length?`<ul class="tips">${P_.tips.map(t=>`<li>${lk(t)}</li>`).join('')}</ul>`:''}
-   ${(D.roles||P_.role)?`<section class="phase"><h3>Rôle</h3>${roleBlock(true)}</section>`:''}
-   ${swBlock(true)?`<section class="phase"><h3>Forces et faiblesses</h3>${swBlock(true)}</section>`:''}
-   ${D.counterplay?`<section class="phase"><h3>Counterplay en fin de partie</h3><p class="phase__desc">Adapte tes derniers achats à la compo adverse.</p>${counterplay(false)}</section>`:''}
-   ${K().abilities.length?`<section class="phase"><h3>Les compétences</h3><p class="phase__desc">Description du jeu, paliers T1 / T2 / T3, et laquelle les meilleurs montent en premier.</p>${abilityCards(true)}</section>`:''}
-   ${K().spikes.length?`<section class="phase"><h3>Pics de puissance</h3><p class="phase__desc">Objets clés de ${esc(K().ref||'')} à leur minute d’achat réelle, et ses compétences placées sur les seuils d’âmes du jeu selon son ordre de compétences et son rythme de farm réel.</p>${spikesTable()}</section>`:''}
-   ${table?`<section class="phase"><h3>Ce que font les meilleurs joueurs</h3>${table}</section>`:''}
-   <section class="phase"><h3>Sources</h3><ul class="srcs">${srcs||'<li>Aucun guide communautaire récent assez détaillé : synthèse basée sur les stats et les notes des builds.</li>'}
-   ${measured.map(b=>`<li><b>Stats de ${esc(b.author)}</b> — parties depuis le ${fmt(D.since)} (deadlock-api)</li>`).join('')}</ul></section></article>`}
+   ${(D.roles||P_.role)?`<section class="phase"><h3>${L('sec.role')}</h3>${roleBlock(true)}</section>`:''}
+   ${swBlock(true)?`<section class="phase"><h3>${L('sec.sw')}</h3>${swBlock(true)}</section>`:''}
+   ${D.counterplay?`<section class="phase"><h3>${L('sec.counterplay')}</h3><p class="phase__desc">${L('sec.counterplay_desc')}</p>${counterplay(false)}</section>`:''}
+   ${K().abilities.length?`<section class="phase"><h3>${L('sec.abilities')}</h3><p class="phase__desc">${L('sec.abilities_desc')}</p>${abilityCards(true)}</section>`:''}
+   ${K().spikes.length?`<section class="phase"><h3>${L('sec.spikes')}</h3><p class="phase__desc">${L('sec.spikes_desc',{ref:esc(K().ref||'')})}</p>${spikesTable()}</section>`:''}
+   ${table?`<section class="phase"><h3>${L('sec.best')}</h3>${table}</section>`:''}
+   <section class="phase"><h3>${L('sec.sources')}</h3><ul class="srcs">${srcs||`<li>${L('plan.no_guide')}</li>`}
+   ${measured.map(b=>`<li><b>${L('plan.stats_of',{author:esc(b.author)})}</b> — ${L('plan.games_since',{date:fmt(D.since)})}</li>`).join('')}</ul></section></article>`}
 function pickBuild(){const t=D.tldr||{};return D.builds.find(b=>b.key===t.pick)||D.builds.find(b=>b.code&&b.source==='OTP')||D.builds.find(b=>b.code)||D.builds[0]}
 const K=()=>D.kit||{abilities:[],spikes:[],core:[]};
 function spikeGroups(){const g=[];for(const s of K().spikes){const last=g[g.length-1];if(last&&last.souls===s.souls)last.items.push(s);else g.push({souls:s.souls,min:s.min,items:[s]})}return g}
-const tierLbl=s=>s.kind==='item'?(LANG==='en'?'item':'objet'):s.tier?`T${s.tier}`:(LANG==='en'?'unlock':'débloquée');
+const tierLbl=s=>s.kind==='item'?L('tier.item'):s.tier?`T${s.tier}`:L('tier.unlock');
 const kOf=id=>(IT[id]||{}).key;
-function spikesCompact(){const S=K().spikes,big=S.filter(s=>s.kind==='item'||s.tier===3);return `<div class="spk">${(big.length?big:S).slice(0,10).map(s=>`<span class="spk__i" tabindex="0" data-id="${s.id}">${img(s.id)}<span>${esc(T(s.id).n)}${kOf(s.id)?` <kbd>${kOf(s.id)}</kbd>`:''} <span class="t">${tierLbl(s)}</span><br><small>${(s.souls/1000).toLocaleString('fr-FR')}k âmes${s.min!=null?` · ≈ ${Math.round(s.min)} min`:''}</small></span></span>`).join('')}</div>`}
-function spikesTable(){const S=K().spikes,en=LANG==='en',byMin=S.every(s=>s.min!=null);
+function spikesCompact(){const S=K().spikes,big=S.filter(s=>s.kind==='item'||s.tier===3);return `<div class="spk">${(big.length?big:S).slice(0,10).map(s=>`<span class="spk__i" tabindex="0" data-id="${s.id}">${img(s.id)}<span>${esc(T(s.id).n)}${kOf(s.id)?` <kbd>${kOf(s.id)}</kbd>`:''} <span class="t">${tierLbl(s)}</span><br><small>${(s.souls/1000).toLocaleString(LOC)}${L('k_souls')}${s.min!=null?` · ≈ ${Math.round(s.min)} min`:''}</small></span></span>`).join('')}</div>`}
+function spikesTable(){const S=K().spikes,byMin=S.every(s=>s.min!=null);
   const x=s=>byMin?s.min:s.souls/1000,unit=byMin?' min':'k',top=Math.max(5,Math.ceil(Math.max(...S.map(x))/5)*5),step=top<=20?5:10;
   const pct=v=>(Math.min(v,top)/top*100).toFixed(2)+'%',when=s=>`≈ ${Math.round(x(s))}${unit}`;
-  const lvl=s=>s.kind==='item'?(en?`Key item · ${s.pct}% of games`:`Objet clé · ${s.pct} % des parties`):s.tier===0?(en?'New ability':'Nouvelle compétence'):s.tier===3?'Max':(en?`Tier ${s.tier}`:`Palier ${s.tier}`);
+  const lvl=s=>s.kind==='item'?L('spk.item',{pct:s.pct}):s.tier===0?L('spk.new'):s.tier===3?'Max':L('spk.tier',{n:s.tier});
   const ticks=[];for(let v=0;v<=top;v+=step)ticks.push(v);
   const guides=ticks.slice(1,-1).map(v=>`<i class="spl__g" style="--x:${pct(v)}"></i>`).join('');
   const lanes=K().abilities.map(a=>{const ev=S.filter(s=>s.id===a.id);if(!ev.length)return '';
     return `<div class="spl__r"><span class="spl__k" tabindex="0" data-id="${a.id}">${img(a.id)}<kbd>${a.key}</kbd></span><div class="spl__tr">${guides}<i class="spl__bar" style="--x:${pct(x(ev[0]))}"></i>${ev.map(s=>`<i class="spl__m t${s.tier}" style="--x:${pct(x(s))}" title="${esc(T(s.id).n)} · ${lvl(s)} · ${when(s)}">${s.tier||''}</i>`).join('')}</div></div>`}).join('')
-    +(()=>{const it=S.filter(s=>s.kind==='item');return it.length?`<div class="spl__r"><span class="spl__k spl__k--it">${en?'Items':'Objets'}</span><div class="spl__tr">${guides}${it.map(s=>`<i class="spl__m it" style="--x:${pct(x(s))}" title="${esc(T(s.id).n)} · ${lvl(s)} · ${when(s)}">${img(s.id)}</i>`).join('')}</div></div>`:''})();
+    +(()=>{const it=S.filter(s=>s.kind==='item');return it.length?`<div class="spl__r"><span class="spl__k spl__k--it">${L('spk.items')}</span><div class="spl__tr">${guides}${it.map(s=>`<i class="spl__m it" style="--x:${pct(x(s))}" title="${esc(T(s.id).n)} · ${lvl(s)} · ${when(s)}">${img(s.id)}</i>`).join('')}</div></div>`:''})();
   const overview=`<div class="spl" aria-hidden="true">${lanes}<div class="spl__r spl__ax"><span></span><div class="spl__tr">${ticks.map(v=>`<span style="--x:${pct(v)}">${v}${v===top?unit:''}</span>`).join('')}</div></div>
-    <p class="spl__lg"><span><i class="spl__m t0"></i>${en?'unlock':'déblocage'}</span><span><i class="spl__m t1">1</i><i class="spl__m t2">2</i>${en?'tiers':'paliers'}</span><span><i class="spl__m t3">3</i>${en?'maxed':'au max'}</span>${S.some(s=>s.kind==='item')?`<span><i class="spl__m it"></i>${en?'key item (real purchase minute)':'objet clé (minute d’achat réelle)'}</span>`:''}</p></div>`;
-  const PH=[[10,'Early game',en?'0 to 10 min':'0 à 10 min'],[20,'Mid game',en?'10 to 20 min':'10 à 20 min'],[1e9,'Late game',en?'after 20 min':'après 20 min']];
+    <p class="spl__lg"><span><i class="spl__m t0"></i>${L('spk.lg_unlock')}</span><span><i class="spl__m t1">1</i><i class="spl__m t2">2</i>${L('spk.lg_tiers')}</span><span><i class="spl__m t3">3</i>${L('spk.lg_max')}</span>${S.some(s=>s.kind==='item')?`<span><i class="spl__m it"></i>${L('spk.lg_item')}</span>`:''}</p></div>`;
+  const PH=[[10,'Early game',L('spk.ph_early')],[20,'Mid game',L('spk.ph_mid')],[1e9,'Late game',L('spk.ph_late')]];
   let ph=-1;const rows=spikeGroups().map(g=>{let head='';
     if(byMin){const i=PH.findIndex(p=>g.min<p[0]);if(i!==ph){ph=i;head=`<li class="spt__ph">${PH[i][1]} <small>${PH[i][2]}</small></li>`}}
-    const ev=g.items.map(s=>{if(s.kind==='item')return `<div class="spt__e it">${img(s.id)}<div><div class="spt__h"><span class="ref ${esc(T(s.id).slot||'')}" tabindex="0" data-id="${s.id}">${esc(T(s.id).n)}</span><span class="spt__lv">${lvl(s)}</span></div><ul class="spt__fx"><li>${s.cost.toLocaleString('fr-FR')} ${en?'souls':'âmes'}</li></ul></div></div>`;const fx=((en&&s.text_en)?s.text_en:s.text||'').split(' · ').filter(Boolean);
+    const ev=g.items.map(s=>{if(s.kind==='item')return `<div class="spt__e it">${img(s.id)}<div><div class="spt__h"><span class="ref ${esc(T(s.id).slot||'')}" tabindex="0" data-id="${s.id}">${esc(T(s.id).n)}</span><span class="spt__lv">${lvl(s)}</span></div><ul class="spt__fx"><li>${s.cost.toLocaleString(LOC)} ${L('souls')}</li></ul></div></div>`;const fx=(s.text||'').split(' · ').filter(Boolean);
       return `<div class="spt__e t${s.tier}">${img(s.id)}<div><div class="spt__h"><span class="ref abil" tabindex="0" data-id="${s.id}">${esc(T(s.id).n)}${kOf(s.id)?`<kbd>${kOf(s.id)}</kbd>`:''}</span>
       ${s.tier?`<span class="pips" aria-hidden="true">${[1,2,3].map(k=>`<i class="${k<=s.tier?'on':''}"></i>`).join('')}</span>`:''}<span class="spt__lv">${lvl(s)}</span></div>
       ${fx.length?`<ul class="spt__fx">${fx.map(f=>`<li>${esc(f)}</li>`).join('')}</ul>`:''}</div></div>`}).join('');
-    return `${head}<li class="spt__n${g.items.some(s=>s.tier===3)?' is-max':''}"><div class="spt__t">${g.min!=null?`<b>${Math.round(g.min)} min</b>`:''}<small><span class="lg">${g.souls.toLocaleString('fr-FR')}</span><span class="sh">${(g.souls/1000).toLocaleString('fr-FR',{maximumFractionDigits:1})}k</span> ${en?'souls':'âmes'}</small></div><div class="spt__c">${ev}</div></li>`}).join('');
+    return `${head}<li class="spt__n${g.items.some(s=>s.tier===3)?' is-max':''}"><div class="spt__t">${g.min!=null?`<b>${Math.round(g.min)} min</b>`:''}<small><span class="lg">${g.souls.toLocaleString(LOC)}</span><span class="sh">${(g.souls/1000).toLocaleString(LOC,{maximumFractionDigits:1})}k</span> ${L('souls')}</small></div><div class="spt__c">${ev}</div></li>`}).join('');
   return `${overview}<ol class="spt">${rows}</ol>`}
 function abilityCards(full){const P_=(D.plan||{}).abilities||{},fm=K().firstMax;
   return `<div class="abl">${K().abilities.map(a=>`<div class="abl__c cham" tabindex="0" data-id="${a.id}"><div class="abl__h">${img(a.id)}<b>${esc(T(a.id).n)}</b><kbd>${a.key}</kbd></div>
-  ${a.id===fm?`<span class="abl__first">${LANG==='en'?'Max first':'À monter en premier'}</span>`:''}
+  ${a.id===fm?`<span class="abl__first">${L('abl.first')}</span>`:''}
   ${P_[a.key]?`<p class="how">${lk(P_[a.key])}</p>`:''}
-  ${full?(()=>{const t=T(a.id),st=(t.secs||[]).flatMap(s=>s.imp.concat(s.basic));return `<p>${esc(LANG==='en'&&a.desc_en?a.desc_en:a.desc)}</p>${(t.cd||st.length)?`<div class="tab__basic">${t.cd?`<span>⟳ <b>${t.cd}s</b></span>`:''}${st.map(p=>`<span><b>${p.v}</b> ${esc(p.label)}${p.scale?` <span style="color:var(--color-spirit)">✦×${p.scale}</span>`:''}</span>`).join('')}</div>`:''}<ol>${(LANG==='en'&&a.tiers_en.length?a.tiers_en:a.tiers).map((x,k)=>`<li><b style="color:var(--color-accent)">${[1,2,5][k]} pt${k?'s':''}</b> · ${esc(x)||'—'}</li>`).join('')}</ol>`})():''}</div>`).join('')}</div>`}
+  ${full?(()=>{const t=T(a.id),st=(t.secs||[]).flatMap(s=>s.imp.concat(s.basic));return `<p>${esc(a.desc)}</p>${(t.cd||st.length)?`<div class="tab__basic">${t.cd?`<span>⟳ <b>${t.cd}s</b></span>`:''}${st.map(p=>`<span><b>${p.v}</b> ${esc(p.label)}${p.scale?` <span style="color:var(--color-spirit)">✦×${p.scale}</span>`:''}</span>`).join('')}</div>`:''}<ol>${a.tiers.map((x,k)=>`<li><b style="color:var(--color-accent)">${[1,2,5][k]} pt${k?'s':''}</b> · ${esc(x)||'—'}</li>`).join('')}</ol>`})():''}</div>`).join('')}</div>`}
 function tldrPanel(){const t=D.tldr||{},P_=D.plan||{},b=pickBuild(),f=buildFresh(b),k=K();
-  const btn=b.code?`<button class="copy cham" data-code="${esc(b.code)}">Copier le build</button>`:`<button class="copy cham" disabled>À traduire</button>`;
+  const btn=b.code?`<button class="copy cham" data-code="${esc(b.code)}">${L('copy.label')}</button>`:`<button class="copy cham" disabled>${L('copy.todo')}</button>`;
   const ph=[['early','Early'],['mid','Mid'],['late','Late']].map(([x,l])=>[l,t[x]||P_[x]]).filter(x=>x[1]);
   const keys=t.keys||(P_.tips||[]).slice(0,3);
-  const C=D.completeness||{},PD=C.pending||[];const inc=((C.missing||[]).length||PD.length)?`<div class="incomplete"><p><b>Analyse à mettre à jour</b> — ${PD.length?`la méthode a changé depuis cette page (v${C.version} → v${C.current}). Ce qui est nouveau :`:'cette page a été faite avant les dernières améliorations.'}</p>
-    ${PD.length?`<ul>${PD.map(x=>`<li><b>v${x.version} · ${esc(x.title)}</b> (${new Date(x.date).toLocaleDateString('fr-FR')})</li>`).join('')}</ul>`:''}
-    ${(C.missing||[]).length?`<p>Il manque : ${esc(C.missing.join(', '))}.</p>`:''}<button type="button" data-askc="${esc(C.ask||'')}">Copier la demande pour Claude</button></div>`:'';
+  const C=D.completeness||{},PD=C.pending||[];const inc=((C.missing||[]).length||PD.length)?`<div class="incomplete"><p><b>${L('inc.title')}</b> — ${PD.length?L('inc.method',{a:C.version,b:C.current}):L('inc.older')}</p>
+    ${PD.length?`<ul>${PD.map(x=>`<li><b>v${x.version} · ${esc(x.title)}</b> (${new Date(x.date).toLocaleDateString(LOC)})</li>`).join('')}</ul>`:''}
+    ${(C.missing||[]).length?`<p>${L('inc.missing',{list:esc(C.missing.join(', '))})}</p>`:''}<button type="button" data-askc="${esc(C.ask||'')}">${L('inc.ask')}</button></div>`:'';
   return `<article class="panel">${inc}
-  <div class="tl-hero cham"><div><span class="tl-k">Le build à prendre</span><div class="tl-name">${esc(b.name)}</div>
-    <div class="tl-meta">${b.rankImg?`<img class="rank rank--sm" src="${esc(b.rankImg)}" alt="">`:''}<b style="color:var(--color-ink)">${esc(b.author)}</b>${b.rank?` · ${esc(b.rank)}`:''}${b.winrate!=null?` · <span class="wr-${wrTone(b.winrate)}">${b.winrate} % de victoires</span>`:''} · ${esc(b.source)}${flag(f)}</div>
+  <div class="tl-hero cham"><div><span class="tl-k">${L('tl.take')}</span><div class="tl-name">${esc(b.name)}</div>
+    <div class="tl-meta">${b.rankImg?`<img class="rank rank--sm" src="${esc(b.rankImg)}" alt="">`:''}<b style="color:var(--color-ink)">${esc(b.author)}</b>${b.rank?` · ${esc(b.rank)}`:''}${b.winrate!=null?` · <span class="wr-${wrTone(b.winrate)}">${L('wr.long',{n:b.winrate})}</span>`:''} · ${esc(srcName(b.source))}${flag(f)}</div>
     ${t.why?`<p class="tl-why">${lk(t.why)}</p>`:''}</div>${btn}</div>
-  ${(D.roles||(D.plan||{}).role)?`<section class="tl-sec"><h3>Ton rôle</h3>${roleBlock(false)}</section>`:''}
-  ${k.core.length?`<section class="tl-sec"><h3>Objets clés · ${esc(k.ref||'')}</h3><div class="tl-items">${k.core.map(c=>`<div class="mod ${esc(T(c.id).slot||'')}" tabindex="0" data-id="${c.id}">${gcard(c.id)}<span class="tl-min">≈ ${c.min} min</span></div>`).join('')}</div></section>`:''}
-  ${ph.length?`<section class="tl-sec"><h3>Le plan</h3><div class="tl-phases">${ph.map(([l,x])=>`<div><b>${l}</b><p>${lk(x)}</p></div>`).join('')}</div></section>`:''}
-  ${keys.length?`<section class="tl-sec"><h3>À retenir</h3><ul class="tl-keys">${keys.map(x=>`<li><span>${lk(x)}</span></li>`).join('')}</ul></section>`:''}
-  ${swBlock(false)?`<section class="tl-sec"><h3>Forces et faiblesses</h3>${swBlock(false)}</section>`:''}
-  ${D.counterplay?`<section class="tl-sec"><h3>Counterplay en fin de partie</h3>${counterplay(true)}</section>`:''}
-  ${k.abilities.length?`<section class="tl-sec"><h3>Compétences</h3>${abilityCards(false)}</section>`:''}
-  ${k.spikes.length?`<section class="tl-sec"><h3>Pics de puissance</h3>${spikesCompact()}</section>`:''}
-  <div class="tl-more">${HASPLAN?'<button type="button" data-go="plan">Le guide complet →</button>':''}<button type="button" data-go="${esc(b.key)}">Détail du build →</button>${D.builds.length>1?'<button type="button" data-go="compare">Comparer les builds →</button>':''}</div>
+  ${(D.roles||(D.plan||{}).role)?`<section class="tl-sec"><h3>${L('tl.role')}</h3>${roleBlock(false)}</section>`:''}
+  ${k.core.length?`<section class="tl-sec"><h3>${L('tl.core')} · ${esc(k.ref||'')}</h3><div class="tl-items">${k.core.map(c=>`<div class="mod ${esc(T(c.id).slot||'')}" tabindex="0" data-id="${c.id}">${gcard(c.id)}<span class="tl-min">≈ ${c.min} min</span></div>`).join('')}</div></section>`:''}
+  ${ph.length?`<section class="tl-sec"><h3>${L('tl.plan')}</h3><div class="tl-phases">${ph.map(([l,x])=>`<div><b>${l}</b><p>${lk(x)}</p></div>`).join('')}</div></section>`:''}
+  ${keys.length?`<section class="tl-sec"><h3>${L('tl.keys')}</h3><ul class="tl-keys">${keys.map(x=>`<li><span>${lk(x)}</span></li>`).join('')}</ul></section>`:''}
+  ${swBlock(false)?`<section class="tl-sec"><h3>${L('sec.sw')}</h3>${swBlock(false)}</section>`:''}
+  ${D.counterplay?`<section class="tl-sec"><h3>${L('sec.counterplay')}</h3>${counterplay(true)}</section>`:''}
+  ${k.abilities.length?`<section class="tl-sec"><h3>${L('tl.abilities')}</h3>${abilityCards(false)}</section>`:''}
+  ${k.spikes.length?`<section class="tl-sec"><h3>${L('sec.spikes')}</h3>${spikesCompact()}</section>`:''}
+  <div class="tl-more">${HASPLAN?`<button type="button" data-go="plan">${L('tl.more_plan')}</button>`:''}<button type="button" data-go="${esc(b.key)}">${L('tl.more_build')}</button>${D.builds.length>1?`<button type="button" data-go="compare">${L('tl.more_cmp')}</button>`:''}</div>
   </article>`}
 const HN=id=>(D.heroes||{})[id]||{n:id};
-const vsChip=x=>`<span class="vs" tabindex="0" data-hero="${x.hero}" data-games="${x.games}">${HN(x.hero).img?`<img src="${esc(HN(x.hero).img)}" alt="">`:''}${esc(HN(x.hero).n)} <b>${x.rate} %</b></span>`;
+const vsChip=x=>`<span class="vs" tabindex="0" data-hero="${x.hero}" data-games="${x.games}">${HN(x.hero).img?`<img src="${esc(HN(x.hero).img)}" alt="">`:''}${esc(HN(x.hero).n)} <b>${pc(x.rate)}</b></span>`;
 function counterSection(b){if(!b.counters||!b.counters.length)return'';const W=(D.plan||{}).counters||{};
-  return `<section class="phase"><h3>Objets de contre</h3><p class="phase__desc">Objets situationnels que ${esc(b.author)} achète nettement plus souvent contre certains héros (taux d’achat contre ce héros, vs son taux global). Calculé sur ses parties depuis le ${fmt(D.since)}.</p>
+  return `<section class="phase"><h3>${L('ctr.title')}</h3><p class="phase__desc">${L('ctr.desc',{author:esc(b.author),date:fmt(D.since)})}</p>
   <div class="ctr">${b.counters.map(v=>`<div class="ctr__r"><div class="mod ${esc(T(v.id).slot||'')}" tabindex="0" data-id="${v.id}">${gcard(v.id)}</div>
-  <div><span class="ctr__base">D’habitude ${v.base} % de ses parties → contre :</span><div class="ctr__vs">${v.vs.map(vsChip).join('')}</div>${W[v.id]?`<p class="ctr__why">${lk(W[v.id])}</p>`:''}</div></div>`).join('')}</div></section>`}
+  <div><span class="ctr__base">${L('ctr.base',{n:v.base})}</span><div class="ctr__vs">${v.vs.map(vsChip).join('')}</div>${W[v.id]?`<p class="ctr__why">${lk(W[v.id])}</p>`:''}</div></div>`).join('')}</div></section>`}
 function tldrCounters(b){const src=(b.counters&&b.counters.length)?b:D.builds.find(x=>x.counters&&x.counters.length);if(!src)return'';
   const rows=[];for(const v of src.counters)for(const x of v.vs.slice(0,2))rows.push([x,v]);
-  return `<section class="tl-sec"><h3>Contres utiles · ${esc(src.author)}</h3><div class="tl-ctr">${rows.slice(0,8).map(([x,v])=>`<div>${HN(x.hero).img?`<img class="h" src="${esc(HN(x.hero).img)}" alt="">`:''}<span>Contre <b>${esc(HN(x.hero).n)}</b> → <span class="ref ${esc(T(v.id).slot||'')}" tabindex="0" data-id="${v.id}">${img(v.id)}${esc(T(v.id).n)}</span> <span style="color:var(--color-neutral)">${x.rate} % vs ${v.base} %</span></span></div>`).join('')}</div></section>`}
-const CLS={mystic:'Mystique',brawler:'Bagarreur',assassin:'Assassin',marksman:'Tireur'};
-const POS={1:['Hard carry','Prend le plus d’âmes de l’équipe et gagne la fin de partie. Jusqu’à ~15 min, surtout du PvE (vagues, side lane, camps). Sa cible en fight : le carry adverse.'],
-  2:['Soft carry','Beaucoup d’âmes, mais un pic de puissance bien plus tôt (≈ 8 à 15 min) : gank, prends les fights, force les objectifs. Farmer en AFK à 12 min, c’est gâcher son pic.'],
-  3:['Frontliner / offlaner','Farm moyen. Engage en premier, encaisse et survit pendant que les carries tapent. Après les lanes : split push et objectifs.'],
-  4:['Roamer / flex','Peu de farm. Quitte sa lane pour être là où ça se bat : ganks, picks, repérage. Farme en se déplaçant.'],
-  5:['Soft support','Peu de farm. Affaiblit l’ennemi et prend des objets d’équipe (contrôles, malédictions) pour neutraliser le carry adverse.'],
-  6:['Hard support','Le moins d’âmes. Soigne, protège et sauve les carries au bon moment. Règle n°1 : ne pas mourir.']};
+  return `<section class="tl-sec"><h3>${L('ctr.useful',{author:esc(src.author)})}</h3><div class="tl-ctr">${rows.slice(0,8).map(([x,v])=>`<div>${HN(x.hero).img?`<img class="h" src="${esc(HN(x.hero).img)}" alt="">`:''}<span>${L('ctr.against')} <b>${esc(HN(x.hero).n)}</b> → <span class="ref ${esc(T(v.id).slot||'')}" tabindex="0" data-id="${v.id}">${img(v.id)}${esc(T(v.id).n)}</span> <span style="color:var(--color-neutral)">${pc(x.rate)} vs ${pc(v.base)}</span></span></div>`).join('')}</div></section>`}
+const CLS=Object.fromEntries(['mystic','brawler','assassin','marksman'].map(k=>[k,L('class.'+k)]));
+const POS={1:['Hard carry',L('pos.1')],2:['Soft carry',L('pos.2')],3:['Frontliner / offlaner',L('pos.3')],4:['Roamer / flex',L('pos.4')],5:['Soft support',L('pos.5')],6:['Hard support',L('pos.6')]};
 function posTip(n){const p=POS[n];return `<div class="tab"><div class="tab__h"><span class="tn">P${n} · ${p?p[0]:''}</span></div>
-  <div class="d">${p?esc(p[1]):''}</div><div class="sep"></div><div class="d" style="color:var(--color-muted);font-size:var(--text-xs)">Positions 1 à 6 = priorité de farm dans la méta de la communauté (le jeu n’impose aucun rôle). P1 prend le plus d’âmes, P6 le moins. Source : guide Steam « Roles Explained ».</div></div>`}
+  <div class="d">${p?esc(p[1]):''}</div><div class="sep"></div><div class="d" style="color:var(--color-muted);font-size:var(--text-xs)">${L('pos.note')}</div></div>`}
 function roleBlock(full){const R=D.roles,P_=D.plan||{};if(!R&&!P_.role)return'';const C=(R&&R.community)||{},pos=C.positions||[];
   const prof=R&&R.stats?Object.entries(R.stats).filter(([k,v])=>v&&v.label):[];
   return `<div class="role">${pos.map(p=>`<span class="role__pos" tabindex="0" data-pos="${p.pos||''}" style="cursor:help"><b>P${p.pos||'?'}</b><span>${esc(p.title)}</span></span>`).join('')}
-    ${R&&R.class?`<span class="role__cls">Classe du jeu : <b style="color:var(--color-ink)">${esc(CLS[R.class]||R.class)}</b></span>`:''}
-    ${C.source&&full?`<span class="role__cls">· méta commu : <a href="${esc(C.url)}" target="_blank" rel="noopener" style="color:var(--color-accent)">${esc(C.source)}</a> (${fmt(C.updated)})</span>`:''}</div>
+    ${R&&R.class?`<span class="role__cls">${L('role.class')} <b style="color:var(--color-ink)">${esc(CLS[R.class]||R.class)}</b></span>`:''}
+    ${C.source&&full?`<span class="role__cls">${L('role.meta')} <a href="${esc(C.url)}" target="_blank" rel="noopener" style="color:var(--color-accent)">${esc(C.source)}</a> (${fmt(C.updated)})</span>`:''}</div>
   ${P_.role?`<p class="role__txt">${lk(P_.role)}</p>`:''}
-  ${full&&prof.length?`<div class="prof">${prof.map(([k,v])=>`<div>${esc(v.label)} : plus que <b style="color:var(--color-ink)">${v.pct} %</b> des héros<i style="--p:${v.pct}%"></i></div>`).join('')}</div><p class="phase__desc">Moyennes par partie de ${esc(D.hero.name)} comparées à tous les héros (parties Fantôme+ depuis le ${fmt(R.since)}).</p>`:''}`}
-const muChip=(x,bad)=>`<span class="vs" tabindex="0" data-hero="${x.hero}" data-mu="${x.wr} % de victoires sur ${x.games} parties (attendu ≈ ${(x.wr-x.delta).toFixed(1)} %)">${HN(x.hero).img?`<img src="${esc(HN(x.hero).img)}" alt="">`:''}${esc(HN(x.hero).n)} <b class="${bad?'bad':''}">${x.delta>0?'+':''}${x.delta} pts</b></span>`;
+  ${full&&prof.length?`<div class="prof">${prof.map(([k,v])=>`<div>${L('role.more_than',{label:esc(v.label),b:`<b style="color:var(--color-ink)">${pc(v.pct)}</b>`})}<i style="--p:${v.pct}%"></i></div>`).join('')}</div><p class="phase__desc">${L('role.desc',{hero:esc(D.hero.name),date:fmt(R.since)})}</p>`:''}`}
+const muChip=(x,bad)=>`<span class="vs" tabindex="0" data-hero="${x.hero}" data-mu="${L('mu.tip',{wr:x.wr,games:x.games,exp:(x.wr-x.delta).toFixed(1)})}">${HN(x.hero).img?`<img src="${esc(HN(x.hero).img)}" alt="">`:''}${esc(HN(x.hero).n)} <b class="${bad?'bad':''}">${x.delta>0?'+':''}${x.delta} pts</b></span>`;
 function swBlock(full){const P_=D.plan||{},M=D.matchups||{},m=M.matchups;const n=full?9:2;
   const col=(cls,t,arr)=>arr&&arr.length?`<div class="${cls}"><h4>${t}</h4><ul>${arr.slice(0,n).map(x=>`<li>${lk(x)}</li>`).join('')}</ul></div>`:'';
-  const cols=col('s','Points forts',P_.strengths)+col('w','Points faibles',P_.weaknesses)+col('v','Pour le battre',P_.vs);
+  const cols=col('s',L('sw.strengths'),P_.strengths)+col('w',L('sw.weaknesses'),P_.weaknesses)+col('v',L('sw.beat'),P_.vs);
   let h=cols?`<div class="sw">${cols}</div>`:'';
-  if(full&&m)h+=`<div class="mu"><div><h5>Meilleurs matchups (écart au résultat attendu ; ${m.base} % de victoires en moyenne)</h5><div class="ctr__vs">${m.best.map(x=>muChip(x)).join('')}</div></div>
-    <div><h5>Pires matchups</h5><div class="ctr__vs">${m.worst.map(x=>muChip(x,true)).join('')}</div></div></div>`;
-  if(full&&M.items&&M.items.length)h+=`<div style="margin-top:var(--space-sm)"><h5 style="margin:0 0 6px;font:700 var(--text-xs)/1.2 var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--color-neutral)">Objets qui marchent contre ${esc(D.hero.name)} (gain de victoires quand on l’affronte, au-delà du gain moyen, 14 derniers jours)</h5><div class="ctr__vs">${M.items.map(x=>`<span class="vs"><span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span> <b>+${x.delta} pts</b></span>`).join('')}</div></div>`;
+  if(full&&m)h+=`<div class="mu"><div><h5>${L('sw.best',{base:m.base})}</h5><div class="ctr__vs">${m.best.map(x=>muChip(x)).join('')}</div></div>
+    <div><h5>${L('sw.worst')}</h5><div class="ctr__vs">${m.worst.map(x=>muChip(x,true)).join('')}</div></div></div>`;
+  if(full&&M.items&&M.items.length)h+=`<div style="margin-top:var(--space-sm)"><h5 style="margin:0 0 6px;font:700 var(--text-xs)/1.2 var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--color-neutral)">${L('sw.items',{hero:esc(D.hero.name)})}</h5><div class="ctr__vs">${M.items.map(x=>`<span class="vs"><span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span> <b>+${x.delta} pts</b></span>`).join('')}</div></div>`;
   return h}
 function vidTips(){const V=D.videoTips||[];if(!V.length)return'';
-  return `<section class="phase"><h3>L’avis des créateurs</h3><p class="phase__desc">Conseils tirés de vidéos de joueurs reconnus, traduits et résumés. C’est un avis : ✓ indique qu’un objet cité ressort aussi des stats Fantôme+ de cette page.</p>
-  ${V.map(v=>`<div class="vt"><p class="vt__txt" lang="${esc(v.lang||D.lang||'fr')}">${lk(v.text)}</p>
-    ${v.items.length?`<div class="cp__then">${v.items.map(id=>{const c=(v.check||{})[id];return `<span class="ref ${esc(T(id).slot||'')}" tabindex="0" data-id="${id}">${img(id)}${esc(T(id).n)}</span>${c?(c.delta!=null?` <small class="ok">✓ mesuré +${c.delta} pts</small>`:` <small class="ok">✓ dans les stats</small>`):''}`}).join(' · ')}</div>`:''}
-    <p class="vt__src">Source : <a href="https://www.youtube.com/watch?v=${esc(v.video)}&amp;t=${v.t}s" target="_blank" rel="noopener">${esc(v.author)}, « ${esc(v.title)} » (${Math.floor(v.t/60)}:${String(v.t%60).padStart(2,'0')})</a> · ${new Date(v.date).toLocaleDateString('fr-FR')}${v.prePatch?' · <b>⚠ avant le dernier gros patch</b>':''}</p></div>`).join('')}</section>`}
+  return `<section class="phase"><h3>${L('vt.title')}</h3><p class="phase__desc">${L('vt.desc')}</p>
+  ${V.map(v=>`<div class="vt"><p class="vt__txt" lang="${esc(v.lang||D.lang||LANG)}">${lk(v.text)}</p>
+    ${v.items.length?`<div class="cp__then">${v.items.map(id=>{const c=(v.check||{})[id];return `<span class="ref ${esc(T(id).slot||'')}" tabindex="0" data-id="${id}">${img(id)}${esc(T(id).n)}</span>${c?(c.delta!=null?` <small class="ok">${L('vt.measured',{d:c.delta})}</small>`:` <small class="ok">${L('vt.in_stats')}</small>`):''}`}).join(' · ')}</div>`:''}
+    <p class="vt__src">${L('vt.source')} <a href="https://www.youtube.com/watch?v=${esc(v.video)}&amp;t=${v.t}s" target="_blank" rel="noopener">${esc(v.author)}, « ${esc(v.title)} » (${Math.floor(v.t/60)}:${String(v.t%60).padStart(2,'0')})</a> · ${new Date(v.date).toLocaleDateString(LOC)}${v.prePatch?` · <b>${L('vt.prepatch')}</b>`:''}</p></div>`).join('')}</section>`}
 function vsPanel(){const P_=D.plan||{},M=D.matchups||{},m=M.matchups,k=K();
   const list=(t,arr,cls)=>arr&&arr.length?`<div class="${cls}"><h4>${t}</h4><ul>${arr.map(x=>`<li>${lk(x)}</li>`).join('')}</ul></div>`:'';
   const esc_=k.abilities.map(a=>({a,t:T(a.id)})).filter(x=>x.t.cd);
   const spikes=k.spikes.filter(s=>s.kind==='item'?s.cost>=3200:(s.tier===0||s.tier===3)).slice(0,10);
-  return `<article class="panel"><p class="panel__src">Tu l’affrontes ?</p><h2>Comment contrer ${esc(D.hero.name)}</h2>
-  <p class="facts">Ses faiblesses, ce qui marche contre ${esc(D.hero.name)} d’après les parties Fantôme+, et ses moments de puissance.</p>
-  ${(P_.vs||P_.weaknesses)?`<div class="sw" style="margin-top:var(--space-md);grid-template-columns:repeat(2,minmax(0,1fr))">${list('Pour le battre',P_.vs,'v')}${list('Ses faiblesses',P_.weaknesses,'w')}</div>`:''}
+  return `<article class="panel"><p class="panel__src">${L('rail.vs_src')}</p><h2>${L('vs.title',{hero:esc(D.hero.name)})}</h2>
+  <p class="facts">${L('vs.desc',{hero:esc(D.hero.name)})}</p>
+  ${(P_.vs||P_.weaknesses)?`<div class="sw" style="margin-top:var(--space-md);grid-template-columns:repeat(2,minmax(0,1fr))">${list(L('sw.beat'),P_.vs,'v')}${list(L('vs.weaknesses'),P_.weaknesses,'w')}</div>`:''}
   ${vidTips()}
-  ${m?`<section class="phase"><h3>Les héros qui battent ${esc(D.hero.name)}</h3><p class="phase__desc">Écart au résultat attendu (le niveau général de chaque héros est retiré). ${esc(D.hero.name)} gagne ${m.base} % de ses parties en moyenne.</p>
-    <div class="mu"><div><h5>Le battent le plus (avantage de l’adversaire)</h5><div class="ctr__vs">${m.worst.map(x=>muChip({...x,delta:-x.delta})).join('')}</div></div>
-    <div><h5>Ont le plus de mal contre ${esc(D.hero.name)}</h5><div class="ctr__vs">${m.best.map(x=>muChip({...x,delta:-x.delta},true)).join('')}</div></div></div>
-    ${Math.max(...m.worst.map(x=>Math.abs(x.delta)),0)<3?'<p class="phase__desc">Écarts faibles : à haut niveau, aucun héros ne le contre vraiment. Joue sur ses faiblesses plutôt que sur le pick.</p>':''}</section>`:''}
-  ${(()=>{const A=((D.counterplay||{}).against)||[],H=D.hero.name,cls={mystic:'Mystique',marksman:'Tireur'};
-    const WHY={heal:a=>`${H} se soigne beaucoup (plus que ${a.pct} % des héros)`,tank:a=>`${H} encaisse beaucoup (plus que ${a.pct} % des héros)`,
-      spirit:()=>`${H} fait surtout des dégâts spirit (classe Mystique)`,weapon:()=>`${H} fait surtout des dégâts d’arme (classe Tireur)`,burst:a=>`${H} fait beaucoup de dégâts (plus que ${a.pct} % des héros)`};
-    const TH={heal:'anti-soin',tank:'% de PV / réduction de résistance',spirit:'résistance spirit',weapon:'résistance aux balles',burst:'résistances'};
+  ${m?`<section class="phase"><h3>${L('vs.beaten_by',{hero:esc(D.hero.name)})}</h3><p class="phase__desc">${L('vs.beaten_desc',{hero:esc(D.hero.name),base:m.base})}</p>
+    <div class="mu"><div><h5>${L('vs.beat_most',{hero:esc(D.hero.name)})}</h5><div class="ctr__vs">${m.worst.map(x=>muChip({...x,delta:-x.delta})).join('')}</div></div>
+    <div><h5>${L('vs.struggle',{hero:esc(D.hero.name)})}</h5><div class="ctr__vs">${m.best.map(x=>muChip({...x,delta:-x.delta},true)).join('')}</div></div></div>
+    ${Math.max(...m.worst.map(x=>Math.abs(x.delta)),0)<3?`<p class="phase__desc">${L('vs.small',{hero:esc(D.hero.name)})}</p>`:''}</section>`:''}
+  ${(()=>{const A=((D.counterplay||{}).against)||[],H=D.hero.name;
+    const WHY=Object.fromEntries(['heal','tank','spirit','weapon','burst'].map(k=>[k,a=>L('why.'+k,{hero:H,pct:pc(a.pct)})]));
+    const TH=Object.fromEntries(['heal','tank','spirit','weapon','burst'].map(k=>[k,L('th.'+k)]));
     const meas=(M.items||[]);if(!A.length&&!meas.length)return'';
-    return `<section class="phase"><h3>Les objets qui le contrent (fin de partie)</h3><p class="phase__desc">Objets de palier III-IV à prendre en fin de partie contre ${esc(H)}.</p>
+    return `<section class="phase"><h3>${L('vs.items_title',{hero:esc(H)})}</h3><p class="phase__desc">${L('vs.items_desc',{hero:esc(H)})}</p>
     <div class="cp">${A.map(a=>`<div class="cp__r"><div class="cp__if"><b>${esc((WHY[a.why]||(()=>a.why))(a))}</b></div>
       <div class="cp__then"><span class="lbl">→ ${TH[a.why]||''}</span>${a.items.map(x=>`<span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span>`).join(' · ')}</div></div>`).join('')}
-    ${meas.length?`<div class="cp__r"><div class="cp__if"><b>Mesuré contre ${esc(H)}</b><small>gain de victoires quand on l’achète après 20 min contre ${esc(H)}, au-delà du gain habituel (14 jours, Fantôme+)</small></div>
-      <div class="cp__then"><span class="lbl">→ Ce qui marche le mieux</span>${meas.map(x=>`<span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span> <small>+${x.delta} pts</small>`).join(' · ')}</div></div>`:''}</div>
-    <p class="phase__desc">Profil mesuré chez les Fantôme+ ; objets classés par leurs effets dans le jeu, les plus joués de leur catégorie en fin de partie.</p></section>`})()}
-  ${esc_.length?`<section class="phase"><h3>Ses recharges à surveiller</h3><p class="phase__desc">Engage juste après l’utilisation de ses outils clés : voilà combien de temps ils mettent à revenir (valeurs de base, sans objets ni améliorations).</p>
+    ${meas.length?`<div class="cp__r"><div class="cp__if"><b>${L('vs.measured',{hero:esc(H)})}</b><small>${L('vs.measured_desc',{hero:esc(H)})}</small></div>
+      <div class="cp__then"><span class="lbl">${L('vs.best')}</span>${meas.map(x=>`<span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span> <small>+${x.delta} pts</small>`).join(' · ')}</div></div>`:''}</div>
+    <p class="phase__desc">${L('vs.profile_note')}</p></section>`})()}
+  ${esc_.length?`<section class="phase"><h3>${L('vs.cooldowns')}</h3><p class="phase__desc">${L('vs.cooldowns_desc')}</p>
     <div class="spk">${esc_.map(x=>`<span class="spk__i" tabindex="0" data-id="${x.a.id}">${img(x.a.id)}<span>${esc(x.t.n)} <kbd>${x.a.key}</kbd><br><small>⟳ ${x.t.cd} s</small></span></span>`).join('')}</div></section>`:''}
-  ${spikes.length?`<section class="phase"><h3>Ses moments de puissance</h3><p class="phase__desc">Ses gros objets, ses déblocages et ses compétences au max chez ${esc(k.ref||'les meilleurs')}, avec le moment approximatif. Frappe avant ces moments-là.</p><div class="spk">${spikes.map(s=>`<span class="spk__i" tabindex="0" data-id="${s.id}">${img(s.id)}<span>${esc(T(s.id).n)} <span class="t">${tierLbl(s)}</span><br><small>${s.min!=null?`≈ ${Math.round(s.min)} min · `:''}${(s.souls/1000).toLocaleString('fr-FR')}k âmes</small></span></span>`).join('')}</div></section>`:''}
-  ${(k.core||[]).length?`<section class="phase"><h3>Ses objets clés, et quand</h3><div class="tl-items">${k.core.map(c=>`<div class="mod ${esc(T(c.id).slot||'')}" tabindex="0" data-id="${c.id}">${gcard(c.id)}<span class="tl-min">≈ ${c.min} min</span></div>`).join('')}</div></section>`:''}
+  ${spikes.length?`<section class="phase"><h3>${L('vs.spikes')}</h3><p class="phase__desc">${L('vs.spikes_desc',{ref:esc(k.ref||L('vs.the_best'))})}</p><div class="spk">${spikes.map(s=>`<span class="spk__i" tabindex="0" data-id="${s.id}">${img(s.id)}<span>${esc(T(s.id).n)} <span class="t">${tierLbl(s)}</span><br><small>${s.min!=null?`≈ ${Math.round(s.min)} min · `:''}${(s.souls/1000).toLocaleString(LOC)}${L('k_souls')}</small></span></span>`).join('')}</div></section>`:''}
+  ${(k.core||[]).length?`<section class="phase"><h3>${L('vs.core')}</h3><div class="tl-items">${k.core.map(c=>`<div class="mod ${esc(T(c.id).slot||'')}" tabindex="0" data-id="${c.id}">${gcard(c.id)}<span class="tl-min">≈ ${c.min} min</span></div>`).join('')}</div></section>`:''}
   </article>`}
-const CPW={heal:['Gros soigneurs en face','Anti-soin'],tank:['Tanks / frontline en face','Anti-tank (% de PV, réduction de résistance)'],
-  spirit:['Gros dégâts spirit en face','Résistance spirit'],weapon:['Gros dégâts d’arme en face','Résistance aux balles'],cc:['Tu te fais beaucoup contrôler','Résistance aux effets']};
+const CPW=Object.fromEntries(['heal','tank','spirit','weapon','cc'].map(k=>[k,[L('cp.'+k),L('cp.'+k+'_then')]]));
 function counterplay(compact){const C=D.counterplay;if(!C)return'';const rules=C.rules.filter(r=>r.items.length).slice(0,compact?4:9);
   return `<div class="cp">${rules.map(r=>{const w=CPW[r.when]||[r.when,''];return `<div class="cp__r"><div class="cp__if"><b>${w[0]}</b>
-    ${r.heroes.length?`<div class="cp__hs">${r.heroes.map(h=>HN(h).img?`<img src="${esc(HN(h).img)}" alt="${esc(HN(h).n)}" tabindex="0" data-hero="${h}">`:'').join('')}</div>`:'<small>stun, silence, ralentissements…</small>'}</div>
-    <div class="cp__then"><span class="lbl">→ ${w[1]}</span>${r.items.map(x=>`<span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span>${x.rate?` <small>${x.rate} %</small>`:''}`).join(' · ')}</div></div>`}).join('')}</div>
-  <p class="phase__desc">Héros classés d’après leurs soins et dégâts encaissés chez les Fantôme+ (classe du jeu pour spirit / arme). Objets choisis par leurs effets dans le jeu, parmi ceux que les joueurs de ${esc(D.hero.name)} achètent (le % = part de ses joueurs qui le prennent).</p>`}
+    ${r.heroes.length?`<div class="cp__hs">${r.heroes.map(h=>HN(h).img?`<img src="${esc(HN(h).img)}" alt="${esc(HN(h).n)}" tabindex="0" data-hero="${h}">`:'').join('')}</div>`:`<small>${L('cp.cc_hint')}</small>`}</div>
+    <div class="cp__then"><span class="lbl">→ ${w[1]}</span>${r.items.map(x=>`<span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span>${x.rate?` <small>${pc(x.rate)}</small>`:''}`).join(' · ')}</div></div>`}).join('')}</div>
+  <p class="phase__desc">${L('cp.note',{hero:esc(D.hero.name)})}</p>`}
 function statStrip(b){const f=buildFresh(b),t=wrTone(b.winrate);
-  const wr=b.winrate!=null?`<div class="stat" data-tone="${t}"><span class="stat__k">Victoires</span><span class="stat__v num">${b.winrate} %</span>
-    <span class="stat__s">sur ${b.matches} parties du joueur</span></div>`
-    :`<div class="stat" data-tone="none"><span class="stat__k">Victoires</span><span class="stat__v">—</span><span class="stat__s">non mesuré pour un build publié</span></div>`;
-  const pop=b.share!=null?`<span class="stat__v num">${Math.round(b.share*100)} %</span><span class="stat__s">de ses parties sur ${esc(D.hero.name)}</span>`
-    :b.favorites?`<span class="stat__v num">${b.favorites}</span><span class="stat__s">joueurs l’ont en favori</span>`
-    :`<span class="stat__v">Officiel</span><span class="stat__s">expert Mobalytics</span>`;
+  const wr=b.winrate!=null?`<div class="stat" data-tone="${t}"><span class="stat__k">${L('st.wr')}</span><span class="stat__v num">${pc(b.winrate)}</span>
+    <span class="stat__s">${L('st.wr_over',{n:b.matches})}</span></div>`
+    :`<div class="stat" data-tone="none"><span class="stat__k">${L('st.wr')}</span><span class="stat__v">—</span><span class="stat__s">${L('st.wr_none')}</span></div>`;
+  const pop=b.share!=null?`<span class="stat__v num">${pc(Math.round(b.share*100))}</span><span class="stat__s">${L('st.share',{hero:esc(D.hero.name)})}</span>`
+    :b.favorites?`<span class="stat__v num">${b.favorites}</span><span class="stat__s">${L('st.favs')}</span>`
+    :`<span class="stat__v">${L('st.official')}</span><span class="stat__s">${L('st.expert')}</span>`;
   return `<div class="stats">${wr}
-    <div class="stat stat--rank"><span class="stat__k">Rang de l’auteur</span><span class="rankline">${rankImg(b,'rank--lg')}<span class="stat__v">${esc(b.rank||'—')}</span></span><span class="stat__s">${esc(b.author)}</span></div>
-    <div class="stat"><span class="stat__k">${b.share!=null?'Spécialiste':'Popularité'}</span>${pop}</div>
-    <div class="stat" data-lvl="${f.lvl}"><span class="stat__k">${b.source==='OTP'?'Période':'Mis à jour'}</span><span class="stat__v">${esc(f.v)}</span><span class="stat__s">${esc(f.s)}</span></div></div>`}
+    <div class="stat stat--rank"><span class="stat__k">${L('st.rank')}</span><span class="rankline">${rankImg(b,'rank--lg')}<span class="stat__v">${esc(b.rank||'—')}</span></span><span class="stat__s">${esc(b.author)}</span></div>
+    <div class="stat"><span class="stat__k">${b.share!=null?L('st.specialist'):L('st.popularity')}</span>${pop}</div>
+    <div class="stat" data-lvl="${f.lvl}"><span class="stat__k">${b.source==='OTP'?L('st.period'):L('st.updated')}</span><span class="stat__v">${esc(f.v)}</span><span class="stat__s">${esc(f.s)}</span></div></div>`}
 
 function buildPanel(b){
-  const btn=b.code?`<button class="copy cham" data-code="${esc(b.code)}">Copier le build</button>`
-    :`<button class="copy cham" disabled title="Pas encore traduit : demande à Claude">À traduire</button>`;
+  const btn=b.code?`<button class="copy cham" data-code="${esc(b.code)}">${L('copy.label')}</button>`
+    :`<button class="copy cham" disabled title="${L('copy.todo_title')}">${L('copy.todo')}</button>`;
   let nn=0;const nTotal=b.cats.reduce((a,c)=>a+c.mods.filter(m=>m.note).length,0);
-  const cats=`<div class="cats-bar"><h3>Objets</h3>${nTotal?`<button type="button" class="notes-btn" aria-pressed="${NOTES}">✎ Notes de l’auteur (${nTotal})</button>`:''}</div>
+  const cats=`<div class="cats-bar"><h3>${L('bp.items')}</h3>${nTotal?`<button type="button" class="notes-btn" aria-pressed="${NOTES}">${L('bp.notes',{n:nTotal})}</button>`:''}</div>
   <div class="cats">`+b.cats.map(c=>{const nums=c.mods.map(m=>m.note?++nn:0);
     const notes=c.mods.map((m,k)=>m.note?`<li><span>${nums[k]}</span><span><b>${esc(T(m.id).n||'')}</b> — ${lk(m.note)}</span></li>`:'').join('');
     const fit=Math.min(c.mods.length,11)*92+18,w=`flex-basis:${Math.max(Math.min(Math.round((c.width||0)*.98),1100),fit>1100?0:fit,200)}px`;
-    return `<section class="catp${c.optional?' catp--opt':''}" style="${w}"><div class="catp__h">${esc(catName(c.name))}${c.optional?'<span class="opt">Optionnel</span>':''}</div>`
+    return `<section class="catp${c.optional?' catp--opt':''}" style="${w}"><div class="catp__h">${esc(catName(c.name))}${c.optional?`<span class="opt">${L('cat.optional')}</span>`:''}</div>`
     +(c.desc?`<p class="catp__d">${lk(c.desc)}</p>`:'')
     +(c.mods.length?`<div class="mods">${c.mods.map((m,k)=>modCard(m,nums[k])).join('')}</div>`:'')
     +(notes?`<ol class="catp__notes">${notes}</ol>`:'')+'</section>'}).join('')+'</div>';
   return `<article class="panel"><div class="panel__top"><div>
-    <p class="panel__src">${esc(b.source)} <span>· ${esc(b.sourceInfo)}</span></p><h2>${esc(b.name)}</h2>
-    <p class="facts">par <b>${esc(b.author)}</b>${b.buildId?` · build <span class="num">${b.buildId}</span>`:''}${b.translated?'':' · pas encore traduit'}</p></div>${btn}</div>
+    <p class="panel__src">${esc(srcName(b.source))} <span>· ${esc(b.sourceInfo)}</span></p><h2>${esc(b.name)}</h2>
+    <p class="facts">${L('bp.by')} <b>${esc(b.author)}</b>${b.buildId?` · build <span class="num">${b.buildId}</span>`:''}${b.translated?'':L('bp.untranslated')}</p></div>${btn}</div>
     ${statStrip(b)}${takeBlock(b)}${playSection(b)}${counterSection(b)}${b.desc?`<p class="authordesc">${lk(b.desc)}</p>`:''}${cats}${abilityGrid(b.order)}</article>`}
 
 /* ---- comparison ---- */
@@ -915,19 +917,19 @@ function comparePanel(){
     c.mods.forEach(m=>{const r=rows[m.id]=rows[m.id]||{id:m.id,cells:{},rank:0,n:0};
       if(r.cells[bi]==null){r.cells[bi]={lab,full:catName(c.name),p:rank,raw:c.name};r.n++;r.rank+=rank}})}));
   const N=D.builds.length,list=Object.values(rows).sort((a,b)=>b.n-a.n||a.rank/a.n-b.rank/b.n);
-  const head='<tr><th>Objet</th>'+D.builds.map(b=>`<th>${esc(b.author)}${flag(buildFresh(b))}<small>${esc(b.source)}${b.winrate!=null?` · <span class="wr-${wrTone(b.winrate)}">${b.winrate} % V</span>`:''}</small></th>`).join('')+'<th class="cnt">Builds</th></tr>';
+  const head=`<tr><th>${L('cmp.item')}</th>`+D.builds.map(b=>`<th>${esc(b.author)}${flag(buildFresh(b))}<small>${esc(srcName(b.source))}${b.winrate!=null?` · <span class="wr-${wrTone(b.winrate)}">${L('wr.short',{n:b.winrate})}</span>`:''}</small></th>`).join('')+`<th class="cnt">${L('cmp.builds')}</th></tr>`;
   const body=list.map(r=>`<tr class="${r.n===N?'all':''}"><th><div tabindex="0" data-id="${r.id}">${img(r.id)}${esc(T(r.id).n||r.id)}</div></th>`
     +D.builds.map((_,bi)=>{const c=r.cells[bi];return c?`<td class="ph" data-p="${c.p<3?0:1}" title="${esc(c.full)}">${esc(c.lab)}${PH[c.raw]||/^Situ/.test(c.raw||'')?'':'<i>*</i>'}</td>`:'<td class="none">—</td>'}).join('')
     +`<td class="cnt num">${r.n}/${N}</td></tr>`).join('');
   const common=list.filter(r=>r.n===N).length;
-  return `<article class="panel"><p class="panel__src">Vue d’ensemble</p><h2>Ce que les builds ont en commun</h2>
-   <p class="legend">${common} objet${common>1?'s':''} présent${common>1?'s':''} dans les ${N} builds (carré ambre). Chaque case indique la phase où le build place l’objet ; * = catégorie personnalisée de l’auteur (survole pour son nom exact) ; « — » = absent.</p>
+  return `<article class="panel"><p class="panel__src">${L('rail.cmp_src')}</p><h2>${L('cmp.title')}</h2>
+   <p class="legend">${L(common>1?'cmp.common_many':'cmp.common_one',{n:common,total:N})} ${L('cmp.legend')}</p>
    <div class="cmp-wrap"><table class="cmp"><thead>${head}</thead><tbody>${body}</tbody></table></div></article>`}
 
 /* ---- navigation ---- */
 function show(v,push){if(!views.includes(v))v=views[0];
   $('main').innerHTML=v==='tldr'?tldrPanel():v==='vs'?vsPanel():v==='compare'?comparePanel():v==='plan'?planPanel():buildPanel(D.builds.find(b=>b.key===v));
-  $('main').querySelectorAll('[data-askc]').forEach(x=>x.onclick=async()=>{let ok=false;try{await navigator.clipboard.writeText(x.dataset.askc);ok=true}catch(e){}x.textContent=ok?'Copié : colle-le dans Claude Code':x.dataset.askc});
+  $('main').querySelectorAll('[data-askc]').forEach(x=>x.onclick=async()=>{let ok=false;try{await navigator.clipboard.writeText(x.dataset.askc);ok=true}catch(e){}x.textContent=ok?L('inc.asked'):x.dataset.askc});
   $('main').querySelectorAll('[data-go]').forEach(x=>x.onclick=()=>{show(x.dataset.go,true);scrollTo({top:0})});
   document.querySelectorAll('.pick').forEach(p=>p.setAttribute('aria-current',p.dataset.v===v));
   const cur=document.querySelector('.pick[aria-current=true]'),ul=$('list');
@@ -943,25 +945,25 @@ document.querySelector('.tldr-btn').onclick=()=>show('tldr',true);
 
 /* ---- copy (8 states: default/hover/focus/active/disabled/loading/error/success) ---- */
 function bindCopy(){document.querySelectorAll('.copy[data-code]').forEach(btn=>btn.onclick=async()=>{
-  const label='Copier le build';btn.dataset.state='loading';btn.textContent='Copie…';let ok=false;
+  const label=L('copy.label');btn.dataset.state='loading';btn.textContent=L('copy.loading');let ok=false;
   try{await navigator.clipboard.writeText(btn.dataset.code);ok=true}catch(e){}
   if(!ok){const t=document.createElement('textarea');t.value=btn.dataset.code;document.body.appendChild(t);t.select();
     try{ok=document.execCommand('copy')}catch(e){}t.remove()}
-  btn.dataset.state=ok?'success':'error';btn.textContent=ok?'Copié · colle-le en jeu':'Échec · ouvre code.txt';
+  btn.dataset.state=ok?'success':'error';btn.textContent=ok?L('copy.ok'):L('copy.fail');
   setTimeout(()=>{delete btn.dataset.state;btn.textContent=label},2600)})}
 
 /* ---- tooltips: 250 ms on hover, instant on focus, tap toggles on touch ---- */
 const tip=$('tip');let tmr;
-function tipAbility(t){const sec=s=>`${s.d?`<div class="d">${s.d}</div>`:''}${s.imp.length?`<div class="tab__imp">${s.imp.map(p=>`<div>${p.scale?`<i title="${LANG==='en'?'Spirit scaling':'Scaling spirit'}">✦ ×${p.scale}</i>`:''}<b>${p.v}</b><small>${p.label}</small></div>`).join('')}</div>`:''}
+function tipAbility(t){const sec=s=>`${s.d?`<div class="d">${s.d}</div>`:''}${s.imp.length?`<div class="tab__imp">${s.imp.map(p=>`<div>${p.scale?`<i title="${L('tip.spirit_scaling')}">✦ ×${p.scale}</i>`:''}<b>${p.v}</b><small>${p.label}</small></div>`).join('')}</div>`:''}
   ${s.basic.length?`<div class="tab__basic">${s.basic.map(p=>`<span><b>${p.v}</b> ${p.label}${p.scale?` <span style="color:var(--color-spirit)">✦×${p.scale}</span>`:''}</span>`).join('')}</div>`:''}`;
   const C=['var(--color-vitality)','var(--color-accent-dim)','var(--color-weapon)'],P=[1,2,5];
   return `<div class="tab"><div class="tab__h"><span class="tn">${esc(t.n)}${t.key?` <kbd>${t.key}</kbd>`:''}</span>${t.cd?`<span class="tab__cd">⟳ ${t.cd}s</span>`:''}</div>
-  ${(t.range||t.charges)?`<div class="tab__chips">${t.range?`<span>◎ ${String(t.range).replace(/\s*m$/,'')} m</span>`:''}${t.charges?`<span>${t.charges} ${LANG==='en'?'charges':'charges'}</span>`:''}</div>`:''}
+  ${(t.range||t.charges)?`<div class="tab__chips">${t.range?`<span>◎ ${String(t.range).replace(/\s*m$/,'')} m</span>`:''}${t.charges?`<span>${t.charges} ${L('tip.charges')}</span>`:''}</div>`:''}
   ${t.secs.map(sec).join('<div class="sep"></div>')}
   ${t.ups&&t.ups.some(Boolean)?`<div class="tab__ups">${t.ups.map((u,k)=>`<div style="--c:${C[k]}"><b>◆ ${P[k]}</b>${esc(u)||'—'}</div>`).join('')}</div>`:''}
-  ${t.secs.some(s=>s.imp.concat(s.basic).some(p=>p.scale))?`<div style="margin-top:6px;font-size:var(--text-xs);color:var(--color-neutral)">✦ ×N = ${LANG==='en'?'bonus per point of spirit power':'bonus par point de puissance spirit'}</div>`:''}</div>`}
+  ${t.secs.some(s=>s.imp.concat(s.basic).some(p=>p.scale))?`<div style="margin-top:6px;font-size:var(--text-xs);color:var(--color-neutral)">✦ ×N = ${L('tip.per_point')}</div>`:''}</div>`}
 function tipHtml(t){if(t.ab)return tipAbility(t);let h=`<div class="h ${esc(t.slot)}"><img src="${esc(t.img||'')}" alt=""><div><div class="tn">${esc(t.n)}`
-  +(t.key?`<span class="tg">${LANG==='en'?'Ability':'Compétence'} ${t.key}${t.key===4?(LANG==='en'?' · ultimate':' · ultime'):''}</span>`:'')+(t.act?`<span class="tg">${LANG==='en'?'Active':'Actif'}</span>`:'')+'</div>'+(t.c?`<div class="tc num">${t.c}${LANG==='en'?' souls':' âmes'}</div>`:'')+'</div></div><div class="b">';
+  +(t.key?`<span class="tg">${L('tip.ability')} ${t.key}${t.key===4?L('tip.ult'):''}</span>`:'')+(t.act?`<span class="tg">${L('tip.active')}</span>`:'')+'</div>'+(t.c?`<div class="tc num">${t.c} ${L('souls')}</div>`:'')+'</div></div><div class="b">';
   const st=l=>l.map(x=>`<div class="st"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
   if(t.innate.length)h+=st(t.innate);
   t.blocks.forEach((b,k)=>{if(k||t.innate.length)h+='<div class="sep"></div>';if(b.d)h+=`<div class="d">${b.d}</div>`;h+=st(b.s)});
@@ -969,13 +971,13 @@ function tipHtml(t){if(t.ab)return tipAbility(t);let h=`<div class="h ${esc(t.sl
 function place(x,y){const r=tip.getBoundingClientRect();let l=x+16,t=y+16;
   if(l+r.width>innerWidth-8)l=x-r.width-16;if(t+r.height>innerHeight-8)t=Math.max(8,innerHeight-r.height-8);
   tip.style.left=Math.max(8,l)+'px';tip.style.top=t+'px'}
-function open(el,x,y){if(!IT[el.dataset.id])return;const t=T(el.dataset.id);tip.innerHTML=(el.dataset.note?`<div class="tnote"><b>Note de l’auteur</b>${esc(el.dataset.note)}</div>`:'')+tipHtml(t);tip.style.display='block';
+function open(el,x,y){if(!IT[el.dataset.id])return;const t=T(el.dataset.id);tip.innerHTML=(el.dataset.note?`<div class="tnote"><b>${L('tip.author_note')}</b>${esc(el.dataset.note)}</div>`:'')+tipHtml(t);tip.style.display='block';
   if(x==null){const r=el.getBoundingClientRect();x=r.right;y=r.top}place(x,y)}
 function hide(){clearTimeout(tmr);tip.style.display='none'}
-function heroTip(el){const h=HN(el.dataset.hero);const CL={mystic:'Mystique',brawler:'Bagarreur',assassin:'Assassin',marksman:'Tireur'};
+function heroTip(el){const h=HN(el.dataset.hero);const CL=CLS;
   return `<div class="tab"><div class="tab__h" style="justify-content:flex-start;gap:10px">${h.img?`<img src="${esc(h.img)}" alt="" style="width:40px;height:40px;border-radius:50%;background:${esc(h.color||'var(--color-shade)')}">`:''}
   <span><span class="tn">${esc(h.n)}</span>${h.type?`<br><small style="color:var(--color-muted)">${CL[h.type]||esc(h.type)}</small>`:''}</span></div>
-  ${el.dataset.mu?`<div class="d" style="margin-bottom:0">${esc(el.dataset.mu)}</div>`:el.dataset.games?`<div class="d" style="margin-bottom:0">${esc(el.dataset.games)} parties contre ce héros</div>`:''}</div>`}
+  ${el.dataset.mu?`<div class="d" style="margin-bottom:0">${esc(el.dataset.mu)}</div>`:el.dataset.games?`<div class="d" style="margin-bottom:0">${L('tip.games_vs',{n:esc(el.dataset.games)})}</div>`:''}</div>`}
 function bindHero(root){root.querySelectorAll('[data-hero]').forEach(el=>{
   const o=(x,y)=>{tip.innerHTML=heroTip(el);tip.style.display='block';if(x==null){const r=el.getBoundingClientRect();x=r.left;y=r.bottom}place(x,y)};
   el.addEventListener('mouseenter',e=>{clearTimeout(tmr);tmr=setTimeout(()=>o(e.clientX,e.clientY),120)});
@@ -998,11 +1000,9 @@ addEventListener('scroll',hide,{passive:true});
 
 let start=location.hash.slice(1);
 if(!views.includes(start)){try{start=localStorage.getItem('dl-view:'+D.hero.name)||''}catch(e){start=''}}
-function setLang(l,rerender){LANG=l;try{localStorage.setItem('dl-lang',l)}catch(e){}
-  document.querySelectorAll('.lang button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===l));
-  if(rerender){const v=document.querySelector('.pick[aria-current=true]')?.dataset.v;hide();$('intro').innerHTML=lk(D.intro||'');bindTips($('intro'));show(v||views[0],false)}}
-document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>setLang(b.dataset.l,true));
-setLang(LANG,false);
+/* language switch: keep the current view when moving to the other language's page */
+document.querySelectorAll('.lang a').forEach(a=>a.addEventListener('click',()=>{a.href=a.getAttribute('href').split('#')[0]+location.hash}));
+if(D.contentFallback){const n=document.createElement('p');n.className='rail__note';n.textContent=L('content.fallback');$('introBox').before(n)}
 renderFresh();renderRail();bindTips($('intro'));
 show(start||views[0],false);
 /* live check: did a patch come out after this page was generated? (API allows CORS) */
