@@ -1,6 +1,6 @@
 ---
 name: deadlock-build-fr
-description: Find the best Deadlock builds for a hero (high-ranked one-tricks, Mobalytics, community), analyse how to play and counter it (role, measured play style, matchups, abilities, power spikes), and produce a French page with a TLDR and codes to paste in game via "Coller le build"; or translate one build (deadchaps.gg link or id). Use when the user asks for a hero's builds, how to play or counter a hero, to redo / update a hero page, opens the "all heroes" page, gives a build link or id to translate, or pastes a build code copied in game.
+description: Find the best Deadlock builds for a hero (high-ranked one-tricks, Mobalytics, community), analyse how to play and counter it (role, measured play style, matchups, abilities, power spikes), and produce English and French pages with a TLDR and codes to paste in game via "Paste build"; or translate one build (deadchaps.gg link or id). Use when the user asks for a hero's builds, how to play or counter a hero, to redo / update a hero page, opens the "all heroes" page, gives a build link or id to translate, or pastes a build code copied in game.
 ---
 
 # Deadlock builds: find, translate, import in game
