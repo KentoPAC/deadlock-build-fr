@@ -6,7 +6,7 @@ import datetime
 import os
 
 from common import read_json
-from i18n import CONTENT_LANG, current, t, table
+from i18n import CONTENT_LANG, LANGS, current, t, table
 
 SKILL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CHANGELOG = read_json(os.path.join(SKILL, "data", "changelog.json"))["changes"]
@@ -69,6 +69,13 @@ def completeness(folder):
     if unsourced:
         paths = ", ".join(unsourced[:4]) + ("…" if len(unsourced) > 4 else "")
         missing.append(t("missing.sources", count=len(unsourced), paths=paths))
+    paths = set(text_paths(summaries))
+    for lang in LANGS:
+        if lang == CONTENT_LANG or not paths:
+            continue
+        translated = set(text_paths(load_json(f"{folder}/summaries.{lang}.json", {})))
+        if paths - translated:
+            missing.append(t("missing.translation", language=lang.upper(), count=len(paths - translated)))
     version = summaries.get("version", 1)
     pending = [{**{k: c.get(k) for k in ("version", "date", "todo", "auto")}, "title": localized(c["title"])}
                for c in CHANGELOG if c["version"] > version]

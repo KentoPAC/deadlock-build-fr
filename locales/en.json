@@ -133,6 +133,7 @@
  },
  "missing.build_summaries": "summary of each build",
  "missing.sources": "sources for {count} text(s) ({paths})",
+ "missing.translation": "{language} translation of {count} text(s)",
  "ask.update": "Update the {hero} page ({folder}) from method v{version} to v{current}: apply only the changes {changes} described in data/changelog.json, without redoing the rest.",
  "ask.also_missing": " Also missing: {missing}.",
  "ask.complete": "Complete the {hero} page: missing {missing}.",

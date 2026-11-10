@@ -31,6 +31,12 @@ class I18nTest(unittest.TestCase):
             used = set(re.findall(r"\{\{ui:([\w.]+)\}\}", text)) | set(re.findall(r"\bL\('([\w.]+)'", text))
             self.assertEqual(sorted(k for k in used - ui if not k.endswith(".")), [], name)
 
+    def test_no_placeholder_is_named_lang(self):
+        # t(key, lang=...) selects the locale: a {lang} placeholder could never be filled.
+        for lang in i18n.LANGS:
+            texts = [v for v in i18n.strings(lang).values() if isinstance(v, str)] + list(i18n.strings(lang)["ui"].values())
+            self.assertEqual([x for x in texts if "{lang}" in x], [], lang)
+
     def test_t_fills_placeholders(self):
         self.assertEqual(i18n.t("otp.note", lang="fr", pct=98, minute=4), "Pris dans 98 % de ses parties, vers 4 min.")
         self.assertEqual(i18n.t("otp.note", lang="en", pct=98, minute=4), "Bought in 98% of their games, around 4 min.")
