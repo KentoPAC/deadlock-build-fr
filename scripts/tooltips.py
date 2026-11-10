@@ -1,8 +1,7 @@
-"""In-game style tooltips for items and abilities, built from the API assets (French + English)."""
+"""In-game style tooltips for items and abilities, built from the API assets (in the page language)."""
 import html
 import re
 
-from common import get
 from i18n import table
 
 # Ability upgrade points per tier (T1, T2, T3).
@@ -150,26 +149,13 @@ def tooltip(item):
             "tier": item.get("item_tier"), "imb": bool(item.get("imbue")), "innate": innate, "blocks": blocks}
 
 
-def english_items():
-    try:
-        return {i["id"]: i for i in get("/v1/assets/items", language="english")}
-    except Exception:
-        return {}
-
-
-def item_data(all_items, used, keys=None, english=None):
-    """French tooltips + English version (name, stats, description) for the page's FR/EN toggle."""
-    english = english if english is not None else english_items()
+def item_data(all_items, used, keys=None):
+    """Tooltips of the used items and abilities, in the language of `all_items`."""
     out = {}
     for item_id in used:
         if item_id not in all_items:
             continue
         data = tooltip(all_items[item_id])
-        if item_id in english:
-            en = tooltip(english[item_id])
-            data["en"] = {"n": en["n"], "innate": en["innate"], "blocks": en["blocks"]}
-            if en.get("ab"):
-                data["en"].update(secs=en["secs"], ups=en["ups"])
         if keys and item_id in keys:
             data["key"] = keys[item_id]
         out[str(item_id)] = data

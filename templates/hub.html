@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="__LANG__">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -37,6 +37,8 @@ h1{margin:var(--space-2xs) 0 0;font:800 clamp(2.75rem,4vw + 1.25rem,4.5rem)/1 va
 .tools input{width:240px;max-width:100%;padding:9px 12px;background:var(--color-paper-2);border:1px solid var(--color-rule);color:var(--color-ink);font:inherit}
 .tools input:focus{border-color:var(--color-accent);outline:none}
 .seg{display:flex}.seg button{cursor:pointer;padding:8px 12px;border:1px solid var(--color-rule);background:var(--color-paper-2);color:var(--color-muted);font:700 var(--text-sm)/1 var(--font-body);text-transform:uppercase;letter-spacing:.04em}
+.seg.lang{margin-left:var(--space-xs)}.seg a{padding:8px 12px;border:1px solid var(--color-rule);background:var(--color-paper-2);color:var(--color-muted);font:700 var(--text-sm)/1 var(--font-body);text-decoration:none;letter-spacing:.04em}
+.seg a+a{border-left:0}.seg a:hover{color:var(--color-ink)}.seg a[aria-current=true]{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-accent-ink)}
 .seg button+button{border-left:0}.seg button[aria-pressed=true]{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-accent-ink)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--space-md);margin-top:var(--space-lg)}
 .card{--hc:var(--color-rule);position:relative;display:flex;flex-direction:column;background:var(--color-paper-2);border:1px solid var(--color-rule);box-shadow:0 4px 0 var(--color-shade);
@@ -111,53 +113,58 @@ footer a:hover{color:var(--color-accent);text-decoration-color:currentColor}
 <feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
 <div class="wrap">
 <header>
-  <div><p class="kicker">◆ Builds traduits · prêts à coller</p><h1>Tous les héros</h1>
+  <div><p class="kicker">{{ui:hub.kicker}}</p><h1>{{ui:nav.all_heroes}}</h1>
     <p class="sub" id="sub"></p></div>
-  <div class="tools"><input id="q" type="search" placeholder="Chercher un héros…" aria-label="Chercher un héros">
-    <div class="seg" role="group" aria-label="Filtre"><button type="button" data-f="all">Tous</button><button type="button" data-f="done">Faits</button><button type="button" data-f="todo">À faire</button></div></div>
+  <div class="tools"><input id="q" type="search" placeholder="{{ui:hub.search}}" aria-label="{{ui:hub.search}}">
+    <div class="seg" role="group" aria-label="{{ui:hub.filter}}"><button type="button" data-f="all">{{ui:hub.all}}</button><button type="button" data-f="done">{{ui:hub.done}}</button><button type="button" data-f="todo">{{ui:hub.todo}}</button></div>
+    <nav class="seg lang" aria-label="{{ui:lang.label}}">__LANG_LINKS__</nav></div>
 </header>
 <main class="grid" id="grid"></main>
-<p class="empty" id="empty" hidden>Aucun héros ne correspond.</p>
+<p class="empty" id="empty" hidden>{{ui:hub.empty}}</p>
 <footer>
-  <p>Un héros pas encore fait ? <strong>Demander à Claude</strong> copie la demande&nbsp;: colle-la dans Claude Code, la page sort en une minute.</p>
-  <p>Données <a href="https://deadlock-api.com" target="_blank" rel="noopener">deadlock-api.com</a></p>
+  <p>{{ui:hub.foot_a}} <strong>{{ui:hub.ask_btn}}</strong> {{ui:hub.foot_b}}</p>
+  <p>{{ui:hub.data}} <a href="https://deadlock-api.com" target="_blank" rel="noopener">deadlock-api.com</a></p>
 </footer>
 </div>
 <div id="toast" role="status"></div>
+<script type="application/json" id="ui">__UI__</script>
 <script type="application/json" id="data">__DATA__</script>
 <script>
 const D=JSON.parse(document.getElementById('data').textContent);let P=D.patches.slice();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const $=id=>document.getElementById(id);
-const CLS={mystic:'Mystique',brawler:'Bagarreur',assassin:'Assassin',marksman:'Tireur'};
-const fmt=t=>new Date(t*1000).toLocaleDateString('fr-FR');
+const UI=JSON.parse($('ui').textContent),LOC=UI['fmt.locale'];
+const L=(k,v)=>{let s=UI[k]??k;if(v)for(const[a,b]of Object.entries(v))s=s.split('{'+a+'}').join(b);return s};
+const CLS=Object.fromEntries(['mystic','brawler','assassin','marksman'].map(k=>[k,L('class.'+k)]));
+const fmt=t=>new Date(t*1000).toLocaleDateString(LOC);
 function ago(t){const day=x=>{const d=new Date(x);return Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5};const d=Math.round(day(Date.now())-day(t*1000));
-  return d<=0?'aujourd’hui':d===1?'hier':d<45?`il y a ${d} jours`:`il y a ${Math.round(d/30)} mois`}
-function status(p){if(!p)return['todo','À faire'];const after=P.filter(x=>x.t>p.generated&&x.t<=Date.now()/1000);
-  if(after.length)return['bad','Patch sorti'];if((p.missing||[]).length)return['warn','Ancienne analyse'];if((p.pending||[]).length)return['warn','Méthode changée'];if((Date.now()/1000-p.generated)/86400>7)return['warn','À vérifier'];return['ok','À jour']}
+  return d<=0?L('ago.today'):d===1?L('ago.yesterday'):d<45?L('ago.days',{n:d}):L('ago.months',{n:Math.round(d/30)})}
+function status(p){if(!p)return['todo',L('hub.todo')];const after=P.filter(x=>x.t>p.generated&&x.t<=Date.now()/1000);
+  if(after.length)return['bad',L('stamp.patch')];if((p.missing||[]).length)return['warn',L('stamp.outdated')];if((p.pending||[]).length)return['warn',L('stamp.method')];if((Date.now()/1000-p.generated)/86400>7)return['warn',L('stamp.check')];return['ok',L('stamp.ok')]}
 let F='all';try{F=localStorage.getItem('hub-f')||'all'}catch(e){}
+const qf=new URLSearchParams(location.search).get('f');if(['all','done','todo'].includes(qf))F=qf;
 function render(){const q=$('q').value.trim().toLowerCase();
   const list=D.heroes.filter(h=>(!q||h.name.toLowerCase().includes(q)||h.en.toLowerCase().includes(q))&&(F==='all'||(F==='done')===!!h.page));
   $('grid').innerHTML=list.map(h=>{const [st,lbl]=status(h.page),p=h.page;
-    const ask=p?(p.ask&&st!=='bad'?p.ask:`Refais les builds ${h.name} (page de builds à mettre à jour)`):`Trouve-moi les meilleurs builds ${h.name}`;
+    const ask=p?(p.ask&&st!=='bad'?p.ask:L('hub.ask_redo',{hero:h.name})):L('hub.ask_new',{hero:h.name});
     return `<article class="card flame${p?'':' card--todo'}" style="${h.color?`--hc:${esc(h.color)}`:''}">
     <div class="card__art">${h.card?`<img class="p" src="${esc(h.card)}" alt="" loading="lazy">`:''}<span class="stamp ${st}">${lbl}</span>
       <div class="card__name">${h.nameSvg?`<img src="${esc(h.nameSvg)}" alt="${esc(h.name)}" onerror="this.outerHTML='<span>${esc(h.name)}</span>'">`:`<span>${esc(h.name)}</span>`}</div></div>
     <div class="card__body"><div class="card__meta">
-      <div class="meta__top"><span class="meta__cls">${esc(CLS[h.type]||'')}</span>${p?`<span class="meta__n">${p.n} build${p.n>1?'s':''}</span>`:''}</div>
-      ${p?`<div class="meta__date">Analysé <time title="${fmt(p.generated)}">${ago(p.generated)}</time></div>`:''}
-      ${p&&(p.missing||[]).length?`<p class="meta__miss">Il manque ${esc(p.missing.slice(0,3).join(', '))}${p.missing.length>3?'…':'.'}</p>`:''}
-      ${p&&(p.pending||[]).length?`<p class="meta__miss" title="${esc(p.pending.join(' · '))}">${p.pending.length} nouveauté${p.pending.length>1?'s':''} de méthode depuis</p>`:''}</div>
-      <div class="acts">${p?`<a class="btn btn--main" href="${esc(p.dir)}/index.html#tldr">TLDR</a><a class="btn" href="${esc(p.dir)}/index.html#vs">Le contrer</a>`:''}
-      ${(!p||st!=='ok')?`<button type="button" class="btn${p?'':' btn--main'}" data-ask="${esc(ask)}">${p?'Mettre à jour':'Demander à Claude'}</button>`:''}</div></div></article>`}).join('');
+      <div class="meta__top"><span class="meta__cls">${esc(CLS[h.type]||'')}</span>${p?`<span class="meta__n">${L(p.n>1?'hub.builds_many':'hub.builds_one',{n:p.n})}</span>`:''}</div>
+      ${p?`<div class="meta__date">${L('hub.analysed')} <time title="${fmt(p.generated)}">${ago(p.generated)}</time></div>`:''}
+      ${p&&(p.missing||[]).length?`<p class="meta__miss">${L('hub.missing',{list:esc(p.missing.slice(0,3).join(', '))})}${p.missing.length>3?'…':'.'}</p>`:''}
+      ${p&&(p.pending||[]).length?`<p class="meta__miss" title="${esc(p.pending.join(' · '))}">${p.pending.length>1?L('hub.pending_many',{n:p.pending.length}):L('hub.pending_one')}</p>`:''}</div>
+      <div class="acts">${p?`<a class="btn btn--main" href="${esc(p.dir)}/${D.pageName}#tldr">TLDR</a><a class="btn" href="${esc(p.dir)}/${D.pageName}#vs">${L('rail.vs')}</a>`:''}
+      ${(!p||st!=='ok')?`<button type="button" class="btn${p?'':' btn--main'}" data-ask="${esc(ask)}">${p?L('hub.update'):L('hub.ask_btn')}</button>`:''}</div></div></article>`}).join('');
   $('empty').hidden=list.length>0;
   document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.f===F));
   document.querySelectorAll('[data-ask]').forEach(b=>b.onclick=()=>copy(b.dataset.ask,b))}
 async function copy(t,btn){let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){}
   if(!ok){const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{ok=document.execCommand('copy')}catch(e){}x.remove()}
-  const T=$('toast');T.textContent=ok?`Copié : « ${t} » → colle-le dans Claude Code`:`Copie impossible : tape « ${t} » dans Claude Code`;T.style.display='block';
+  const T=$('toast');T.textContent=ok?L('hub.copied',{t}):L('hub.copy_fail',{t});T.style.display='block';
   clearTimeout(T._t);T._t=setTimeout(()=>T.style.display='none',4000);if(ok){btn.dataset.state='done';setTimeout(()=>delete btn.dataset.state,2000)}}
-const n=D.heroes.filter(h=>h.page).length;$('sub').textContent=`${n} héros faits sur ${D.heroes.length} · les tampons comparent la date de chaque page aux mises à jour du jeu`;
+const n=D.heroes.filter(h=>h.page).length;$('sub').textContent=L('hub.sub',{n,total:D.heroes.length});
 $('q').oninput=render;document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{F=b.dataset.f;try{localStorage.setItem('hub-f',F)}catch(e){}render()});
 render();
 fetch('https://api.deadlock-api.com/v2/patches').then(r=>{if(!r.ok)throw 0;return r.json()}).then(list=>{const known=new Set(P.map(p=>Math.floor(p.t/86400)));
