@@ -13,13 +13,9 @@ target-version = "py314"
 extend-exclude = ["templates"]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "UP"]
+select = ["E", "F", "W"]
 ignore = [
     "E402",   # scripts add their folder to sys.path before importing siblings (they run with python -I)
     "E731",
-    "B008",
-    "SIM115",
 ]
 
-[tool.ruff.lint.isort]
-known-first-party = ["codec", "common", "status", "textlinks", "tooltips", "report", "guides", "counterplay", "tests"]
