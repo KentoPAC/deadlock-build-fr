@@ -778,7 +778,7 @@ function abilityCards(full){const P_=(D.plan||{}).abilities||{},fm=K().firstMax;
   ${P_[a.key]?`<p class="how">${lk(P_[a.key])}</p>`:''}
   ${full?(()=>{const t=T(a.id),st=(t.secs||[]).flatMap(s=>s.imp.concat(s.basic));return `<p>${esc(LANG==='en'&&a.desc_en?a.desc_en:a.desc)}</p>${(t.cd||st.length)?`<div class="tab__basic">${t.cd?`<span>⟳ <b>${t.cd}s</b></span>`:''}${st.map(p=>`<span><b>${p.v}</b> ${esc(p.label)}${p.scale?` <span style="color:var(--color-spirit)">✦×${p.scale}</span>`:''}</span>`).join('')}</div>`:''}<ol>${(LANG==='en'&&a.tiers_en.length?a.tiers_en:a.tiers).map((x,k)=>`<li><b style="color:var(--color-accent)">${[1,2,5][k]} pt${k?'s':''}</b> · ${esc(x)||'—'}</li>`).join('')}</ol>`})():''}</div>`).join('')}</div>`}
 function tldrPanel(){const t=D.tldr||{},P_=D.plan||{},b=pickBuild(),f=buildFresh(b),k=K();
-  const btn=b.code?`<button class="copy cham" data-code="${esc(b.code)}">Copier le build →</button>`:`<button class="copy cham" disabled>À traduire</button>`;
+  const btn=b.code?`<button class="copy cham" data-code="${esc(b.code)}">Copier le build</button>`:`<button class="copy cham" disabled>À traduire</button>`;
   const ph=[['early','Early'],['mid','Mid'],['late','Late']].map(([x,l])=>[l,t[x]||P_[x]]).filter(x=>x[1]);
   const keys=t.keys||(P_.tips||[]).slice(0,3);
   const C=D.completeness||{},PD=C.pending||[];const inc=((C.missing||[]).length||PD.length)?`<div class="incomplete"><p><b>Analyse à mettre à jour</b> — ${PD.length?`la méthode a changé depuis cette page (v${C.version} → v${C.current}). Ce qui est nouveau :`:'cette page a été faite avant les dernières améliorations.'}</p>
@@ -885,7 +885,7 @@ function statStrip(b){const f=buildFresh(b),t=wrTone(b.winrate);
     <div class="stat" data-lvl="${f.lvl}"><span class="stat__k">${b.source==='OTP'?'Période':'Mis à jour'}</span><span class="stat__v">${esc(f.v)}</span><span class="stat__s">${esc(f.s)}</span></div></div>`}
 
 function buildPanel(b){
-  const btn=b.code?`<button class="copy cham" data-code="${esc(b.code)}">Copier le build →</button>`
+  const btn=b.code?`<button class="copy cham" data-code="${esc(b.code)}">Copier le build</button>`
     :`<button class="copy cham" disabled title="Pas encore traduit : demande à Claude">À traduire</button>`;
   let nn=0;const nTotal=b.cats.reduce((a,c)=>a+c.mods.filter(m=>m.note).length,0);
   const cats=`<div class="cats-bar"><h3>Objets</h3>${nTotal?`<button type="button" class="notes-btn" aria-pressed="${NOTES}">✎ Notes de l’auteur (${nTotal})</button>`:''}</div>
@@ -939,7 +939,7 @@ document.querySelector('.tldr-btn').onclick=()=>show('tldr',true);
 
 /* ---- copy (8 states: default/hover/focus/active/disabled/loading/error/success) ---- */
 function bindCopy(){document.querySelectorAll('.copy[data-code]').forEach(btn=>btn.onclick=async()=>{
-  const label='Copier le build →';btn.dataset.state='loading';btn.textContent='Copie…';let ok=false;
+  const label='Copier le build';btn.dataset.state='loading';btn.textContent='Copie…';let ok=false;
   try{await navigator.clipboard.writeText(btn.dataset.code);ok=true}catch(e){}
   if(!ok){const t=document.createElement('textarea');t.value=btn.dataset.code;document.body.appendChild(t);t.select();
     try{ok=document.execCommand('copy')}catch(e){}t.remove()}
