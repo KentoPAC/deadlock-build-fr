@@ -28,7 +28,7 @@ into the game.
 French) such as
 [Mina](https://kentopac.github.io/deadlock-build-fr/examples/search-mina/),
 [Pocket](https://kentopac.github.io/deadlock-build-fr/examples/search-pocket/) or
-[Violette](https://kentopac.github.io/deadlock-build-fr/examples/search-violette/). Build codes in them use author id 0: no personal data.
+[Violet](https://kentopac.github.io/deadlock-build-fr/examples/search-violette/). Build codes in them use author id 0: no personal data.
 
 To refresh them after regenerating your own pages:
 
