@@ -17,7 +17,7 @@ import subprocess
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from common import get, heroes, items, parse_otp_note, rank_label, read_json, read_text, write_text  # noqa: E402
+from common import GAME_LANGUAGE, get, heroes, items, parse_otp_note, rank_label, read_json, read_text, write_text  # noqa: E402
 from i18n import CONTENT_LANG, DEFAULT_LANG, LANGS, t, table, use  # noqa: E402
 from status import completeness, load_json, resolve_sources  # noqa: E402
 from textlinks import link_index, short_names, signature_abilities  # noqa: E402
@@ -322,6 +322,8 @@ def load_builds(folder, candidates, summaries, lang):
                        "matches": c.get("matches"), "share": c.get("share"), "favorites": c.get("favorites"),
                        "updated": c.get("updated"), "buildId": c.get("build_id"),
                        "translated": c["_translated"] or not c.get("needs_translation"),
+                       # texts in the author's own language are shown as written (never "corrected")
+                       "authorWords": c["source"] != "OTP" and c.get("language") == GAME_LANGUAGE.get(lang),
                        "resume": summary.get("resume", ""), "points": summary.get("points", []),
                        "cats": cats, "order": order})
     return builds
@@ -338,9 +340,13 @@ def all_strings(value):
             yield from all_strings(v)
 
 
-def written_texts(summaries, builds, tips):
+def written_texts(summaries, builds, tips, ours_only=False):
+    """Every text of the page; ours_only leaves out build texts shown in the author's own words."""
     texts = [summaries.get("intro", "")] + list(all_strings(summaries.get("plan") or {})) + list(all_strings(summaries.get("tldr") or {}))
     for b in builds:
+        if ours_only and b.get("authorWords"):
+            texts += [b["resume"]] + list(b["points"])
+            continue
         texts += [b["resume"], b["desc"]] + list(b["points"])
         for cat in b["cats"]:
             texts.append(cat["desc"])
@@ -402,9 +408,9 @@ def build_page(folder, data, lang):
     used.update(i for x in tips for i in x["items"])
     # Texts quote item names in their own language: links are matched with that language's names.
     text_items = items(content_lang)
-    if lang == CONTENT_LANG:
-        for word, names, excerpt in short_names(text_items, texts):
-            print(f"Shortened name \"{word}\" ({' / '.join(names)}?): …{excerpt}…")
+    if content_lang == lang:  # check the writing once per language, not on fallback content
+        for word, names, excerpt in short_names(text_items, written_texts(summaries, builds, tips, ours_only=True)):
+            print(f"Shortened name ({lang}) \"{word}\" ({' / '.join(names)}?): …{excerpt}…")
     links = link_index(hero_id, text_items, texts)
     keys = {link["id"]: link["key"] for link in links if link.get("key")}
     used.update(link["id"] for link in links)
