@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Héros Deadlock</title>
+<link rel="icon" href="_assets/emblem.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Hallmark · genre: atmospheric · macrostructure: Catalogue (hero index) · theme: same tokens as hero pages
+ * paper charcoal · ink parchment · accent signal orange · display Big Shoulders Display + body Jost */
+:root{
+  --color-paper:oklch(13% 0.005 260);--color-paper-2:oklch(19% 0.008 260);--color-paper-3:oklch(25% 0.012 260);
+  --color-rule:oklch(36% 0.018 260);--color-neutral:oklch(66% 0.015 250);--color-muted:oklch(84% 0.025 78);
+  --color-ink:oklch(94% 0.03 78);--color-accent:oklch(65% 0.165 42);--color-accent-hi:oklch(70% 0.18 42);--color-accent-ink:oklch(14% 0.01 50);
+  --color-ok:oklch(72% 0.17 140);--color-warn:oklch(82% 0.15 80);--color-err:oklch(68% 0.19 25);--color-shade:oklch(8% 0.004 260);
+  --color-focus:oklch(80% 0.15 70);
+  --font-display:"Big Shoulders Display",Impact,"Arial Narrow",sans-serif;--font-body:"Jost",ui-sans-serif,system-ui,sans-serif;
+  --space-2xs:.5rem;--space-xs:.75rem;--space-sm:1rem;--space-md:1.5rem;--space-lg:2rem;--space-xl:3rem;
+  --text-xs:.75rem;--text-sm:.875rem;--text-md:1.25rem;
+  --ease-out:cubic-bezier(.16,1,.3,1);--dur-micro:120ms;--dur-short:220ms;
+}
+*{box-sizing:border-box}html,body{overflow-x:clip}
+body{margin:0;background:var(--color-paper);color:var(--color-ink);font:400 1rem/1.5 var(--font-body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}
+button{font:inherit;color:inherit}
+.wrap{max-width:1440px;margin:0 auto;padding:var(--space-xl) var(--space-sm) var(--space-xl)}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:var(--space-md);padding-bottom:var(--space-md);position:relative}
+header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;border-top:1px solid var(--color-rule);border-bottom:1px solid var(--color-rule)}
+.kicker{margin:0;font:700 var(--text-sm)/1 var(--font-display);letter-spacing:.3em;text-transform:uppercase;color:var(--color-accent)}
+h1{margin:var(--space-2xs) 0 0;font:800 clamp(2.75rem,4vw + 1.25rem,4.5rem)/1 var(--font-display);letter-spacing:.03em;text-transform:uppercase}
+.sub{margin:var(--space-2xs) 0 0;color:var(--color-muted)}
+.tools{display:flex;flex-wrap:wrap;gap:var(--space-xs);align-items:center}
+.tools input{width:240px;max-width:100%;padding:9px 12px;background:var(--color-paper-2);border:1px solid var(--color-rule);color:var(--color-ink);font:inherit}
+.tools input:focus{border-color:var(--color-accent);outline:none}
+.seg{display:flex}.seg button{cursor:pointer;padding:8px 12px;border:1px solid var(--color-rule);background:var(--color-paper-2);color:var(--color-muted);font:700 var(--text-sm)/1 var(--font-body);text-transform:uppercase;letter-spacing:.04em}
+.seg button+button{border-left:0}.seg button[aria-pressed=true]{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-accent-ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--space-md);margin-top:var(--space-lg)}
+.card{--hc:var(--color-rule);position:relative;display:flex;flex-direction:column;background:var(--color-paper-2);border:1px solid var(--color-rule);box-shadow:0 4px 0 var(--color-shade);
+  transition:transform var(--dur-micro) var(--ease-out),box-shadow var(--dur-micro) var(--ease-out)}
+.card__art{position:relative;aspect-ratio:280/380;overflow:hidden;background:linear-gradient(to bottom,color-mix(in oklch,var(--hc) 70%,var(--color-paper)),var(--color-shade))}
+.card__art img.p{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.card--todo .card__art img.p{filter:grayscale(.85) brightness(.75)}
+.card__name{position:absolute;left:8px;right:8px;bottom:8px;display:flex;align-items:flex-end;min-height:40px}
+.card__name img{max-width:100%;max-height:46px;filter:sepia(.28) drop-shadow(3px 3px 0 var(--color-shade))}
+.card__name span{font:800 1.6rem/1 var(--font-display);text-transform:uppercase;text-shadow:2px 2px 0 var(--color-shade)}
+.stamp{position:absolute;top:10px;right:-4px;padding:2px 8px 1px;border:3px double currentColor;font:800 .95rem/1 var(--font-display);letter-spacing:.12em;text-transform:uppercase;
+  background:color-mix(in oklch,var(--color-shade) 65%,transparent);transform:rotate(6deg)}
+.stamp.ok{color:var(--color-ok)}.stamp.warn{color:var(--color-warn)}.stamp.bad{color:var(--color-err)}.stamp.todo{color:var(--color-neutral);transform:rotate(-4deg)}
+.card__body{display:flex;flex-direction:column;gap:6px;padding:10px;border-top:4px solid var(--hc);flex:1}
+/* card meta — hierarchy from weight + colour only: no boxes, stripes or tracked caps */
+:root{--color-warn-soft:color-mix(in oklch,var(--color-warn) 70%,var(--color-muted))}
+.card__meta{display:grid;gap:2px;margin-bottom:6px;font:400 var(--text-sm)/1.35 var(--font-body);color:var(--color-neutral)}
+.meta__top{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.meta__cls{font-weight:500;color:var(--color-ink)}
+.meta__n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.meta__date time{color:var(--color-muted);cursor:help}
+.meta__miss{margin:2px 0 0;font-size:var(--text-xs);line-height:1.4;color:var(--color-warn-soft)}
+.acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;flex:1 1 auto;padding:7px 10px;cursor:pointer;text-decoration:none;
+  font:700 var(--text-xs)/1 var(--font-body);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--color-rule);background:var(--color-paper-3);color:var(--color-ink);white-space:nowrap}
+.btn:hover{border-color:var(--color-accent)}
+.btn--main{background:var(--color-accent);border-color:var(--color-shade);color:var(--color-accent-ink);box-shadow:3px 3px 0 var(--color-shade)}
+.btn--main:hover{background:var(--color-accent-hi)}
+.btn[data-state=done]{background:var(--color-ok);color:var(--color-shade)}
+.empty{margin-top:var(--space-lg);color:var(--color-neutral)}
+/* footer — single closing line, mirrors the header's double rule as a bookend */
+footer{position:relative;margin-top:var(--space-xl);padding-top:var(--space-md);display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:var(--space-xs) var(--space-lg);
+  font:400 var(--text-sm)/1.5 var(--font-body);color:var(--color-neutral)}
+footer::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;border-top:1px solid var(--color-rule);border-bottom:1px solid var(--color-rule)}
+footer p{margin:0;max-width:62ch}
+footer strong{font-weight:500;color:var(--color-ink)}
+footer a{color:var(--color-muted);text-decoration:underline;text-decoration-color:var(--color-rule);text-underline-offset:3px;white-space:nowrap}
+footer a:hover{color:var(--color-accent);text-decoration-color:currentColor}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--color-ink);color:var(--color-shade);padding:10px 16px;font-weight:500;box-shadow:4px 4px 0 var(--color-shade);display:none;max-width:calc(100% - 32px)}
+@media (max-width:480px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-sm)}.card__name span{font-size:1.2rem}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:0s!important}.card:hover{transform:none}}
+
+/* ---- Deadlock-style motion: hover = colour wipe with a brush slash, card grows + glows, others dim ---- */
+:root{--brush:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40' preserveAspectRatio='none'%3E%3Cpath d='M0 20 C14 9 28 15 44 10 S78 4 96 11 S132 3 150 9 S184 4 200 8 L200 30 C186 36 168 29 150 34 S112 38 94 31 S58 39 40 32 S12 37 0 31 Z'/%3E%3C/svg%3E");--ease-pop:cubic-bezier(.2,.9,.3,1.15)}
+@keyframes sweep{from{transform:translateX(-120%) skewX(-18deg)}to{transform:translateX(130%) skewX(-18deg)}}
+@keyframes breathe{from{box-shadow:0 0 0 2px var(--hc),0 0 10px var(--hc),0 8px 0 var(--color-shade)}to{box-shadow:0 0 0 2px var(--hc),0 0 26px var(--hc),0 8px 0 var(--color-shade)}}
+.card{transition:transform .22s var(--ease-pop),box-shadow .2s var(--ease-out),filter .25s var(--ease-out)}
+.card:hover{transform:translateY(-6px) scale(1.04) rotate(-1deg);z-index:2;animation:breathe 1.1s ease-in-out .2s infinite alternate}
+.grid:has(.card:hover) .card:not(:hover){filter:saturate(.35) brightness(.65)}
+.card:hover .card--todo .card__art img.p{transition:filter .35s var(--ease-out)}
+.card--todo:hover .card__art img.p{filter:none}
+.card__art img.p{transition:transform .5s var(--ease-out)}.card:hover .card__art img.p{transform:scale(1.06)}
+.card__name img,.card__name span{transition:transform .25s var(--ease-pop)}.card:hover .card__name img,.card:hover .card__name span{transform:scale(1.08) rotate(-2deg)}
+@media (prefers-reduced-motion:reduce){.card:hover{transform:none;animation:none}.card__art::after,.btn--main::before{display:none}.card:hover .card__art img.p{transform:none}}
+
+/* ---- blue-green flame around the selected / hovered big block (in-game hero select) ---- */
+:root{--flame-a:oklch(88% 0.13 168);--flame-b:oklch(72% 0.15 185)}
+@keyframes flicker{0%{transform:scale(1,1) translateY(0);opacity:.85}50%{transform:scale(1.015,1.06) translateY(-2px);opacity:1}100%{transform:scale(1,1.02) translateY(-1px);opacity:.9}}
+.flame{position:relative;isolation:isolate;overflow:visible}
+.flame::before{content:"";display:block;position:absolute;inset:0;z-index:-1;background:inherit;border-radius:inherit;clip-path:none;-webkit-mask:none;mask:none;opacity:1;transform:none;animation:none}
+.flame::after{content:"";position:absolute;inset:-9px -9px -7px;z-index:-2;border-radius:8px;pointer-events:none;
+  background:linear-gradient(to top,var(--flame-b),var(--flame-a) 70%,transparent);filter:url(#flame) drop-shadow(0 0 8px var(--flame-b));
+  opacity:0;transition:opacity .22s var(--ease-out)}
+.flame:hover::after,.flame:focus-visible::after{opacity:1;animation:flicker .9s ease-in-out infinite alternate}
+.flame[aria-current=true]::after{opacity:.75;animation:flicker 1.1s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){.flame:hover::after,.flame[aria-current=true]::after{animation:none}}
+</style>
+</head>
+<body>
+<svg aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="flame" x="-25%" y="-60%" width="150%" height="220%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.018 0.07" numOctaves="2" seed="4" result="n"><animate attributeName="baseFrequency" dur="1.4s" values="0.018 0.07;0.024 0.09;0.018 0.07" repeatCount="indefinite"/></feTurbulence>
+<feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
+<div class="wrap">
+<header>
+  <div><p class="kicker">◆ Builds traduits · prêts à coller</p><h1>Tous les héros</h1>
+    <p class="sub" id="sub"></p></div>
+  <div class="tools"><input id="q" type="search" placeholder="Chercher un héros…" aria-label="Chercher un héros">
+    <div class="seg" role="group" aria-label="Filtre"><button type="button" data-f="all">Tous</button><button type="button" data-f="done">Faits</button><button type="button" data-f="todo">À faire</button></div></div>
+</header>
+<main class="grid" id="grid"></main>
+<p class="empty" id="empty" hidden>Aucun héros ne correspond.</p>
+<footer>
+  <p>Un héros pas encore fait ? <strong>Demander à Claude</strong> copie la demande&nbsp;: colle-la dans Claude Code, la page sort en une minute.</p>
+  <p>Données <a href="https://deadlock-api.com" target="_blank" rel="noopener">deadlock-api.com</a></p>
+</footer>
+</div>
+<div id="toast" role="status"></div>
+<script type="application/json" id="data">__DATA__</script>
+<script>
+const D=JSON.parse(document.getElementById('data').textContent);let P=D.patches.slice();
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id);
+const CLS={mystic:'Mystique',brawler:'Bagarreur',assassin:'Assassin',marksman:'Tireur'};
+const fmt=t=>new Date(t*1000).toLocaleDateString('fr-FR');
+function ago(t){const day=x=>{const d=new Date(x);return Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5};const d=Math.round(day(Date.now())-day(t*1000));
+  return d<=0?'aujourd’hui':d===1?'hier':d<45?`il y a ${d} jours`:`il y a ${Math.round(d/30)} mois`}
+function status(p){if(!p)return['todo','À faire'];const after=P.filter(x=>x.t>p.generated&&x.t<=Date.now()/1000);
+  if(after.length)return['bad','Patch sorti'];if((p.missing||[]).length)return['warn','Ancienne analyse'];if((p.pending||[]).length)return['warn','Méthode changée'];if((Date.now()/1000-p.generated)/86400>7)return['warn','À vérifier'];return['ok','À jour']}
+let F='all';try{F=localStorage.getItem('hub-f')||'all'}catch(e){}
+function render(){const q=$('q').value.trim().toLowerCase();
+  const list=D.heroes.filter(h=>(!q||h.name.toLowerCase().includes(q)||h.en.toLowerCase().includes(q))&&(F==='all'||(F==='done')===!!h.page));
+  $('grid').innerHTML=list.map(h=>{const [st,lbl]=status(h.page),p=h.page;
+    const ask=p?(p.ask&&st!=='bad'?p.ask:`Refais les builds ${h.name} (page de builds à mettre à jour)`):`Trouve-moi les meilleurs builds ${h.name}`;
+    return `<article class="card flame${p?'':' card--todo'}" style="${h.color?`--hc:${esc(h.color)}`:''}">
+    <div class="card__art">${h.card?`<img class="p" src="${esc(h.card)}" alt="" loading="lazy">`:''}<span class="stamp ${st}">${lbl}</span>
+      <div class="card__name">${h.nameSvg?`<img src="${esc(h.nameSvg)}" alt="${esc(h.name)}" onerror="this.outerHTML='<span>${esc(h.name)}</span>'">`:`<span>${esc(h.name)}</span>`}</div></div>
+    <div class="card__body"><div class="card__meta">
+      <div class="meta__top"><span class="meta__cls">${esc(CLS[h.type]||'')}</span>${p?`<span class="meta__n">${p.n} build${p.n>1?'s':''}</span>`:''}</div>
+      ${p?`<div class="meta__date">Analysé <time title="${fmt(p.generated)}">${ago(p.generated)}</time></div>`:''}
+      ${p&&(p.missing||[]).length?`<p class="meta__miss">Il manque ${esc(p.missing.slice(0,3).join(', '))}${p.missing.length>3?'…':'.'}</p>`:''}
+      ${p&&(p.pending||[]).length?`<p class="meta__miss">Nouveau depuis : ${esc(p.pending.join(', '))}</p>`:''}</div>
+      <div class="acts">${p?`<a class="btn btn--main" href="${esc(p.dir)}/index.html#tldr">TLDR</a><a class="btn" href="${esc(p.dir)}/index.html#vs">Le contrer</a>`:''}
+      ${(!p||st!=='ok')?`<button type="button" class="btn${p?'':' btn--main'}" data-ask="${esc(ask)}">${p?'Mettre à jour':'Demander à Claude'}</button>`:''}</div></div></article>`}).join('');
+  $('empty').hidden=list.length>0;
+  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.f===F));
+  document.querySelectorAll('[data-ask]').forEach(b=>b.onclick=()=>copy(b.dataset.ask,b))}
+async function copy(t,btn){let ok=false;try{await navigator.clipboard.writeText(t);ok=true}catch(e){}
+  if(!ok){const x=document.createElement('textarea');x.value=t;document.body.appendChild(x);x.select();try{ok=document.execCommand('copy')}catch(e){}x.remove()}
+  const T=$('toast');T.textContent=ok?`Copié : « ${t} » → colle-le dans Claude Code`:`Copie impossible : tape « ${t} » dans Claude Code`;T.style.display='block';
+  clearTimeout(T._t);T._t=setTimeout(()=>T.style.display='none',4000);if(ok){btn.dataset.state='done';setTimeout(()=>delete btn.dataset.state,2000)}}
+const n=D.heroes.filter(h=>h.page).length;$('sub').textContent=`${n} héros faits sur ${D.heroes.length} · les tampons comparent la date de chaque page aux mises à jour du jeu`;
+$('q').oninput=render;document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{F=b.dataset.f;try{localStorage.setItem('hub-f',F)}catch(e){}render()});
+render();
+fetch('https://api.deadlock-api.com/v2/patches').then(r=>{if(!r.ok)throw 0;return r.json()}).then(list=>{const known=new Set(P.map(p=>Math.floor(p.t/86400)));
+  for(const x of list){if(!/update|\d{2}-\d{2}-\d{4}|gameplay|patch/i.test(x.title||''))continue;const t=Date.parse(x.pub_date)/1000,d=Math.floor(t/86400);
+    if(known.has(d)||known.has(d-1)||known.has(d+1))continue;known.add(d);P.push({t,title:x.title,big:false})}render()}).catch(()=>{});
+</script>
+</body>
+</html>
