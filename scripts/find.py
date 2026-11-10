@@ -21,6 +21,7 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import (LANG_FR, find_hero, get, items, rank_label, read_json, summarize, text_amount,  # noqa: E402
                     todo_list, write_candidate, write_json)
+from i18n import t  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MIN_BADGE = 90          # Fantôme (Phantom) and above for OTPs
@@ -85,7 +86,7 @@ def ability_order(hero_id, account_id, since):
 
 
 def otp_build(hero, player, since):
-    """Rebuild a player's build from their purchase stats. The texts are French: they go into the game."""
+    """Rebuild a player's build from their purchase stats (localized texts: they go into the game)."""
     hero_id = hero["id"]
     all_items = items()
     stats = get("/v1/analytics/item-stats", hero_id=hero_id, account_id=player["account_id"], min_unix_timestamp=since)
@@ -98,9 +99,9 @@ def otp_build(hero, player, since):
 
     def note(s):
         pct = round(100 * s["matches"] / n)
-        text = f"Pris dans {pct} % de ses parties, vers {round(s['avg_buy_time_s'] / 60)} min."
+        text = t("otp.note", pct=pct, minute=round(s["avg_buy_time_s"] / 60))
         if s.get("sold") and s["sold"] / s["matches"] >= 0.4 and s.get("avg_sell_time_s"):
-            text += f" Revendu vers {round(s['avg_sell_time_s'] / 60)} min."
+            text += t("otp.note_sold", minute=round(s["avg_sell_time_s"] / 60))
         return text
 
     groups = {"early": [], "mid": [], "late": [], "situational": [], "situational_late": []}
@@ -120,19 +121,18 @@ def otp_build(hero, player, since):
 
     who = player["name"]
     categories = [c for c in [
-        category("#Citadel_HeroBuilds_EarlyGame", f"Ce que {who} achète presque toujours avant {EARLY_MIN} min.", groups["early"]),
-        category("#Citadel_HeroBuilds_MidGame", f"Ses achats systématiques entre {EARLY_MIN} et {MID_MIN} min.", groups["mid"]),
-        category("#Citadel_HeroBuilds_LateGame", f"Ses achats systématiques après {MID_MIN} min.", groups["late"]),
-        category("Situationnel", "Pris dans une partie sur trois à deux sur trois : selon la partie.", groups["situational"]),
-        category("Situationnel (late)", "Choix de fin de partie selon la situation.", groups["situational_late"]),
+        category("#Citadel_HeroBuilds_EarlyGame", t("otp.cat.early", who=who, minute=EARLY_MIN), groups["early"]),
+        category("#Citadel_HeroBuilds_MidGame", t("otp.cat.mid", start=EARLY_MIN, end=MID_MIN), groups["mid"]),
+        category("#Citadel_HeroBuilds_LateGame", t("otp.cat.late", minute=MID_MIN), groups["late"]),
+        category(t("otp.cat.situational"), t("otp.cat.situational_desc"), groups["situational"]),
+        category(t("otp.cat.situational_late"), t("otp.cat.situational_late_desc"), groups["situational_late"]),
     ] if c["mods"]]
 
     build = {
         "hero_id": hero_id,
-        "name": f"OTP {who} ({hero['name']})",
-        "description": (f"Build reconstitué d'après les vrais achats de {who} ({rank_label(player['badge'])}), "
-                        f"{player['matches']} parties de {hero['name']} sur la période "
-                        f"({round(100 * player['share'])} % de ses parties), {round(winrate)} % de victoires."),
+        "name": t("otp.name", who=who, hero=hero["name"]),
+        "description": t("otp.description", who=who, rank=rank_label(player["badge"]), matches=player["matches"],
+                         hero=hero["name"], share=round(100 * player["share"]), winrate=round(winrate)),
         "language": LANG_FR,
         "details": {"mod_categories": categories,
                     "ability_order": {"currency_changes": ability_order(hero_id, player["account_id"], since)}},

@@ -20,18 +20,19 @@ import urllib.parse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import get, read_json, read_text, write_json, write_text  # noqa: E402
 from guides import CACHE, STEAM_APP_ID, fetch, last_big_patch, steam_date  # noqa: E402
+from i18n import t, table  # noqa: E402
 
 QUERIES = ["roles explained position carry support", "position 1 6 carry support"]
 KNOWN_GUIDE = os.path.join(CACHE, "roles_guide.txt")  # last good guide id, used when Steam rate-limits us
-# key -> (per-game value, French label shown on the page)
+# key -> per-game value (labels: locale "metrics")
 METRICS = {
-    "farm": (lambda h: h["total_net_worth"] / h["matches"], "Farm (âmes)"),
-    "tank": (lambda h: h["total_player_damage_taken"] / h["matches"], "Dégâts encaissés"),
-    "dmg": (lambda h: h["total_player_damage"] / h["matches"], "Dégâts aux héros"),
-    "assists": (lambda h: h["total_assists"] / h["matches"], "Assists"),
-    "kills": (lambda h: h["total_kills"] / h["matches"], "Kills"),
-    "deaths": (lambda h: h["total_deaths"] / h["matches"], "Morts"),
-    "obj": (lambda h: h["total_boss_damage"] / h["matches"], "Dégâts aux objectifs"),
+    "farm": lambda h: h["total_net_worth"] / h["matches"],
+    "tank": lambda h: h["total_player_damage_taken"] / h["matches"],
+    "dmg": lambda h: h["total_player_damage"] / h["matches"],
+    "assists": lambda h: h["total_assists"] / h["matches"],
+    "kills": lambda h: h["total_kills"] / h["matches"],
+    "deaths": lambda h: h["total_deaths"] / h["matches"],
+    "obj": lambda h: h["total_boss_damage"] / h["matches"],
 }
 
 
@@ -68,7 +69,7 @@ def read_guide(guide_id, title, since):
     text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", text))).strip()
     if not title:
         m = re.search(r'<div class="workshopItemTitle">(.*?)</div>', page, re.S)
-        title = html.unescape(m[1]).strip() if m else "Guide des rôles"
+        title = html.unescape(m[1]).strip() if m else t("roles.default_title")
     roles = parse_roles(text)
     if len(roles) < 4:
         return None
@@ -125,7 +126,9 @@ def stat_profile(hero_id, since):
     if not mine:
         return None
     out = {}
-    for key, (metric, label) in METRICS.items():
+    labels = table("metrics")
+    for key, metric in METRICS.items():
+        label = labels[key]
         values = sorted(metric(h) for h in rows)
         value = metric(mine)
         out[key] = {"label": label, "value": round(value),

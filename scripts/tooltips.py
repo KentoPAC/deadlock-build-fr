@@ -3,16 +3,10 @@ import html
 import re
 
 from common import get
+from i18n import table
 
 # Ability upgrade points per tier (T1, T2, T3).
 UPGRADE_COST = {1: 1, 2: 2, 3: 5}
-# Labels for upgrades that come without a description (property_upgrades). French: shown on the page.
-PROPERTY_LABELS = {
-    "Damage": ("", "dégâts"), "AbilityCooldown": (" s", "de recharge"), "AbilityDuration": (" s", "de durée"),
-    "AbilityCastRange": (" m", "de portée"), "Radius": (" m", "de rayon"), "AbilityCharges": ("", "charge(s)"),
-    "TechDamage": ("", "dégâts spirituels"), "Heal": ("", "soins"), "BonusHealth": ("", "PV"),
-    "SlowPercent": (" %", "de ralentissement"), "MoveSpeed": (" m/s", "de vitesse"), "StunDuration": (" s", "d'étourdissement"),
-}
 EMPTY_VALUES = (None, "", "0", "0.0", 0)
 
 
@@ -94,7 +88,8 @@ def tier_text(ability, tier):
             bonus = f"+{f:g}" if f > 0 else f"{f:g}"
         except (TypeError, ValueError):
             pass
-        unit, label = PROPERTY_LABELS.get(name, ("", re.sub(r"(?<!^)(?=[A-Z])", " ", name).lower()))
+        # Upgrades without a description: localized [unit, label], else the property name split into words.
+        unit, label = table("upgrade_labels").get(name, ("", re.sub(r"(?<!^)(?=[A-Z])", " ", name).lower()))
         out.append(f"{bonus}{unit} {label}".strip())
     return ", ".join(out)
 
