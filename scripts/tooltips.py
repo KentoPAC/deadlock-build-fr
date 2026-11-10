@@ -76,7 +76,8 @@ def tier_text(ability, tier):
     """Text of an ability upgrade (T1-T3), from its description or its property upgrades."""
     desc = ability.get("description") or {}
     if desc.get(f"t{tier}_desc"):
-        return plain(desc[f"t{tier}_desc"])
+        # Each <br> separates one effect: keep them apart (" · ") instead of gluing them together.
+        return plain(re.sub(r"<br\s*/?>", " · ", desc[f"t{tier}_desc"]))
     upgrades = ability.get("upgrades") or []
     if len(upgrades) < tier:
         return ""
@@ -91,7 +92,7 @@ def tier_text(ability, tier):
         # Upgrades without a description: localized [unit, label], else the property name split into words.
         unit, label = table("upgrade_labels").get(name, ("", re.sub(r"(?<!^)(?=[A-Z])", " ", name).lower()))
         out.append(f"{bonus}{unit} {label}".strip())
-    return ", ".join(out)
+    return " · ".join(out)
 
 
 def ability_tooltip(ability):

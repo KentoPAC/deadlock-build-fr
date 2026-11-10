@@ -60,6 +60,19 @@
     "report.py"
    ],
    "todo": "Run report.py and fix every \"Shortened name\" it reports (always the full official name, otherwise no link and no English translation). Reread the texts: every item or ability inside a sentence with a verb (\"achète X\", \"X empêche…\"), no telegraphic \"… : Name.\"; the sentence must stay correct when the name switches to English."
+  },
+  {
+   "version": 6,
+   "date": "2026-11-10",
+   "title": "Pics de puissance en frise",
+   "parts": [
+    "kit.spikes"
+   ],
+   "scripts": [
+    "report.py"
+   ],
+   "auto": true,
+   "todo": "Run report.py: ability upgrade texts now keep each effect separate (\" · \") so the power-spike timeline shows one chip per effect. No text to rewrite."
   }
  ]
 }
