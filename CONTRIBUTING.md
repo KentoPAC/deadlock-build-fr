@@ -11,7 +11,7 @@
 | `docs/` | documentation only |
 | `refactor/` | code changes without behaviour change |
 | `test/` | tests only |
-| `chore/` | tooling, CI, dependencies |
+| `chore/` | tooling, dependencies |
 
 ## Commits
 
@@ -24,7 +24,7 @@ fix(textlinks): match item names containing non-breaking spaces
 docs: explain the analysis method versioning
 ```
 
-Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `ci`, `perf`, `style`.
+Types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `perf`, `style`.
 
 ## Analysis method changes
 
@@ -33,9 +33,10 @@ Any change to how information is gathered or what is written on the pages, even 
 
 ## Checks
 
+There is no hosted CI: run the checks locally before pushing.
+
 ```sh
-python3 -I -m unittest discover -s tests -t .
-ruff check .
+./check.sh   # ruff (when installed) + unit tests
 ```
 
 Pages generated before and after a refactor should be identical: regenerate a few with `scripts/report.py` and
