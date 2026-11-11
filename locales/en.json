@@ -451,6 +451,9 @@
   "hub.pending_one": "1 method change since",
   "hub.pending_many": "{n} method changes since",
   "hub.update": "Update",
+  "hub.counter": "Counter",
+  "hub.to_update": "Needs an update",
+  "hub.not_done": "Not analysed yet",
   "hub.copied": "Copied: “{t}” → paste it into Claude Code",
   "hub.copy_fail": "Could not copy: type “{t}” into Claude Code",
   "hub.sub": "{n} of {total} heroes done · stamps compare each page's date with the game updates"
