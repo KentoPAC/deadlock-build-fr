@@ -26,6 +26,7 @@
  "otp.cat.situational_late_desc": "Choix de fin de partie selon la situation.",
  "otp.name": "OTP {who} ({hero})",
  "otp.description": "Build reconstitué d'après les vrais achats de {who} ({rank}), {matches} parties de {hero} sur la période ({share} % de ses parties), {winrate} % de victoires.",
+ "filler_patterns": ["\\bles lanes se jouent (?:en duo|à deux)", "\\bavec ton duo\\b", "\\bmon explication\\s*:", "\\bil est important de\\b", "\\bcomme la moyenne\\b", "\\bne farme pas (?:une lane )?en afk\\b"],
  "style_tags": {
   "lane_aggressive": "Lane agressive",
   "lane_passive": "Lane passive",
@@ -148,7 +149,8 @@
   "counters": "Objets achetés par les OTP contre certains héros (deadlock-api)",
   "kit": "Données du jeu : compétences, recharges, paliers, pics de puissance (API assets)",
   "items": "Données du jeu : objets, coûts, effets (API assets)",
-  "patch": "Notes de patch officielles (liste des patchs de l'API)"
+  "patch": "Notes de patch officielles (liste des patchs de l'API)",
+  "lanes": "Lanes en duo mesurées : victoires par lane et par partenaire de lane (deadlock-api lane-matchup-stats)"
  },
  "source.build": "Build {source} de {author}",
  "source.guide": "« {title} » de {author}",

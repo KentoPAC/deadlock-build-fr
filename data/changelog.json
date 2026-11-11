@@ -180,6 +180,21 @@
    ],
    "auto": true,
    "todo": "Run report.py: when the advised build has no measured purchases (Mobalytics, community or video build), key items and item power spikes come from the best-ranked one-trick's real purchases, and the page says whose items and whose ability order it shows. No text to rewrite."
+  },
+  {
+   "version": 12,
+   "date": "2026-11-11",
+   "title": {
+    "fr": "Pas de généralités ni de redites",
+    "en": "No filler, no repeats"
+   },
+   "parts": [
+    "textes"
+   ],
+   "scripts": [
+    "report.py"
+   ],
+   "todo": "Run report.py and fix every \"Filler\" and \"Repeated idea\" it prints, in both languages. Reread intro, tldr and plan: remove game basics and meta phrases, and make sure no vs point restates a weakness (a weakness = the flaw + how the hero's player makes up for it; a vs point = something concrete for the opponent). Touch nothing else."
   }
  ]
 }

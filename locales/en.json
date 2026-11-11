@@ -26,6 +26,7 @@
  "otp.cat.situational_late_desc": "Late-game picks depending on the situation.",
  "otp.name": "OTP {who} ({hero})",
  "otp.description": "Build rebuilt from the real purchases of {who} ({rank}), {matches} {hero} games over the period ({share}% of their games), {winrate}% win rate.",
+ "filler_patterns": ["\\blanes are played in (?:duos|pairs)", "\\bwith your duo\\b", "\\bmy explanation\\s*:", "\\bit is important to\\b", "\\blike the average\\b", "\\bdo not afk[- ]farm\\b"],
  "style_tags": {
   "lane_aggressive": "Aggressive lane",
   "lane_passive": "Passive lane",
@@ -148,7 +149,8 @@
   "counters": "Items OTPs buy against specific heroes (deadlock-api)",
   "kit": "Game data: abilities, cooldowns, tiers, power spikes (API assets)",
   "items": "Game data: items, costs, effects (API assets)",
-  "patch": "Official patch notes (API patch list)"
+  "patch": "Official patch notes (API patch list)",
+  "lanes": "Measured duo lanes: win rate by lane and by lane partner (deadlock-api lane-matchup-stats)"
  },
  "source.build": "{source} build by {author}",
  "source.guide": "\"{title}\" by {author}",

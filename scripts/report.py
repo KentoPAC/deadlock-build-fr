@@ -21,6 +21,7 @@ from common import GAME_LANGUAGE, get, heroes, items, parse_otp_note, rank_label
 from i18n import CONTENT_LANG, DEFAULT_LANG, LANGS, t, table, use  # noqa: E402
 from status import completeness, load_json, resolve_sources  # noqa: E402
 from textlinks import link_index, short_names, signature_abilities  # noqa: E402
+from writing import filler, repeats  # noqa: E402
 from tooltips import UPGRADE_COST, item_data, plain, tier_text, tooltip  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -446,6 +447,12 @@ def build_page(folder, data, lang):
     if content_lang == lang:  # check the writing once per language, not on fallback content
         for word, names, excerpt in short_names(text_items, written_texts(summaries, builds, tips, ours_only=True)):
             print(f"Shortened name ({lang}) \"{word}\" ({' / '.join(names)}?): …{excerpt}…")
+    own = [summaries.get("intro", "")] + list(all_strings(summaries.get("plan") or {})) + list(all_strings(summaries.get("tldr") or {}))
+    if summaries.get("lang", content_lang) == lang:  # our own analysis, in the language it is written in
+        for found, excerpt in filler(own, lang):
+            print(f"Filler ({lang}) \"{found}\": game basics or an empty phrase, write something specific to the hero: …{excerpt}…")
+        for weakness, tip in repeats(summaries.get("plan") or {}):
+            print(f"Repeated idea ({lang}): the weakness \"{weakness[:70]}…\" and the counter tip \"{tip[:70]}…\" say the same thing")
     links = link_index(hero_id, text_items, texts)
     keys = {link["id"]: link["key"] for link in links if link.get("key")}
     used.update(link["id"] for link in links)
