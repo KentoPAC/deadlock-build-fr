@@ -190,7 +190,7 @@ kbd{display:inline-block;min-width:15px;padding:0 3px;border-radius:3px;backgrou
 .tl-sec>h3::before{content:"◆";color:var(--color-accent);font-size:.6em}
 .tl-items{display:flex;flex-wrap:wrap;gap:var(--space-sm)}
 .tl-items .mod{width:84px}
-.tl-min{font:700 var(--text-sm)/1 var(--font-body);color:var(--color-ink);background:var(--color-shade);padding:3px 7px;border-radius:3px}
+.tl-min{font:700 var(--text-sm)/1 var(--font-body);color:var(--color-ink);background:var(--color-shade);padding:3px 7px;border-radius:3px;white-space:nowrap}
 .tl-phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--color-rule);border:1px solid var(--color-rule)}
 .tl-phases>div{background:var(--color-paper-2);padding:var(--space-sm) var(--space-md)}
 .tl-phases b{display:block;margin-bottom:var(--space-3xs);font:800 var(--text-md)/1 var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent)}
@@ -871,7 +871,9 @@ function swBlock(full){const P_=D.plan||{},M=D.matchups||{},m=M.matchups;const n
 function vidTips(){const V=D.videoTips||[];if(!V.length)return'';
   return `<section class="phase"><h3>${L('vt.title')}</h3><p class="phase__desc">${L('vt.desc')}</p>
   ${V.map(v=>`<div class="vt"><p class="vt__txt" lang="${esc(v.lang||D.lang||LANG)}">${lk(v.text)}</p>
-    ${v.items.length?`<div class="cp__then">${v.items.map(id=>{const c=(v.check||{})[id];return `<span class="ref ${esc(T(id).slot||'')}" tabindex="0" data-id="${id}">${img(id)}${esc(T(id).n)}</span>${c?(c.delta!=null?` <small class="ok">${L('vt.measured',{d:c.delta})}</small>`:` <small class="ok">${L('vt.in_stats')}</small>`):''}`}).join(' · ')}</div>`:''}
+    ${(()=>{if(!v.items.length)return'';const ok=v.items.filter(id=>(v.check||{})[id]);  // the text already names the items: only show what the stats confirm
+      return ok.length?`<div class="cp__cards">${ok.map(id=>{const c=v.check[id];return itemCard(id,c.delta!=null?L('vt.measured',{d:c.delta}):L('vt.in_stats'))}).join('')}</div>`
+        :`<p class="vt__src">${L('vt.unconfirmed')}</p>`})()}
     <p class="vt__src">${L('vt.source')} <a href="https://www.youtube.com/watch?v=${esc(v.video)}&amp;t=${v.t}s" target="_blank" rel="noopener">${esc(v.author)}, « ${esc(v.title)} » (${Math.floor(v.t/60)}:${String(v.t%60).padStart(2,'0')})</a> · ${new Date(v.date).toLocaleDateString(LOC)}${v.prePatch?` · <b>${L('vt.prepatch')}</b>`:''}</p></div>`).join('')}</section>`}
 function vsPanel(){const P_=D.plan||{},M=D.matchups||{},m=M.matchups,k=K();
   const list=(t,arr,cls)=>arr&&arr.length?`<div class="${cls}"><h4>${t}</h4><ul>${arr.map(x=>`<li>${lk(x)}</li>`).join('')}</ul></div>`:'';
