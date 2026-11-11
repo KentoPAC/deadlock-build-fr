@@ -102,7 +102,8 @@
  "source_info": {
   "OTP": "reconstitué d'après les vrais achats d'un joueur qui joue surtout ce héros",
   "Mobalytics": "build officiel d'un expert Mobalytics, publié en jeu",
-  "Communauté": "build public populaire, bien expliqué, d'un auteur bien classé"
+  "Communauté": "build public populaire, bien expliqué, d'un auteur bien classé",
+  "Vidéo": "build recommandé dans la vidéo guide d'un créateur sur ce héros (explications dans la vidéo)"
  },
  "facts.by": "par {author}",
  "facts.matches": "{matches} parties sur le héros ({share} % de ses parties)",
@@ -118,6 +119,7 @@
   "intro": "analyse globale",
   "tldr": "TLDR",
   "plan.early": "plan early/mid/late",
+  "plan.lane": "où jouer (lane, position)",
   "plan.role": "rôle",
   "plan.abilities": "conseils par compétence",
   "plan.strengths": "forces",
@@ -212,6 +214,7 @@
   "src.OTP": "OTP",
   "src.Mobalytics": "Mobalytics",
   "src.Communauté": "Communauté",
+  "src.Vidéo": "Vidéo",
   "rail.plan_src": "Stats + commu",
   "rail.plan": "Comment le jouer",
   "rail.plan_sub": "Early, mid, late · farm, fights, push",
@@ -299,6 +302,10 @@
   "tl.role": "Ton rôle",
   "tl.core": "Objets clés",
   "tl.plan": "Le plan",
+  "tl.lane": "Où jouer",
+  "build.video": "Recommandé dans la vidéo",
+  "plan.video": "Guide vidéo",
+  "plan.watch": "regarder",
   "tl.keys": "À retenir",
   "tl.abilities": "Compétences",
   "tl.more_plan": "Le guide complet →",

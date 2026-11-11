@@ -1,11 +1,14 @@
-"""Find the best builds for a hero, from three sources:
+"""Find the best builds for a hero, from four sources:
 
   1. OTP         high-ranked players who mostly play this hero; the build is rebuilt from their ACTUAL
                  purchases (items, minute, share of games, ability order)
   2. Mobalytics  official builds from their experts, published in game
   3. Community   popular public builds, well explained, by high-ranked authors
+  4. Video       builds recommended in a creator's guide video about the hero (videos.py guide), kept even
+                 without written notes: the video gives the explanations
 
 Usage: python3 -I find.py <hero> <folder> [--days 60] [--otp 2] [--community 2]
+       python3 -I find.py <hero> <folder> --videos-only   add the video builds to an existing search, nothing else
 
 Writes <folder>/candidates.json and one sub-folder per build (original.json + strings.json), then runs the
 analysis modules (playstyle, guides, roles, matchups, counterplay; counters in the background).
@@ -22,6 +25,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import (GAME_LANGUAGE, LANG_FR, find_hero, get, items, rank_label, read_json, summarize,  # noqa: E402
                     text_amount, todo_list, write_candidate, write_json)
 from i18n import CONTENT_LANG, t, use  # noqa: E402
+from videos import guide_videos  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MIN_BADGE = 90          # Fantôme (Phantom) and above for OTPs
@@ -192,6 +196,85 @@ def community(hero_id, n, exclude):
     return scored[:n]
 
 
+# --------------------------------------------------------------- Video guides
+
+def video_builds(hero_id, exclude):
+    """Latest version of each build recommended in a guide video about the hero: [(build, video id, seconds)]."""
+    out = []
+    for video, meta in guide_videos(hero_id):
+        for rec in meta["guide"]["builds"]:
+            versions = get("/v1/builds", build_id=rec["id"]) if rec["id"] not in exclude else []
+            if not versions:
+                continue
+            build = max((v["hero_build"] for v in versions), key=lambda b: b.get("version") or 0)
+            if build["hero_id"] == hero_id:
+                exclude.add(rec["id"])
+                out.append((build, video, rec["t"]))
+    return out
+
+
+def add_video_candidates(hero, out, candidates):
+    """Append the video-recommended builds to `candidates` (written to their sub-folders); returns the new ones."""
+    added = []
+    for b, video, at in video_builds(hero["id"], {c.get("build_id") for c in candidates}):
+        key = f"vid-{b['hero_build_id']}"
+        write_candidate(f"{out}/{key}", b, prefill=b.get("language") == LANG_FR)
+        badge = (get("/v1/players/rank", account_ids=b["author_account_id"]) or [{}])[0].get("badge") or 0
+        # "Vidéo" is a display value shown on the French pages (like "Communauté").
+        added.append(dict(key=key, source="Vidéo", title=b["name"], build_id=b["hero_build_id"],
+                          author_id=b["author_account_id"], rank=rank_label(badge) if badge else None, badge=badge,
+                          video=video, video_t=at, updated=b["last_updated_timestamp"],
+                          language=b.get("language"), needs_translation=b.get("language") != LANG_FR))
+    candidates += added
+    return added
+
+
+def name_authors(candidates):
+    """Fill the missing "author" fields with the Steam names."""
+    ids = [c["author_id"] for c in candidates if "author" not in c]
+    names = {p["account_id"]: p["personaname"] for p in batch("/v1/players/steam", ids)} if ids else {}
+    for c in candidates:
+        c.setdefault("author", names.get(c["author_id"], str(c["author_id"])))
+
+
+def print_candidate(c, out):
+    """Compact output (read by Claude): each text appears once, numbered [n]."""
+    build_dir = f"{out}/{c['key']}"
+    b = read_json(f"{build_dir}/original.json")
+    strings = read_json(f"{build_dir}/strings.json")
+    meta = " · ".join(str(x) for x in [c["source"], c.get("author"), c.get("rank"),
+                                       c.get("matches") and f"{c['matches']} games ({round(100 * c['share'])} %)",
+                                       c.get("winrate") is not None and f"{c['winrate']} % W",
+                                       c.get("favorites") and f"{c['favorites']} fav",
+                                       c.get("video") and f"recommended in video:{c['video']}@{c['video_t']}"] if x)
+    print(f"\n## [{c['key']}] {meta}")
+    if c["source"] != "OTP":
+        desc = [s for s in strings if s["path"] == ["description"]]
+        if desc and desc[0]["fr"]:
+            print(desc[0]["fr"][:300])
+    print(summarize(b, strings))
+    todo = todo_list(strings)
+    if todo:
+        print(f"-- To translate ({sum(1 for s in strings if not s['fr'])}):\n{todo}")
+    else:  # already French: generate the code right away
+        subprocess.run([sys.executable, "-I", f"{HERE}/apply.py", build_dir, "--no-clipboard"],
+                       check=True, stdout=subprocess.DEVNULL)
+    # English texts come for free from English authors and generated OTP texts; list the others.
+    if c["source"] != "OTP" and b.get("language") != GAME_LANGUAGE["en"]:
+        print(f"-- To translate into English, \"tr_en\" ({len(strings)}):\n{todo_list(strings, 'en')}")
+
+
+def videos_only(hero, out):
+    """Add the video-recommended builds to an existing search folder, leaving everything else as is."""
+    data = read_json(f"{out}/candidates.json")
+    added = add_video_candidates(hero, out, data["candidates"])
+    name_authors(added)
+    write_json(f"{out}/candidates.json", data, indent=1)
+    for c in added:
+        print_candidate(c, out)
+    print(f"\n{len(added)} video build(s) added -> {out}/candidates.json")
+
+
 # ---------------------------------------------------------------------- main
 
 def last_big_patch_since(since):
@@ -214,9 +297,12 @@ def main():
     parser.add_argument("--days", type=int, default=60)
     parser.add_argument("--otp", type=int, default=2)
     parser.add_argument("--community", type=int, default=2)
+    parser.add_argument("--videos-only", action="store_true", help="only add the builds recommended in guide videos")
     args = parser.parse_args()
     use(CONTENT_LANG)  # builds are written and translated in the content language
     hero = find_hero(args.hero)
+    if args.videos_only:
+        return videos_only(hero, args.out)
     since = last_big_patch_since(int(time.time()) - args.days * 86400)
     os.makedirs(args.out, exist_ok=True)
     candidates = []
@@ -253,38 +339,14 @@ def main():
                                favorites=favorites, text_chars=chars, updated=b["last_updated_timestamp"],
                                language=b.get("language"), needs_translation=b.get("language") != LANG_FR))
 
-    names = {p["account_id"]: p["personaname"] for p in
-             batch("/v1/players/steam", [c["author_id"] for c in candidates if "author" not in c])} if candidates else {}
-    for c in candidates:
-        c.setdefault("author", names.get(c["author_id"], str(c["author_id"])))
+    add_video_candidates(hero, args.out, candidates)
+    name_authors(candidates)
     write_json(f"{args.out}/candidates.json", {"hero": {"id": hero["id"], "name": hero["name"],
                         "image": (hero.get("images") or {}).get("icon_hero_card_webp")},
                "days": args.days, "since": since, "generated": int(time.time()), "candidates": candidates}, indent=1)
 
-    # Compact output (read by Claude): each text appears once, numbered [n].
     for c in candidates:
-        build_dir = f"{args.out}/{c['key']}"
-        b = read_json(f"{build_dir}/original.json")
-        strings = read_json(f"{build_dir}/strings.json")
-        meta = " · ".join(str(x) for x in [c["source"], c.get("author"), c.get("rank"),
-                                           c.get("matches") and f"{c['matches']} games ({round(100 * c['share'])} %)",
-                                           c.get("winrate") is not None and f"{c['winrate']} % W",
-                                           c.get("favorites") and f"{c['favorites']} fav"] if x)
-        print(f"\n## [{c['key']}] {meta}")
-        if c["source"] != "OTP":
-            desc = [s for s in strings if s["path"] == ["description"]]
-            if desc and desc[0]["fr"]:
-                print(desc[0]["fr"][:300])
-        print(summarize(b, strings))
-        todo = todo_list(strings)
-        if todo:
-            print(f"-- To translate ({sum(1 for s in strings if not s['fr'])}):\n{todo}")
-        else:  # already French: generate the code right away
-            subprocess.run([sys.executable, "-I", f"{HERE}/apply.py", build_dir, "--no-clipboard"],
-                           check=True, stdout=subprocess.DEVNULL)
-        # English texts come for free from English authors and generated OTP texts; list the others.
-        if c["source"] != "OTP" and b.get("language") != GAME_LANGUAGE["en"]:
-            print(f"-- To translate into English, \"tr_en\" ({len(strings)}):\n{todo_list(strings, 'en')}")
+        print_candidate(c, args.out)
     # Measured play style + community advice (for the "how to play" view).
     sys.stdout.flush()  # keep our output before the modules' output when piped
     for module in ANALYSIS_MODULES:
