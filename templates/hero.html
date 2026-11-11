@@ -890,12 +890,17 @@ function vsPanel(){const P_=D.plan||{},M=D.matchups||{},m=M.matchups,k=K();
   ${(()=>{const A=((D.counterplay||{}).against)||[],H=D.hero.name;
     const WHY=Object.fromEntries(['heal','tank','spirit','weapon','burst'].map(k=>[k,a=>L('why.'+k,{hero:H,pct:pc(a.pct)})]));
     const TH=Object.fromEntries(['heal','tank','spirit','weapon','burst'].map(k=>[k,L('th.'+k)]));
-    const meas=(M.items||[]);if(!A.length&&!meas.length)return'';
+    const meas=(M.items||[]);
+    // items quoted in the creator video tips (once each), captioned with the creator and ✓ when the stats confirm them
+    const seen=new Set(),vids=(D.videoTips||[]).flatMap(v=>v.items.filter(id=>!seen.has(id)&&seen.add(id)).map(id=>({id,who:v.author,ok:(v.check||{})[id]})));
+    if(!A.length&&!meas.length&&!vids.length)return'';
     return `<section class="phase"><h3>${L('vs.items_title',{hero:esc(H)})}</h3><p class="phase__desc">${L('vs.items_desc',{hero:esc(H)})}</p>
     <div class="cp">${A.map(a=>`<div class="cp__r"><div class="cp__if"><b>${esc((WHY[a.why]||(()=>a.why))(a))}</b></div>
       <div class="cp__then"><span class="lbl">→ ${TH[a.why]||''}</span><div class="cp__cards">${a.items.map(x=>itemCard(x.id)).join('')}</div></div></div>`).join('')}
     ${meas.length?`<div class="cp__r"><div class="cp__if"><b>${L('vs.measured',{hero:esc(H)})}</b><small>${L('vs.measured_desc',{hero:esc(H)})}</small></div>
-      <div class="cp__then"><span class="lbl">${L('vs.best')}</span><div class="cp__cards">${meas.map(x=>itemCard(x.id,`+${x.delta} pts`)).join('')}</div></div></div>`:''}</div>
+      <div class="cp__then"><span class="lbl">${L('vs.best')}</span><div class="cp__cards">${meas.map(x=>itemCard(x.id,`+${x.delta} pts`)).join('')}</div></div></div>`:''}
+    ${vids.length?`<div class="cp__r"><div class="cp__if"><b>${L('vs.creators')}</b><small>${L('vs.creators_desc')}</small></div>
+      <div class="cp__then"><span class="lbl">${L('vs.creators_lbl')} · ${esc([...new Set(vids.map(x=>x.who))].join(', '))}</span><div class="cp__cards">${vids.map(x=>itemCard(x.id,x.ok?L('vt.in_stats'):'')).join('')}</div></div></div>`:''}</div>
     <p class="phase__desc">${L('vs.profile_note')}</p></section>`})()}
   ${esc_.length?`<section class="phase"><h3>${L('vs.cooldowns')}</h3><p class="phase__desc">${L('vs.cooldowns_desc')}</p>
     <div class="spk">${esc_.map(x=>`<span class="spk__i" tabindex="0" data-id="${x.a.id}">${img(x.a.id)}<span>${esc(x.t.n)} <kbd>${x.a.key}</kbd><br><small>⟳ ${x.t.cd} s</small></span></span>`).join('')}</div></section>`:''}
