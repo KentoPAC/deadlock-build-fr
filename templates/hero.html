@@ -678,6 +678,8 @@ function buildFresh(b){
 const wrTone=w=>w==null?'none':w>=55?'good':w<50?'bad':'mid';
 const flag=f=>f.lvl==='bad'?`<i class="flag flag--bad" title="${L('flag.bad')}">⛔</i>`:f.lvl==='warn'?`<i class="flag flag--warn" title="${L('flag.warn')}">⚠</i>`:'';
 const srcName=s=>L('src.'+s);
+const ts=t=>`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;
+const vlink=(id,t,text)=>`<a href="https://www.youtube.com/watch?v=${esc(id)}${t?`&amp;t=${t}s`:''}" target="_blank" rel="noopener">${text}</a>`;
 function renderFresh(){const f=pageFresh(),el=$('fresh');el.dataset.lvl=f.lvl;
   el.innerHTML=`<span class="stamp">${esc(f.stamp)}</span><span class="fresh__txt"><b>${esc(f.main)}</b><br>${esc(f.sub)}</span>`}
 
@@ -746,9 +748,11 @@ function planPanel(){const P_=D.plan||{},G=(D.guides&&D.guides.guides)||[],measu
     ${measured.map(b=>`<tr><th>${esc(b.author)}<small style="display:block;color:var(--color-neutral)">${esc(b.rank||'')}</small></th><td>${esc(b.play.tags.map(tag).join(', ')||L('play.close_lc'))}</td>
     ${b.play.phases.map((ph,i)=>`<td style="min-width:150px">${bar(ph.src)}<span class="num" style="font-size:var(--text-xs);color:var(--color-muted)">${ph.spm} ${L('play.spm')} · K/D/A ${ph.kpm}/${ph.dpm}/${ph.apm}<br>${L('play.hero_dmg_short')} ${ph.hero_dmg}/min${(()=>{const B=((D.baseline||{}).phases||[])[i]||{};return delta(ph.hero_dmg,B.hero_dmg)})()}</span></td>`).join('')}</tr>`).join('')}
     </tbody></table></div>${legendSrc()}`:'';
-  const srcs=G.map(g=>`<li><b>${esc(g.title)}</b> — ${g.kind==='steam'?`${L('plan.steam')} · <a href="${esc(g.url)}" target="_blank" rel="noopener">${L('plan.read')}</a>`:`${L('plan.build_by',{author:esc(g.author||'?')})} (${esc(g.rank||'')}${g.favorites?`, ${g.favorites} fav.`:''})${g.build_id?` · build <span class="num">${g.build_id}</span>`:''}`} · ${fmt(g.updated)}</li>`).join('');
+  const vids=(D.guideVideos||[]).map(v=>`<li><b>${esc(v.title)}</b> — ${L('plan.video')} · ${esc(v.author)} · ${vlink(v.id,0,L('plan.watch'))} · ${new Date(v.date).toLocaleDateString(LOC)}</li>`).join('');
+  const srcs=vids+G.map(g=>`<li><b>${esc(g.title)}</b> — ${g.kind==='steam'?`${L('plan.steam')} · <a href="${esc(g.url)}" target="_blank" rel="noopener">${L('plan.read')}</a>`:`${L('plan.build_by',{author:esc(g.author||'?')})} (${esc(g.rank||'')}${g.favorites?`, ${g.favorites} fav.`:''})${g.build_id?` · build <span class="num">${g.build_id}</span>`:''}`} · ${fmt(g.updated)}</li>`).join('');
   return `<article class="panel"><p class="panel__src">${L('plan.kicker')}</p><h2>${L('plan.title',{hero:esc(D.hero.name)})}</h2>
    <p class="facts">${L('plan.desc')}</p>
+   ${P_.lane?`<section class="phase"><h3>${L('tl.lane')}</h3><p class="role__txt">${lk(P_.lane)}</p></section>`:''}
    ${phases.length?`<div class="plan">${phases.map(([k,l])=>`<div class="plan__ph cham"><h3>${l}</h3><p>${lk(P_[k])}</p></div>`).join('')}</div>`:''}
    ${(P_.tips||[]).length?`<ul class="tips">${P_.tips.map(t=>`<li>${lk(t)}</li>`).join('')}</ul>`:''}
    ${(D.roles||P_.role)?`<section class="phase"><h3>${L('sec.role')}</h3>${roleBlock(true)}</section>`:''}
@@ -803,6 +807,7 @@ function tldrPanel(){const t=D.tldr||{},P_=D.plan||{},b=pickBuild(),f=buildFresh
     ${t.why?`<p class="tl-why">${lk(t.why)}</p>`:''}</div>${btn}</div>
   ${(D.roles||(D.plan||{}).role)?`<section class="tl-sec"><h3>${L('tl.role')}</h3>${roleBlock(false)}</section>`:''}
   ${k.core.length?`<section class="tl-sec"><h3>${L('tl.core')} · ${esc(k.ref||'')}</h3><div class="tl-items">${k.core.map(c=>`<div class="mod ${esc(T(c.id).slot||'')}" tabindex="0" data-id="${c.id}">${gcard(c.id)}<span class="tl-min">≈ ${c.min} min</span></div>`).join('')}</div></section>`:''}
+  ${P_.lane?`<section class="tl-sec"><h3>${L('tl.lane')}</h3><p class="tl-why">${lk(P_.lane)}</p></section>`:''}
   ${ph.length?`<section class="tl-sec"><h3>${L('tl.plan')}</h3><div class="tl-phases">${ph.map(([l,x])=>`<div><b>${l}</b><p>${lk(x)}</p></div>`).join('')}</div></section>`:''}
   ${keys.length?`<section class="tl-sec"><h3>${L('tl.keys')}</h3><ul class="tl-keys">${keys.map(x=>`<li><span>${lk(x)}</span></li>`).join('')}</ul></section>`:''}
   ${swBlock(false)?`<section class="tl-sec"><h3>${L('sec.sw')}</h3>${swBlock(false)}</section>`:''}
@@ -904,7 +909,8 @@ function buildPanel(b){
     +(notes?`<ol class="catp__notes">${notes}</ol>`:'')+'</section>'}).join('')+'</div>';
   return `<article class="panel"><div class="panel__top"><div>
     <p class="panel__src">${esc(srcName(b.source))} <span>· ${esc(b.sourceInfo)}</span></p><h2>${esc(b.name)}</h2>
-    <p class="facts">${L('bp.by')} <b>${esc(b.author)}</b>${b.buildId?` · build <span class="num">${b.buildId}</span>`:''}${b.translated?'':L('bp.untranslated')}</p></div>${btn}</div>
+    <p class="facts">${L('bp.by')} <b>${esc(b.author)}</b>${b.buildId?` · build <span class="num">${b.buildId}</span>`:''}${b.translated?'':L('bp.untranslated')}</p>
+    ${b.video?`<p class="facts">${L('build.video')} ${vlink(b.video.id,b.video.t,`${esc(b.video.author)}, « ${esc(b.video.title)} » (${ts(b.video.t)})`)}</p>`:''}</div>${btn}</div>
     ${statStrip(b)}${takeBlock(b)}${playSection(b)}${counterSection(b)}${b.desc?`<p class="authordesc">${lk(b.desc)}</p>`:''}${cats}${abilityGrid(b.order)}</article>`}
 
 /* ---- comparison ---- */

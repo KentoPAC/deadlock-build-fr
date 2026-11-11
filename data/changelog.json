@@ -124,6 +124,28 @@
     "report.py"
    ],
    "todo": "Write summaries.en.json: every text of summaries.json in English, same paths (finish.py \"en\": {...}), with official English item and ability names. Run apply.py --lang en on every build (automatic for English originals and generated OTP texts; non-English builds need \"tr_en\"). Add the English text of the hero's creator tips (videos.py add with \"en\")."
+  },
+  {
+   "version": 9,
+   "date": "2026-11-11",
+   "title": {
+    "fr": "Où jouer et quoi faire, guides vidéo",
+    "en": "Where to play and what to do, video guides"
+   },
+   "parts": [
+    "plan.lane",
+    "tldr",
+    "plan.early",
+    "plan.mid",
+    "plan.late",
+    "builds"
+   ],
+   "scripts": [
+    "videos.py",
+    "find.py",
+    "report.py"
+   ],
+   "todo": "Write plan.lane (which lane or position on the map, and why). Rewrite tldr.early/mid/late/keys and plan.early/mid/late so they first say what to DO (where to stand, how to trade in lane, when to join fights, which objectives and timers), items second. If a creator guide video about the hero exists (videos.py list shows \"guide\"; find one on YouTube when the user mentions it), run videos.py fetch, then videos.py guide <id> <hero> <recommended build_id>@<mm:ss>, then find.py <hero> <folder> --videos-only, and use the transcript in these texts with video:<id>@<s> sources; summarise the added vid-<id> build (resume, points) and say where the video and the stats disagree. Same changes in English."
   }
  ]
 }

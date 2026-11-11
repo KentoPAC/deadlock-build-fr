@@ -102,7 +102,8 @@
  "source_info": {
   "OTP": "rebuilt from the real purchases of a player who mostly plays this hero",
   "Mobalytics": "official build from a Mobalytics expert, published in game",
-  "Communauté": "popular public build, well explained, by a high-ranked author"
+  "Communauté": "popular public build, well explained, by a high-ranked author",
+  "Vidéo": "build recommended in a creator's guide video about the hero (explanations in the video)"
  },
  "facts.by": "by {author}",
  "facts.matches": "{matches} games on the hero ({share}% of their games)",
@@ -118,6 +119,7 @@
   "intro": "overall analysis",
   "tldr": "TLDR",
   "plan.early": "early/mid/late plan",
+  "plan.lane": "where to play (lane, position)",
   "plan.role": "role",
   "plan.abilities": "ability tips",
   "plan.strengths": "strengths",
@@ -212,6 +214,7 @@
   "src.OTP": "OTP",
   "src.Mobalytics": "Mobalytics",
   "src.Communauté": "Community",
+  "src.Vidéo": "Video",
   "rail.plan_src": "Stats + community",
   "rail.plan": "How to play",
   "rail.plan_sub": "Early, mid, late · farm, fights, push",
@@ -299,6 +302,10 @@
   "tl.role": "Your role",
   "tl.core": "Key items",
   "tl.plan": "The plan",
+  "tl.lane": "Where to play",
+  "build.video": "Recommended in the video",
+  "plan.video": "Video guide",
+  "plan.watch": "watch",
   "tl.keys": "Key takeaways",
   "tl.abilities": "Abilities",
   "tl.more_plan": "Full guide →",

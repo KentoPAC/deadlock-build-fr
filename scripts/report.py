@@ -325,8 +325,25 @@ def load_builds(folder, candidates, summaries, lang):
                        # texts in the author's own language are shown as written (never "corrected")
                        "authorWords": c["source"] != "OTP" and c.get("language") == GAME_LANGUAGE.get(lang),
                        "resume": summary.get("resume", ""), "points": summary.get("points", []),
-                       "cats": cats, "order": order})
+                       "cats": cats, "order": order, "video": video_ref(c)})
     return builds
+
+
+def video_ref(candidate):
+    """The guide video that recommends this build: {id, t, title, author}, or None."""
+    if not candidate.get("video"):
+        return None
+    meta = ((load_json(os.path.join(SKILL, "data", "videos.json")) or {}).get("videos") or {}).get(candidate["video"]) or {}
+    return {"id": candidate["video"], "t": candidate.get("video_t") or 0, "title": meta.get("title", ""),
+            "author": meta.get("author", "")}
+
+
+def guide_videos(hero_id):
+    """Guide videos about this hero (data/videos.json, videos.py guide), newest first."""
+    videos = (load_json(os.path.join(SKILL, "data", "videos.json")) or {}).get("videos") or {}
+    found = [{"id": v, "title": m["title"], "author": m["author"], "date": m["date"]}
+             for v, m in videos.items() if (m.get("guide") or {}).get("hero") == hero_id]
+    return sorted(found, key=lambda x: x["date"], reverse=True)
 
 def all_strings(value):
     """Every string inside nested dicts / lists."""
@@ -441,6 +458,7 @@ def build_page(folder, data, lang):
 
     state = completeness(folder)
     payload = {"sources": resolve_sources(summaries, data["candidates"], guides, roles), "videoTips": tips,
+               "guideVideos": guide_videos(hero_id),
                "counterplay": counterplay, "completeness": state, "kit": kit, "heroes": enemy_heroes(enemies),
                "roles": roles, "matchups": matchups, "tldr": summaries.get("tldr"), "hero": hero,
                "baseline": load_json(f"{folder}/baseline.json"), "guides": guides, "plan": summaries.get("plan"),

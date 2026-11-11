@@ -12,7 +12,7 @@ SKILL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CHANGELOG = read_json(os.path.join(SKILL, "data", "changelog.json"))["changes"]
 ANALYSIS_VERSION = max(c["version"] for c in CHANGELOG)  # = last entry of data/changelog.json (do not edit here)
 # Required texts (summaries.json paths) and data files; their labels come from the locale ("needed_text", "needed_data").
-NEEDED_TEXT = ["intro", "tldr", "plan.early", "plan.role", "plan.abilities", "plan.strengths", "plan.weaknesses", "plan.vs"]
+NEEDED_TEXT = ["intro", "tldr", "plan.lane", "plan.early", "plan.role", "plan.abilities", "plan.strengths", "plan.weaknesses", "plan.vs"]
 NEEDED_DATA = ["baseline.json", "guides.json", "roles.json", "matchups.json", "counterplay.json"]
 # summaries.json keys that are not written texts.
 META_KEYS = ("version", "sources", "lang")

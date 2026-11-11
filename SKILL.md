@@ -25,7 +25,7 @@ criterion, only displayed information.
 **An analysis is only complete with ALL these fields** (report.py prints what is missing: "To complete for an
 up-to-date analysis", and the page and home page show "Ancienne analyse" until nothing is missing): `tr` (when there
 are texts to translate), `intro`, one `{resume, points}` per build, `tldr` (pick, why, early, mid, late, keys),
-`plan` (early, mid, late, tips, role, abilities 1-4, strengths, weaknesses, vs), `sources`, and `en` (all of these
+`plan` (lane, early, mid, late, tips, role, abilities 1-4, strengths, weaknesses, vs), `sources`, and `en` (all of these
 texts in English, same paths). Never finish with something still missing.
 
 **Writing**: full sentences, every item / ability inside a sentence with a verb ("achète Malédiction de
@@ -50,7 +50,9 @@ is missing.
 1. `python3 -I S/scripts/find.py <hero> builds/search-<hero>` (~30 s; options `--days 60 --otp 2 --community 2`).
    Sources: **OTP** (Phantom+ players who mostly play the hero, build rebuilt from their real purchases:
    items in >= 75% of games sorted into early < 10 min / mid < 22 min / late, then situational 25-75%),
-   **Mobalytics** (official accounts only), **Community** (popular, >= 150 characters of notes, Oracle+ authors).
+   **Mobalytics** (official accounts only), **Community** (popular, >= 150 characters of notes, Oracle+ authors),
+   **Vidéo** (`vid-<id>`: builds recommended in a creator's guide video about the hero, see videos.py `guide`;
+   `--videos-only` adds them to an existing search without touching the rest).
    Compact output, read it once (do not reopen the JSON files):
    - shortened OTP notes: `98%@4m rev9m` = bought in 98% of games around 4 min, sold around 9 min;
    - texts to translate are numbered `[n]` in the summary and listed once under "To translate";
@@ -73,8 +75,10 @@ is missing.
    authors' texts and generated OTP texts are filled in automatically, and finish.py builds the codes in both languages.
    `tldr` (default "L'essentiel" view, readable during a loading screen): `{"pick": "<key of the advised build>",
    "why": "1 sentence", "early": "1-2 sentences", "mid": "…", "late": "…", "keys": ["3 takeaways max"]}`: short and
-   concrete (items with their minute, abilities, what to do), like a good player guide (soul thresholds, timings).
-   `plan` ("Comment le jouer" view): `{"early": "…", "mid": "…", "late": "…", "tips": ["…"],
+   concrete, like a good player guide: each phase says first what to DO (where to stand, how to trade in lane, when
+   to join fights, which objectives / timers / urns), then the items with their minute.
+   `plan` ("Comment le jouer" view): `{"lane": "which lane or map position and why", "early": "…", "mid": "…",
+   "late": "…", "tips": ["…"],
    "role": "what the hero must do in fights given its position (initiate, frontline, assassinate, carry…)",
    "abilities": {"1": "how to use ability 1", …, "4": "…"},
    "strengths": ["…"], "weaknesses": ["…"], "vs": ["how to beat it / what to watch out for"],
@@ -145,12 +149,16 @@ is missing.
   III-IV) of the category; matchups.py adds the counter items measured after 20 min.
 - **videos.py**: creator YouTube tips (`fetch <url>` = subtitles via yt-dlp split by chapter; `add <id> -` =
   tips per hero with `"text"` (French) and `"en"`, English hero / item names converted to ids; fields left out keep
-  their saved value; `list`). Data in `data/videos.json`, shown in
+  their saved value; `guide <id> <hero> <build_id>@<mm:ss>` = the video is a guide for that hero and recommends that
+  build; `list`). A hero guide video is the best source for `plan.lane` and the phase texts (cite
+  `video:<id>@<s>`); when the user mentions one, find it and use it. Data in `data/videos.json`, tips shown in
   "Le contrer" ("L'avis des créateurs") with a timestamped link, the date, ⚠ when older than the last big patch, and
   ✓ when a quoted item also stands out in the stats. An opinion is not a statistic: flag disagreements. Adding a
   video = a changelog entry when it changes the method.
   Reference: AndrewChicken, "1 Counter For EVERY Deadlock Hero" (C3yn9SdVHZ8); "Counter Buying…" (Zb82rYYumbY),
   kept for the future live optimisation module (counter-buying during a game).
+  Guides: Paz, "The BEST Comprehensive Guide to VIOLET" (kW6zL2_22X4), recommends oses's build 897240.
+  Subtitles: only the original track is fetched (`en-orig`); asking for every translated track gets a 429.
 - **counters.py** (background, started by find.py, regenerates the page): items the OTPs buy clearly more against
   some heroes (statistical test). Steam pages are cached for a day (`~/.cache/deadlock-build-fr`).
 - Power spikes and ability cards: computed by report.py (game level thresholds x the OTP's ability order).
