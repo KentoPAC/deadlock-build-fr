@@ -155,7 +155,8 @@ is missing.
 - **laning.py** (run by find.py): who wins the lane against the hero (duo soul lead at 9 min vs its usual lead,
   /v1/analytics/lane-matchup-stats, Phantom+), with each enemy's general lane strength (a strong laner beats
   everyone: say so), and lane items bought before 9 min that win clearly more against it (gap >= 1.5 pts and
-  >= 2 standard errors, otherwise none is shown). Use it in `plan.lane` and `vs` (source `stat:laning`).
+  >= 2 standard errors; when fewer than 4 are, gaps >= 1 pt and >= 1 standard error fill in, flagged "trend"),
+  in their own section "Items that beat <hero> in lane". Use it in `plan.lane` and `vs` (source `stat:laning`).
 - **counterplay.py**: late-game counterplay by enemy composition (big healers -> anti-heal, tanks -> % HP /
   resistance shred, heavy spirit / gun damage -> resistances, crowd control -> status resistance). Measured hero
   profiles (cached for a day), items classified by their technical properties in the API, filtered on what the
