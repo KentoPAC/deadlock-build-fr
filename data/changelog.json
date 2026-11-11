@@ -146,6 +146,23 @@
     "report.py"
    ],
    "todo": "Write plan.lane (which lane or position on the map, and why). Rewrite tldr.early/mid/late/keys and plan.early/mid/late so they first say what to DO (where to stand, how to trade in lane, when to join fights, which objectives and timers), items second. If a creator guide video about the hero exists (videos.py list shows \"guide\"; find one on YouTube when the user mentions it), run videos.py fetch, then videos.py guide <id> <hero> <recommended build_id>@<mm:ss>, then find.py <hero> <folder> --videos-only, and use the transcript in these texts with video:<id>@<s> sources; summarise the added vid-<id> build (resume, points) and say where the video and the stats disagree. Same changes in English."
+  },
+  {
+   "version": 10,
+   "date": "2026-11-11",
+   "title": {
+    "fr": "Style de jeu par phase pour chaque build",
+    "en": "Play style by phase for every build"
+   },
+   "parts": [
+    "playstyle"
+   ],
+   "scripts": [
+    "playstyle.py",
+    "report.py"
+   ],
+   "auto": true,
+   "todo": "Run playstyle.py, then report.py: every build whose author has >= 10 games on the hero gets its measured lean per phase (lane farm, jungle farm, fights, objectives, or balanced, vs the Phantom+ average), shown in the TLDR, the build view and the comparison. No text to rewrite."
   }
  ]
 }

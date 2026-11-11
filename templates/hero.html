@@ -135,6 +135,14 @@ button{font:inherit;color:inherit}
 .ptag{font:700 var(--text-sm)/1 var(--font-body);text-transform:uppercase;letter-spacing:.03em;padding:5px 9px 4px;
   background:var(--color-paper-3);border:1px solid var(--color-accent-dim);color:var(--color-ink)}
 .ptag--none{color:var(--color-neutral);border-style:dashed}
+.focus{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-2xs);margin-top:var(--space-sm)}
+.focus__ph{background:var(--color-paper-3);border:1px solid var(--color-accent-dim);padding:6px 9px;min-width:0}
+.focus__ph b{display:block;font:700 var(--text-xs)/1.2 var(--font-display);letter-spacing:.15em;text-transform:uppercase;color:var(--color-accent)}
+.focus__ph span{display:block;font:600 var(--text-sm)/1.3 var(--font-body);color:var(--color-ink);overflow-wrap:anywhere}
+.focus__ph span i{font-style:normal;color:var(--color-muted);font-weight:500}
+.focus__ph--bal span{color:var(--color-neutral)}
+.focus__n{margin:4px 0 0;font-size:var(--text-xs);color:var(--color-muted)}
+@media (max-width:520px){.focus{grid-template-columns:minmax(0,1fr)}}
 .prow{display:grid;grid-template-columns:110px minmax(0,1fr) minmax(0,1.15fr);gap:var(--space-md);align-items:center;
   padding:var(--space-sm) 0;border-bottom:1px solid var(--color-rule)}
 .prow__ph{font:800 var(--text-md)/1 var(--font-display);letter-spacing:.14em;text-transform:uppercase}
@@ -458,6 +466,8 @@ kbd{display:inline-block;min-width:15px;padding:0 3px;border-radius:3px;backgrou
 .cmp-wrap{margin-top:var(--space-md);overflow-x:auto;border:1px solid var(--color-rule)}
 .cmp{border-collapse:collapse;width:100%;font-size:var(--text-sm)}
 .cmp th,.cmp td{padding:var(--space-2xs) var(--space-xs);border-bottom:1px solid var(--color-rule);text-align:left;white-space:nowrap}
+.cmp tr.cmp-style td,.cmp tr.cmp-style th{white-space:normal;font-size:var(--text-xs);background:var(--color-paper-2);min-width:110px}
+.cmp tr.cmp-style td i{font-style:normal;color:var(--color-muted)}
 .cmp thead th{position:sticky;top:0;background:var(--color-paper-2);vertical-align:bottom;
   font:700 var(--text-sm)/1.2 var(--font-display);letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--color-accent-dim)}
 .cmp thead th small{display:block;font:400 var(--text-xs)/1.3 var(--font-body);letter-spacing:0;text-transform:none;color:var(--color-neutral)}
@@ -738,8 +748,14 @@ function playRows(p){const B=(D.baseline||{}).phases||[];
   ${L('play.hero_dmg')} <b class="num">${ph.hero_dmg}</b>/min${delta(ph.hero_dmg,b.hero_dmg)} · ${L('play.obj')} <b class="num">${ph.obj_dmg}</b>/min${delta(ph.obj_dmg,b.obj_dmg)}</div></div>`}).join('')}
 const legendSrc=base=>`<div class="legend-src">${SRC.map(([k,l])=>`<span><i class="bar ${k}" style="background:var(--src-${k})"></i>${l}</span>`).join('')}${base?`<span>${L('play.legend_base',{hero:esc(D.hero.name)})}</span>`:''}</div>`;
 const tag=t=>(UI.style_tags||{})[t]||t;
+// Per-phase lean of a build's author (playstyle.py "focus"): lane / jungle farm, fights, objectives, or balanced.
+const leanTxt=f=>f.lean.length?f.lean.map(x=>`${L('focus.'+x.k)}&nbsp;<i>${L('focus.gap',{n:x.gap})}</i>`).join(', '):L('focus.balanced');
+function focusBlock(b,count){const p=b.play;if(!p||!p.focus)return'';
+  const n=p.matches?`<p class="focus__n">${L('focus.games',{n:p.matches})}${p.matches<20?` · <b>${L('focus.small')}</b>`:''}</p>`:'';
+  return `<div class="focus">${p.focus.map(f=>`<div class="focus__ph${f.lean.length?'':' focus__ph--bal'}"><b>${f.phase}</b><span>${leanTxt(f)}</span></div>`).join('')}</div>${count?n:''}`}
 function playSection(b){if(!b.play)return'';
-  return `<section class="phase"><h3>${L('play.title')}</h3><p class="phase__desc">${L('play.desc',{hero:esc(D.hero.name),date:fmt(D.since)})}</p>
+  return `${b.play.focus?`<section class="phase"><h3>${L('focus.title')}</h3><p class="phase__desc">${L('focus.desc',{hero:esc(D.hero.name)})}</p>${focusBlock(b,true)}</section>`:''}
+  <section class="phase"><h3>${L('play.title')}</h3><p class="phase__desc">${L('play.desc',{hero:esc(D.hero.name),date:fmt(D.since)})}</p>
   <div class="play__tags">${(b.play.tags.length?b.play.tags.map(tag):[L('play.close')]).map(t=>`<span class="ptag${b.play.tags.length?'':' ptag--none'}">${esc(t)}</span>`).join('')}</div>
   ${playRows(b.play)}${legendSrc(true)}</section>`}
 function planPanel(){const P_=D.plan||{},G=(D.guides&&D.guides.guides)||[],measured=D.builds.filter(b=>b.play);
@@ -804,7 +820,7 @@ function tldrPanel(){const t=D.tldr||{},P_=D.plan||{},b=pickBuild(),f=buildFresh
   return `<article class="panel">${inc}
   <div class="tl-hero cham"><div><span class="tl-k">${L('tl.take')}</span><div class="tl-name">${esc(b.name)}</div>
     <div class="tl-meta">${b.rankImg?`<img class="rank rank--sm" src="${esc(b.rankImg)}" alt="">`:''}<b style="color:var(--color-ink)">${esc(b.author)}</b>${b.rank?` · ${esc(b.rank)}`:''}${b.winrate!=null?` · <span class="wr-${wrTone(b.winrate)}">${L('wr.long',{n:b.winrate})}</span>`:''} · ${esc(srcName(b.source))}${flag(f)}</div>
-    ${t.why?`<p class="tl-why">${lk(t.why)}</p>`:''}</div>${btn}</div>
+    ${t.why?`<p class="tl-why">${lk(t.why)}</p>`:''}${focusBlock(b,true)}</div>${btn}</div>
   ${(D.roles||(D.plan||{}).role)?`<section class="tl-sec"><h3>${L('tl.role')}</h3>${roleBlock(false)}</section>`:''}
   ${k.core.length?`<section class="tl-sec"><h3>${L('tl.core')} · ${esc(k.ref||'')}</h3><div class="tl-items">${k.core.map(c=>`<div class="mod ${esc(T(c.id).slot||'')}" tabindex="0" data-id="${c.id}">${gcard(c.id)}<span class="tl-min">≈ ${c.min} min</span></div>`).join('')}</div></section>`:''}
   ${P_.lane?`<section class="tl-sec"><h3>${L('tl.lane')}</h3><p class="tl-why">${lk(P_.lane)}</p></section>`:''}
@@ -927,10 +943,13 @@ function comparePanel(){
   const body=list.map(r=>`<tr class="${r.n===N?'all':''}"><th><div tabindex="0" data-id="${r.id}">${img(r.id)}${esc(T(r.id).n||r.id)}</div></th>`
     +D.builds.map((_,bi)=>{const c=r.cells[bi];return c?`<td class="ph" data-p="${c.p<3?0:1}" title="${esc(c.full)}">${esc(c.lab)}${PH[c.raw]||/^Situ/.test(c.raw||'')?'':'<i>*</i>'}</td>`:'<td class="none">—</td>'}).join('')
     +`<td class="cnt num">${r.n}/${N}</td></tr>`).join('');
+  const styled=D.builds.some(b=>b.play&&b.play.focus);
+  const style=styled?['Early','Mid','Late'].map((ph,i)=>`<tr class="cmp-style"><th>${L('focus.title')} · ${ph}</th>`+D.builds.map(b=>{const f=b.play&&b.play.focus&&b.play.focus[i];
+    return f?`<td>${leanTxt(f)}</td>`:'<td class="none">—</td>'}).join('')+'<td class="cnt"></td></tr>').join(''):'';
   const common=list.filter(r=>r.n===N).length;
   return `<article class="panel"><p class="panel__src">${L('rail.cmp_src')}</p><h2>${L('cmp.title')}</h2>
    <p class="legend">${L(common>1?'cmp.common_many':'cmp.common_one',{n:common,total:N})} ${L('cmp.legend')}</p>
-   <div class="cmp-wrap"><table class="cmp"><thead>${head}</thead><tbody>${body}</tbody></table></div></article>`}
+   <div class="cmp-wrap"><table class="cmp"><thead>${head}</thead><tbody>${style}${body}</tbody></table></div></article>`}
 
 /* ---- navigation ---- */
 function show(v,push){if(!views.includes(v))v=views[0];
