@@ -451,6 +451,9 @@
   "hub.pending_one": "1 nouveauté de méthode depuis",
   "hub.pending_many": "{n} nouveautés de méthode depuis",
   "hub.update": "Mettre à jour",
+  "hub.counter": "Contrer",
+  "hub.to_update": "À mettre à jour",
+  "hub.not_done": "Pas encore analysé",
   "hub.copied": "Copié : « {t} » → colle-le dans Claude Code",
   "hub.copy_fail": "Copie impossible : tape « {t} » dans Claude Code",
   "hub.sub": "{n} héros faits sur {total} · les tampons comparent la date de chaque page aux mises à jour du jeu"
