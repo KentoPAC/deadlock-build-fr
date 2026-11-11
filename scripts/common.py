@@ -8,7 +8,7 @@ import urllib.request
 from i18n import API_LANGUAGE, LANGS, current, named_pattern, pattern, t, table
 
 API = "https://api.deadlock-api.com"
-USER_AGENT = {"User-Agent": "deadlock-build-fr/1.0"}
+USER_AGENT = {"User-Agent": "deadlock-maxing/1.0"}
 LANG_FR = 2  # ELanguage: 0 English, 2 French, 6 Simplified Chinese...
 GAME_LANGUAGE = {"en": 0, "fr": 2}  # locale -> the game's ELanguage
 
