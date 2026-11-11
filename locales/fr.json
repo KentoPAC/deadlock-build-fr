@@ -132,7 +132,8 @@
   "guides.json": "conseils commu (guides.py)",
   "roles.json": "rôle (roles.py)",
   "matchups.json": "matchups (matchups.py)",
-  "counterplay.json": "counterplay de fin de partie (counterplay.py)"
+  "counterplay.json": "counterplay de fin de partie (counterplay.py)",
+  "laning.json": "lanes (laning.py)"
  },
  "missing.build_summaries": "résumé de chaque build",
  "missing.sources": "sources de {count} texte(s) ({paths})",
@@ -150,7 +151,8 @@
   "kit": "Données du jeu : compétences, recharges, paliers, pics de puissance (API assets)",
   "items": "Données du jeu : objets, coûts, effets (API assets)",
   "patch": "Notes de patch officielles (liste des patchs de l'API)",
-  "lanes": "Lanes en duo mesurées : victoires par lane et par partenaire de lane (deadlock-api lane-matchup-stats)"
+  "lanes": "Lanes en duo mesurées : victoires par lane et par partenaire de lane (deadlock-api lane-matchup-stats)",
+  "laning": "Lanes mesurées : avance en âmes à 9 min selon le héros d'en face (deadlock-api lane-matchup-stats)"
  },
  "source.build": "Build {source} de {author}",
  "source.guide": "« {title} » de {author}",
@@ -363,6 +365,16 @@
   "vs.title": "Comment contrer {hero}",
   "vs.desc": "Ses faiblesses, ce qui marche contre {hero} d’après les parties Fantôme+, et ses moments de puissance.",
   "vs.weaknesses": "Ses faiblesses",
+  "vs.lane_title": "Qui bat {hero} en lane",
+  "vs.lane_desc": "Avance en âmes du duo de {hero} à {min} min selon le héros d’en face, comparée à son avance habituelle ({base} âmes). Parties Fantôme+ ; chaque duo adverse compte pour ses deux héros.",
+  "vs.lane_win": "Gagnent la lane contre {hero}",
+  "vs.lane_lose": "Perdent la lane contre {hero}",
+  "lane.souls": "{n} âmes",
+  "vs.lane_items": "Objets de lane",
+  "vs.lane_items_desc": "gain de victoires des objets achetés avant 9 min par les joueurs en lane contre {hero}, au-delà de leur gain habituel",
+  "vs.lane_items_none": "Aucun objet de lane ne ressort nettement contre {hero} : les écarts mesurés sont inférieurs à 1,5 point ou trop incertains.",
+  "lane.tip": "{lanes} lanes · écart kills − morts du duo : {kd}{general}",
+  "lane.general": " · ce héros gagne aussi la lane contre la plupart des héros ({n} âmes en moyenne)",
   "vs.beaten_by": "Les héros qui battent {hero}",
   "vs.beaten_desc": "Écart au résultat attendu (le niveau général de chaque héros est retiré). {hero} gagne {base} % de ses parties en moyenne.",
   "vs.beat_most": "Battent {hero} le plus (avantage de l’adversaire)",

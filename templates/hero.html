@@ -887,6 +887,14 @@ function vsPanel(){const P_=D.plan||{},M=D.matchups||{},m=M.matchups,k=K();
     <div class="mu"><div><h5>${L('vs.beat_most',{hero:esc(D.hero.name)})}</h5><div class="ctr__vs">${m.worst.map(x=>muChip({...x,delta:-x.delta})).join('')}</div></div>
     <div><h5>${L('vs.struggle',{hero:esc(D.hero.name)})}</h5><div class="ctr__vs">${m.best.map(x=>muChip({...x,delta:-x.delta},true)).join('')}</div></div></div>
     ${Math.max(...m.worst.map(x=>Math.abs(x.delta)),0)<3?`<p class="phase__desc">${L('vs.small',{hero:esc(D.hero.name)})}</p>`:''}</section>`:''}
+  ${(()=>{const LN=D.laning,H=esc(D.hero.name);if(!LN||!(LN.beaten_by.length||LN.beats.length))return'';
+    const chip=(x,bad)=>`<span class="vs" tabindex="0" data-hero="${x.hero}" data-mu="${esc(L('lane.tip',{lanes:x.lanes,kd:(x.kd>0?'+':'')+x.kd,general:x.general!=null&&x.general>=150?L('lane.general',{n:'+'+x.general}):''}))}">${HN(x.hero).img?`<img src="${esc(HN(x.hero).img)}" alt="">`:''}${esc(HN(x.hero).n)} <b class="${bad?'bad':''}">${L('lane.souls',{n:(x.souls>0?'+':'')+x.souls})}</b></span>`;
+    return `<section class="phase"><h3>${L('vs.lane_title',{hero:H})}</h3><p class="phase__desc">${L('vs.lane_desc',{hero:H,min:Math.round(LN.sample_s/60),base:(LN.base>0?'+':'')+LN.base})}</p>
+    <div class="mu"><div><h5>${L('vs.lane_win',{hero:H})}</h5><div class="ctr__vs">${LN.beaten_by.map(x=>chip({...x,souls:-x.souls})).join('')||'—'}</div></div>
+    <div><h5>${L('vs.lane_lose',{hero:H})}</h5><div class="ctr__vs">${LN.beats.map(x=>chip({...x,souls:-x.souls},true)).join('')||'—'}</div></div></div>
+    ${LN.items==null?'':LN.items.length?`<div class="cp" style="margin-top:var(--space-sm)"><div class="cp__r"><div class="cp__if"><b>${L('vs.lane_items')}</b><small>${L('vs.lane_items_desc',{hero:H})}</small></div>
+      <div class="cp__then"><div class="cp__cards">${LN.items.map(x=>itemCard(x.id,`+${x.delta} pts`)).join('')}</div></div></div></div>`
+      :`<p class="phase__desc">${L('vs.lane_items_none',{hero:H})}</p>`}</section>`})()}
   ${(()=>{const A=((D.counterplay||{}).against)||[],H=D.hero.name;
     const WHY=Object.fromEntries(['heal','tank','spirit','weapon','burst'].map(k=>[k,a=>L('why.'+k,{hero:H,pct:pc(a.pct)})]));
     const TH=Object.fromEntries(['heal','tank','spirit','weapon','burst'].map(k=>[k,L('th.'+k)]));
