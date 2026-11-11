@@ -132,7 +132,8 @@
   "guides.json": "community advice (guides.py)",
   "roles.json": "role (roles.py)",
   "matchups.json": "matchups (matchups.py)",
-  "counterplay.json": "late-game counterplay (counterplay.py)"
+  "counterplay.json": "late-game counterplay (counterplay.py)",
+  "laning.json": "lanes (laning.py)"
  },
  "missing.build_summaries": "summary of each build",
  "missing.sources": "sources for {count} text(s) ({paths})",
@@ -150,7 +151,8 @@
   "kit": "Game data: abilities, cooldowns, tiers, power spikes (API assets)",
   "items": "Game data: items, costs, effects (API assets)",
   "patch": "Official patch notes (API patch list)",
-  "lanes": "Measured duo lanes: win rate by lane and by lane partner (deadlock-api lane-matchup-stats)"
+  "lanes": "Measured duo lanes: win rate by lane and by lane partner (deadlock-api lane-matchup-stats)",
+  "laning": "Measured lanes: soul lead at 9 min depending on the enemy hero (deadlock-api lane-matchup-stats)"
  },
  "source.build": "{source} build by {author}",
  "source.guide": "\"{title}\" by {author}",
@@ -363,6 +365,16 @@
   "vs.title": "How to counter {hero}",
   "vs.desc": "Their weaknesses, what works against {hero} in Phantom+ games, and their power spikes.",
   "vs.weaknesses": "Weaknesses",
+  "vs.lane_title": "Who beats {hero} in lane",
+  "vs.lane_desc": "Soul lead of {hero}'s duo at {min} min depending on the enemy hero, compared with its usual lead ({base} souls). Phantom+ games; each enemy duo counts for both of its heroes.",
+  "vs.lane_win": "Win the lane against {hero}",
+  "vs.lane_lose": "Lose the lane against {hero}",
+  "lane.souls": "{n} souls",
+  "vs.lane_items": "Lane items",
+  "vs.lane_items_desc": "win-rate gain of the items bought before 9 min by players laning against {hero}, beyond their usual gain",
+  "vs.lane_items_none": "No lane item clearly stands out against {hero}: the measured gaps are below 1.5 points or too uncertain.",
+  "lane.tip": "{lanes} lanes · duo's kills − deaths gap: {kd}{general}",
+  "lane.general": " · this hero also wins the lane against most heroes ({n} souls on average)",
   "vs.beaten_by": "Heroes that beat {hero}",
   "vs.beaten_desc": "Gap to the expected result (each hero's overall strength is removed). {hero} wins {base}% of games on average.",
   "vs.beat_most": "Beat {hero} the most (opponent's edge)",

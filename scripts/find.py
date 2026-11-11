@@ -33,7 +33,7 @@ CORE_PCT = 0.75         # an item is "core" when bought in >= 75% of games
 SITUATIONAL_PCT = 0.25  # below this: ignored
 EARLY_MIN, MID_MIN = 10, 22
 MIN_PATCH_DAYS = 21     # the OTP window starts at the last big patch if that patch is at least 3 weeks old
-ANALYSIS_MODULES = ("playstyle.py", "guides.py", "roles.py", "matchups.py", "counterplay.py")
+ANALYSIS_MODULES = ("playstyle.py", "guides.py", "roles.py", "matchups.py", "laning.py", "counterplay.py")
 
 
 def batch(path, ids, key="account_ids"):

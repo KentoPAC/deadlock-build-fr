@@ -470,6 +470,7 @@ def build_page(folder, data, lang):
             if isinstance(value, dict):
                 value["label"] = table("metrics").get(key, value.get("label"))
     matchups = load_json(f"{folder}/matchups.json")
+    laning = load_json(f"{folder}/laning.json")
     counterplay = load_json(f"{folder}/counterplay.json")
     enemies = {x["hero"] for b in builds for v in (b.get("counters") or []) for x in v["vs"]}
     if counterplay:
@@ -485,7 +486,7 @@ def build_page(folder, data, lang):
     payload = {"sources": resolve_sources(summaries, data["candidates"], guides, roles), "videoTips": tips,
                "guideVideos": guide_videos(hero_id),
                "counterplay": counterplay, "completeness": state, "kit": kit, "heroes": enemy_heroes(enemies),
-               "roles": roles, "matchups": matchups, "tldr": summaries.get("tldr"), "hero": hero,
+               "roles": roles, "matchups": matchups, "laning": laning, "tldr": summaries.get("tldr"), "hero": hero,
                "baseline": load_json(f"{folder}/baseline.json"), "guides": guides, "plan": summaries.get("plan"),
                "generatedTs": data["generated"], "since": since, "patches": patches(), "intro": summaries.get("intro", ""),
                "days": data["days"],

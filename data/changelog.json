@@ -195,6 +195,23 @@
     "report.py"
    ],
    "todo": "Run report.py and fix every \"Filler\" and \"Repeated idea\" it prints, in both languages. Reread intro, tldr and plan: remove game basics and meta phrases, and make sure no vs point restates a weakness (a weakness = the flaw + how the hero's player makes up for it; a vs point = something concrete for the opponent). Touch nothing else."
+  },
+  {
+   "version": 13,
+   "date": "2026-11-11",
+   "title": {
+    "fr": "Qui gagne la lane contre le héros",
+    "en": "Who wins the lane against the hero"
+   },
+   "parts": [
+    "laning"
+   ],
+   "scripts": [
+    "laning.py",
+    "report.py"
+   ],
+   "auto": true,
+   "todo": "Run laning.py, then report.py: the counter view shows which heroes win or lose the lane against the hero (soul lead at 9 min, Phantom+ duo lanes) and the lane items (bought before 9 min) that win clearly more against it. No text to rewrite; plan.lane may cite it (source stat:laning)."
   }
  ]
 }
