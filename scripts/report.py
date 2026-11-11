@@ -175,6 +175,20 @@ def reference_build(builds, pick):
             or next((b for b in builds if b["order"]), None))
 
 
+def measured(build):
+    """True when the build comes from real purchases (minute and share of games per item)."""
+    return bool(build) and any(m.get("pct") is not None for c in build["cats"] for m in c["mods"])
+
+
+def item_reference(builds, ref):
+    """Build used for key items and item power spikes: the reference build when its purchases are measured,
+    otherwise an OTP with measured purchases and a net worth curve (a written build has no purchase minutes)."""
+    if measured(ref) and (ref.get("play") or {}).get("nw"):
+        return ref
+    otps = [b for b in builds if b["source"] == "OTP" and measured(b) and (b.get("play") or {}).get("nw")]
+    return max(otps, key=lambda b: b.get("badge") or 0, default=None)  # the best-ranked one-trick
+
+
 def power_spikes(hero, ref, all_items):
     """Ability unlocks and upgrades of the reference build, placed on the game's level thresholds."""
     levels = sorted(((int(k), v) for k, v in (hero.get("level_info") or {}).items()), key=lambda x: x[0])
@@ -218,22 +232,25 @@ def hero_kit(hero_id, all_items, builds, pick=None):
         abilities.append({"id": ability["id"], "key": key, "desc": desc[:420],
                           "tiers": [tier_text(ability, k) for k in (1, 2, 3)]})
     ref = reference_build(builds, pick)
+    item_ref = item_reference(builds, ref)
     core, first_max = [], None
-    if ref:
-        for cat in ref["cats"]:
+    if item_ref:
+        for cat in item_ref["cats"]:
             for mod in cat["mods"]:
                 if mod.get("pct") and mod["pct"] >= CORE_ITEM_PCT and (all_items.get(mod["id"]) or {}).get("cost", 0) >= CORE_ITEM_COST:
                     core.append({"id": mod["id"], "min": mod["min"], "pct": mod["pct"]})
+    if ref:
         upgrades = {}
         for step in ref["order"]:
             if not step["unlock"]:
                 upgrades[step["id"]] = upgrades.get(step["id"], 0) + 1
                 if upgrades[step["id"]] == 3 and first_max is None:
                     first_max = step["id"]
-    spikes = sorted(power_spikes(hero, ref, all_items) + item_spikes(ref, all_items),
+    spikes = sorted(power_spikes(hero, ref, all_items) + item_spikes(item_ref, all_items),
                     key=lambda x: (x["souls"], x.get("kind") == "item"))
     return {"abilities": abilities, "spikes": spikes,
-            "core": sorted(core, key=lambda x: x["min"])[:6], "ref": ref["author"] if ref else None, "firstMax": first_max}
+            "core": sorted(core, key=lambda x: x["min"])[:6], "ref": item_ref["author"] if item_ref else None,
+            "abilityRef": ref["author"] if ref else None, "firstMax": first_max}
 
 
 def install_assets(folder):
@@ -319,6 +336,7 @@ def load_builds(folder, candidates, summaries, lang):
                        "name": build.get("name"),
                        "desc": "" if c["source"] == "OTP" else build.get("description") or "",  # OTP: already in facts
                        "facts": facts(c), "code": code, "winrate": c.get("winrate"), "rankImg": rank_image(c.get("badge")),
+                       "badge": c.get("badge"),
                        "matches": c.get("matches"), "share": c.get("share"), "favorites": c.get("favorites"),
                        "updated": c.get("updated"), "buildId": c.get("build_id"),
                        "translated": c["_translated"] or not c.get("needs_translation"),

@@ -775,7 +775,7 @@ function planPanel(){const P_=D.plan||{},G=(D.guides&&D.guides.guides)||[],measu
    ${swBlock(true)?`<section class="phase"><h3>${L('sec.sw')}</h3>${swBlock(true)}</section>`:''}
    ${D.counterplay?`<section class="phase"><h3>${L('sec.counterplay')}</h3><p class="phase__desc">${L('sec.counterplay_desc')}</p>${counterplay(false)}</section>`:''}
    ${K().abilities.length?`<section class="phase"><h3>${L('sec.abilities')}</h3><p class="phase__desc">${L('sec.abilities_desc')}</p>${abilityCards(true)}</section>`:''}
-   ${K().spikes.length?`<section class="phase"><h3>${L('sec.spikes')}</h3><p class="phase__desc">${L('sec.spikes_desc',{ref:esc(K().ref||'')})}</p>${spikesTable()}</section>`:''}
+   ${K().spikes.length?`<section class="phase"><h3>${L('sec.spikes')}</h3><p class="phase__desc">${K().abilityRef&&K().ref&&K().abilityRef!==K().ref?L('sec.spikes_desc2',{ref:esc(K().ref),ab:esc(K().abilityRef)}):L('sec.spikes_desc',{ref:esc(K().ref||K().abilityRef||'')})}</p>${spikesTable()}</section>`:''}
    ${table?`<section class="phase"><h3>${L('sec.best')}</h3>${table}</section>`:''}
    <section class="phase"><h3>${L('sec.sources')}</h3><ul class="srcs">${srcs||`<li>${L('plan.no_guide')}</li>`}
    ${measured.map(b=>`<li><b>${L('plan.stats_of',{author:esc(b.author)})}</b> — ${L('plan.games_since',{date:fmt(D.since)})}</li>`).join('')}</ul></section></article>`}
@@ -829,7 +829,7 @@ function tldrPanel(){const t=D.tldr||{},P_=D.plan||{},b=pickBuild(),f=buildFresh
   ${swBlock(false)?`<section class="tl-sec"><h3>${L('sec.sw')}</h3>${swBlock(false)}</section>`:''}
   ${D.counterplay?`<section class="tl-sec"><h3>${L('sec.counterplay')}</h3>${counterplay(true)}</section>`:''}
   ${k.abilities.length?`<section class="tl-sec"><h3>${L('tl.abilities')}</h3>${abilityCards(false)}</section>`:''}
-  ${k.spikes.length?`<section class="tl-sec"><h3>${L('sec.spikes')}</h3>${spikesCompact()}</section>`:''}
+  ${k.spikes.length?`<section class="tl-sec"><h3>${L('sec.spikes')}</h3>${spikesCompact()}${k.abilityRef&&k.ref&&k.abilityRef!==k.ref?`<p class="focus__n">${L('spk.refs',{ref:esc(k.ref),ab:esc(k.abilityRef)})}</p>`:''}</section>`:''}
   <div class="tl-more">${HASPLAN?`<button type="button" data-go="plan">${L('tl.more_plan')}</button>`:''}<button type="button" data-go="${esc(b.key)}">${L('tl.more_build')}</button>${D.builds.length>1?`<button type="button" data-go="compare">${L('tl.more_cmp')}</button>`:''}</div>
   </article>`}
 const HN=id=>(D.heroes||{})[id]||{n:id};
