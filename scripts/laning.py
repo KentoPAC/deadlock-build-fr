@@ -10,7 +10,8 @@ Ranked on the real gap (what the hero's player will face). Each enemy hero's gen
 average soul lead against everyone) is kept alongside, so the page can say when it wins the lane against most heroes.
 Lane items (/v1/analytics/item-stats, same_lane_filter): win rate of the items bought before SAMPLE_S by players
 laning against the hero, minus their usual win rate when bought that early, minus the common shift; only gaps
-of at least MIN_ITEM_GAP points and Z_MIN standard errors are kept (samples are small).
+of at least MIN_ITEM_GAP points and Z_MIN standard errors are "solid"; when fewer than SHOWN_ITEMS are, the best
+gaps of at least MIN_TREND_GAP points and Z_TREND standard errors fill in as "trends" (flagged as uncertain on the page).
 Writes <folder>/laning.json and prints a compact summary for the analysis.
 """
 import math
@@ -29,6 +30,9 @@ SHOWN = 5
 MIN_ITEM_GAMES = 400   # lane buyers of an item against the hero
 MIN_ITEM_GAP = 1.5     # win-rate points
 Z_MIN = 2.0            # gap / standard error
+Z_TREND = 1.0          # weaker gaps, shown as trends...
+MIN_TREND_GAP = 1.0    # ...when they are big enough to matter in game
+SHOWN_ITEMS = 4
 
 
 def lane_rows(hero_id, since, tries=3):
@@ -77,12 +81,18 @@ def lane_items(hero_id, since):
         return []
     # a hero that loses many lanes makes every item of its opponents "win" more: remove the median shift
     shift = sorted(d for _, _, d, _ in rows)[len(rows) // 2]
-    out = []
+    solid, trends = [], []
     for item, games, delta, p in rows:
         gap = delta - shift
-        if 100 * gap >= MIN_ITEM_GAP and gap / math.sqrt(p * (1 - p) / games) >= Z_MIN:
-            out.append({"id": item, "delta": round(100 * gap, 1), "games": games})
-    return sorted(out, key=lambda x: -x["delta"])[:6]
+        z = gap / math.sqrt(p * (1 - p) / games)
+        entry = {"id": item, "delta": round(100 * gap, 1), "games": games, "z": round(z, 1)}
+        if 100 * gap >= MIN_ITEM_GAP and z >= Z_MIN:
+            solid.append(dict(entry, solid=True))
+        elif 100 * gap >= MIN_TREND_GAP and z >= Z_TREND:
+            trends.append(dict(entry, solid=False))
+    solid.sort(key=lambda x: -x["delta"])
+    trends.sort(key=lambda x: -x["delta"])
+    return solid[:SHOWN_ITEMS] + trends[:max(0, SHOWN_ITEMS - len(solid))]
 
 
 def by_enemy(hero_id, rows, strength=None):
@@ -131,7 +141,8 @@ def main():
     print("Lose the lane against it: " + (", ".join(map(fmt, result["beats"])) or "none"))
     all_items = items()
     print("Items bought in lane against it that win more (before 9 min, gain beyond the usual gain): " +
-          (", ".join(f"{all_items.get(x['id'], {}).get('name', x['id'])} +{x['delta']} pts ({x['games']} games)"
+          (", ".join(f"{all_items.get(x['id'], {}).get('name', x['id'])} +{x['delta']} pts ({x['games']} games"
+                     f"{'' if x['solid'] else ', trend: uncertain'})"
                      for x in result["items"] or []) or "none"))
 
 
