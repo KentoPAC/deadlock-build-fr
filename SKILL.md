@@ -33,6 +33,15 @@ ralentissement pour…"), never "… pour survivre : Malédiction de ralentissem
 (not "Dissipateur", "Redingote"): otherwise there is no link and the EN toggle mixes languages. report.py flags
 every "Shortened name".
 
+**No filler, no repeats**: the reader plays Deadlock. Every sentence must say something specific to this hero (a
+number, a name, a timing, an item, an action); never explain game basics (lanes are played in duos, what the jungle
+or souls are, "farm between fights", "do not die"), never write meta phrases ("My explanation:", "It is important
+to…") and never present a number that equals the average as a finding ("like the average"). Sections must not repeat
+each other: a **weakness** speaks to the hero's player (the flaw and how to make up for it), a **`vs` point** speaks
+to the opponent with something concrete (timing, item with its measured gain, matchup) that is not already a
+weakness. report.py flags "Filler" (locale `filler_patterns`) and "Repeated idea" (weakness / `vs` pairs sharing
+most of their words): fix every one before finishing.
+
 **Every written text cites its sources** (metadata, not displayed yet): in the same finish.py JSON,
 `"sources": {"<path>": ["<ref>", …]}` for EVERY text path (`intro`, `<key>.resume`, `<key>.points[i]`,
 `tldr.why/early/mid/late/keys[i]`, `plan.early`, `plan.vs[i]`, `plan.abilities.1`…). Refs: `build:<key>`,
