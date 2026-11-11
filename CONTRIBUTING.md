@@ -1,5 +1,14 @@
 # Contributing
 
+## How to contribute
+
+1. Fork the repository and clone your fork.
+2. Create a branch from `main` (prefixes below), make your change and run `./check.sh`.
+3. Open a pull request against `main`. CI (lint + unit tests) must pass before it can be merged.
+
+`main` is protected: no direct pushes, no force pushes, linear history. Every change, including the maintainer's,
+goes through a pull request.
+
 ## Branches
 
 `main` is always releasable. Work happens on short-lived branches merged through pull requests:
