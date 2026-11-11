@@ -276,6 +276,8 @@
   "sec.abilities_desc": "Description du jeu, paliers T1 / T2 / T3, et laquelle les meilleurs montent en premier.",
   "sec.spikes": "Pics de puissance",
   "sec.spikes_desc": "Objets clés de {ref} à leur minute d’achat réelle, et ses compétences placées sur les seuils d’âmes du jeu selon son ordre de compétences et son rythme de farm réel.",
+  "sec.spikes_desc2": "Objets clés de {ref} (vrais achats mesurés) à leur minute d’achat réelle, et compétences selon l’ordre du build de {ab}, placées sur les seuils d’âmes du jeu.",
+  "spk.refs": "Objets : vrais achats de {ref} · compétences : ordre du build de {ab}",
   "sec.best": "Ce que font les meilleurs joueurs",
   "sec.sources": "Sources",
   "plan.no_guide": "Aucun guide communautaire récent assez détaillé : synthèse basée sur les stats et les notes des builds.",

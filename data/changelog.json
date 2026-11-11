@@ -163,6 +163,23 @@
    ],
    "auto": true,
    "todo": "Run playstyle.py, then report.py: every build whose author has >= 10 games on the hero gets its measured lean per phase (lane farm, jungle farm, fights, objectives, or balanced, vs the Phantom+ average), shown in the TLDR, the build view and the comparison. No text to rewrite."
+  },
+  {
+   "version": 11,
+   "date": "2026-11-11",
+   "title": {
+    "fr": "Objets clés mesurés même pour un build écrit",
+    "en": "Measured key items even for a written build"
+   },
+   "parts": [
+    "kit.spikes",
+    "kit.core"
+   ],
+   "scripts": [
+    "report.py"
+   ],
+   "auto": true,
+   "todo": "Run report.py: when the advised build has no measured purchases (Mobalytics, community or video build), key items and item power spikes come from the best-ranked one-trick's real purchases, and the page says whose items and whose ability order it shows. No text to rewrite."
   }
  ]
 }

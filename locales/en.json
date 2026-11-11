@@ -276,6 +276,8 @@
   "sec.abilities_desc": "Game description, T1 / T2 / T3 upgrades, and which one the best players max first.",
   "sec.spikes": "Power spikes",
   "sec.spikes_desc": "{ref}'s key items at their real purchase minute, and their abilities placed on the game's soul thresholds following their ability order and real farm pace.",
+  "sec.spikes_desc2": "{ref}'s key items (real, measured purchases) at their real purchase minute, and abilities following {ab}'s build order, placed on the game's soul thresholds.",
+  "spk.refs": "Items: {ref}'s real purchases · abilities: {ab}'s build order",
   "sec.best": "What the best players do",
   "sec.sources": "Sources",
   "plan.no_guide": "No recent community guide detailed enough: synthesis based on the stats and the build notes.",
