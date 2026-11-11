@@ -17,7 +17,7 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import get, heroes, items, read_json, write_json  # noqa: E402
 
-CACHE = os.path.expanduser("~/.cache/deadlock-build-fr")
+CACHE = os.path.expanduser("~/.cache/deadlock-maxing")
 BADGE = 90
 # category -> technical properties that define it (non-zero value)
 CATEGORIES = {

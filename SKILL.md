@@ -1,5 +1,5 @@
 ---
-name: deadlock-build-fr
+name: deadlock-maxing
 description: Find the best Deadlock builds for a hero (high-ranked one-tricks, Mobalytics, community), analyse how to play and counter it (role, measured play style, matchups, abilities, power spikes), and produce English and French pages with a TLDR and codes to paste in game via "Paste build"; or translate one build (deadchaps.gg link or id). Use when the user asks for a hero's builds, how to play or counter a hero, to redo / update a hero page, opens the "all heroes" page, gives a build link or id to translate, or pastes a build code copied in game.
 ---
 
@@ -9,7 +9,7 @@ Deadlock imports a build from the clipboard (**"Coller le build"** / "Paste buil
 Format: `base64(zstd(protobuf CMsgHeroBuild))`, without a trailing newline (the game rejects it otherwise).
 This format has been verified in game.
 
-`S` = this skill's folder (`.claude/skills/deadlock-build-fr`). Working folders in the project:
+`S` = this skill's folder (`.claude/skills/deadlock-maxing`). Working folders in the project:
 `builds/<id>` for a single build, `builds/search-<hero>` for a search.
 
 Pages exist in **English** (default) and **French**: every text is written in French first (`summaries.json`), then
@@ -162,7 +162,7 @@ is missing.
   Guides: Paz, "The BEST Comprehensive Guide to VIOLET" (kW6zL2_22X4), recommends oses's build 897240.
   Subtitles: only the original track is fetched (`en-orig`); asking for every translated track gets a 429.
 - **counters.py** (background, started by find.py, regenerates the page): items the OTPs buy clearly more against
-  some heroes (statistical test). Steam pages are cached for a day (`~/.cache/deadlock-build-fr`).
+  some heroes (statistical test). Steam pages are cached for a day (`~/.cache/deadlock-maxing`).
 - Power spikes and ability cards: computed by report.py (game level thresholds x the OTP's ability order).
 - **apply.py** `--lang fr|en` writes `build_<lang>.json` and the code (`code.txt` in French, `code.en.txt` in English);
   `--tr -` fills that language's translations. It recomputes category width / height from the text length (the game cuts text with "..."); constants at

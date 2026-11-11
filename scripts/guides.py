@@ -26,7 +26,7 @@ from common import get, rank_label, read_json, read_text, write_json, write_text
 
 MIN_TEXT = 500
 MAX_PRINT = 1500
-CACHE = os.path.expanduser("~/.cache/deadlock-build-fr")
+CACHE = os.path.expanduser("~/.cache/deadlock-maxing")
 STEAM_HEADERS = {"User-Agent": "Mozilla/5.0", "Accept-Language": "en"}
 STEAM_APP_ID = 1422450  # Deadlock
 MEME = re.compile(r"marry|girlfriend|boyfriend|hentai|war crim|useless|feeding|nickname|apodos|steamhappy|console", re.I)

@@ -1,5 +1,5 @@
 [project]
-name = "deadlock-build-fr"
+name = "deadlock-maxing"
 version = "0.1.0"
 description = "Claude Code skill: find, explain and translate Deadlock builds into in-game build codes"
 readme = "README.md"

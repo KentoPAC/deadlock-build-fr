@@ -13,7 +13,7 @@ Usage :
 
 English hero and item names are converted to ids when saving (loud failure when unknown): the page then
 shows names, icons and tooltips from the API, like everywhere else.
-Data: data/videos.json. Cached transcripts: ~/.cache/deadlock-build-fr/videos/.
+Data: data/videos.json. Cached transcripts: ~/.cache/deadlock-maxing/videos/.
 A video older than the last big patch is flagged on the page (report.py).
 """
 import datetime
@@ -31,7 +31,7 @@ from i18n import CONTENT_LANG, LANGS  # noqa: E402
 
 SKILL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(SKILL, "data", "videos.json")
-CACHE = os.path.expanduser("~/.cache/deadlock-build-fr/videos")
+CACHE = os.path.expanduser("~/.cache/deadlock-maxing/videos")
 
 
 def vid(s):
