@@ -478,6 +478,9 @@ def build_page(folder, data, lang):
         enemies |= {h for rule in counterplay["rules"] for h in rule["heroes"]}
     if matchups and matchups.get("matchups"):
         enemies |= {x["hero"] for x in matchups["matchups"]["best"] + matchups["matchups"]["worst"]}
+    if laning:
+        enemies |= {x["hero"] for x in laning["beaten_by"] + laning["beats"]}
+        used.update(x["id"] for x in laning.get("items") or [])
     if matchups and matchups.get("items"):
         used.update(x["id"] for x in matchups["items"])
     used.update(v["id"] for b in builds for v in (b.get("counters") or []))
