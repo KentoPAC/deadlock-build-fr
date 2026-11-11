@@ -281,6 +281,8 @@ kbd{display:inline-block;min-width:15px;padding:0 3px;border-radius:3px;backgrou
 .prof i{display:block;height:6px;margin-top:4px;background:var(--color-paper-3);position:relative}
 .prof i::after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--p);background:var(--color-accent)}
 .sw{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--color-rule);border:1px solid var(--color-rule)}
+.sw--2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:900px){.sw--2{grid-template-columns:minmax(0,1fr)}}
 .sw>div{background:var(--color-paper-2);padding:var(--space-sm) var(--space-md)}
 .sw h4{margin:0 0 var(--space-2xs);font:800 var(--text-md)/1 var(--font-display);letter-spacing:.12em;text-transform:uppercase}
 .sw .s h4{color:var(--color-ok)}.sw .w h4{color:var(--color-err)}.sw .v h4{color:var(--color-warn)}
@@ -326,9 +328,12 @@ kbd{display:inline-block;min-width:15px;padding:0 3px;border-radius:3px;backgrou
 .cp__hs img{cursor:help;transition:transform .15s var(--ease-pop)}.cp__hs img:hover{transform:scale(1.2)}
 .cp__hs img{width:26px;height:26px;border-radius:50%;object-fit:cover;background:var(--color-shade);border:1px solid var(--color-rule)}
 .cp__then{font-size:var(--text-sm);line-height:1.6}
+.cp__cards{display:flex;flex-wrap:wrap;gap:var(--space-sm);margin-top:var(--space-2xs)}
 .cp__then .lbl{display:block;font:700 var(--text-xs)/1.2 var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent);margin-bottom:2px}
 .cp__then small{color:var(--color-neutral)}
 @media (max-width:900px){.cp__r{grid-template-columns:minmax(0,1fr)}}
+.cp__r:has(.cp__cards){grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr)}
+@media (max-width:900px){.cp__r:has(.cp__cards){grid-template-columns:minmax(0,1fr)}}
 .wr-good{color:var(--color-ok)}.wr-bad{color:var(--color-err)}
 
 /* ---- stack: rail + detail ---- */
@@ -710,6 +715,8 @@ function renderRail(){$('list').innerHTML=D.builds.map(b=>{const f=buildFresh(b)
 
 /* ---- build panel ---- */
 const ROMAN=['','I','II','III','IV','V'];
+// Big in-game item card with its tooltip, optionally with a caption under it (minute, measured gain…).
+const itemCard=(id,cap)=>`<div class="mod ${esc(T(id).slot||'')}" tabindex="0" data-id="${id}">${gcard(id)}${cap?`<span class="tl-min">${cap}</span>`:''}</div>`;
 function gcard(id){const i=T(id);
   return `<div class="gcard${i.act?' gcard--active':''}">${img(id,'gcard__art')}${i.tier?`<span class="gcard__tier">${ROMAN[i.tier]||i.tier}</span>`:''}
   ${i.imb?'<i class="gcard__imbue">IMBUE</i>':''}<div class="gcard__name">${esc(i.n||id)}</div></div>`}
@@ -872,7 +879,7 @@ function vsPanel(){const P_=D.plan||{},M=D.matchups||{},m=M.matchups,k=K();
   const spikes=k.spikes.filter(s=>s.kind==='item'?s.cost>=3200:(s.tier===0||s.tier===3)).slice(0,10);
   return `<article class="panel"><p class="panel__src">${L('rail.vs_src')}</p><h2>${L('vs.title',{hero:esc(D.hero.name)})}</h2>
   <p class="facts">${L('vs.desc',{hero:esc(D.hero.name)})}</p>
-  ${(P_.vs||P_.weaknesses)?`<div class="sw" style="margin-top:var(--space-md);grid-template-columns:repeat(2,minmax(0,1fr))">${list(L('sw.beat'),P_.vs,'v')}${list(L('vs.weaknesses'),P_.weaknesses,'w')}</div>`:''}
+  ${(P_.vs||P_.weaknesses)?`<div class="sw sw--2" style="margin-top:var(--space-md)">${list(L('sw.beat'),P_.vs,'v')}${list(L('vs.weaknesses'),P_.weaknesses,'w')}</div>`:''}
   ${vidTips()}
   ${m?`<section class="phase"><h3>${L('vs.beaten_by',{hero:esc(D.hero.name)})}</h3><p class="phase__desc">${L('vs.beaten_desc',{hero:esc(D.hero.name),base:m.base})}</p>
     <div class="mu"><div><h5>${L('vs.beat_most',{hero:esc(D.hero.name)})}</h5><div class="ctr__vs">${m.worst.map(x=>muChip({...x,delta:-x.delta})).join('')}</div></div>
@@ -884,9 +891,9 @@ function vsPanel(){const P_=D.plan||{},M=D.matchups||{},m=M.matchups,k=K();
     const meas=(M.items||[]);if(!A.length&&!meas.length)return'';
     return `<section class="phase"><h3>${L('vs.items_title',{hero:esc(H)})}</h3><p class="phase__desc">${L('vs.items_desc',{hero:esc(H)})}</p>
     <div class="cp">${A.map(a=>`<div class="cp__r"><div class="cp__if"><b>${esc((WHY[a.why]||(()=>a.why))(a))}</b></div>
-      <div class="cp__then"><span class="lbl">→ ${TH[a.why]||''}</span>${a.items.map(x=>`<span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span>`).join(' · ')}</div></div>`).join('')}
+      <div class="cp__then"><span class="lbl">→ ${TH[a.why]||''}</span><div class="cp__cards">${a.items.map(x=>itemCard(x.id)).join('')}</div></div></div>`).join('')}
     ${meas.length?`<div class="cp__r"><div class="cp__if"><b>${L('vs.measured',{hero:esc(H)})}</b><small>${L('vs.measured_desc',{hero:esc(H)})}</small></div>
-      <div class="cp__then"><span class="lbl">${L('vs.best')}</span>${meas.map(x=>`<span class="ref ${esc(T(x.id).slot||'')}" tabindex="0" data-id="${x.id}">${img(x.id)}${esc(T(x.id).n)}</span> <small>+${x.delta} pts</small>`).join(' · ')}</div></div>`:''}</div>
+      <div class="cp__then"><span class="lbl">${L('vs.best')}</span><div class="cp__cards">${meas.map(x=>itemCard(x.id,`+${x.delta} pts`)).join('')}</div></div></div>`:''}</div>
     <p class="phase__desc">${L('vs.profile_note')}</p></section>`})()}
   ${esc_.length?`<section class="phase"><h3>${L('vs.cooldowns')}</h3><p class="phase__desc">${L('vs.cooldowns_desc')}</p>
     <div class="spk">${esc_.map(x=>`<span class="spk__i" tabindex="0" data-id="${x.a.id}">${img(x.a.id)}<span>${esc(x.t.n)} <kbd>${x.a.key}</kbd><br><small>⟳ ${x.t.cd} s</small></span></span>`).join('')}</div></section>`:''}
