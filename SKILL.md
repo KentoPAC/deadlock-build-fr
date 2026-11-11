@@ -134,7 +134,9 @@ is missing.
   `"lang": "fr"` (set by finish.py), each video tip has `"lang"`; content missing in a page's language is shown in its
   own language with a notice. Analysis modules store ids (play style tags, metric keys), labelled at render time.
 - **playstyle.py** / **guides.py** (run by find.py, can be rerun alone on a search folder): measured style via
-  `/v1/analytics/player-performance-curve` (OTPs + authors with >= 20 games on the hero); advice = in-game builds with
+  `/v1/analytics/player-performance-curve` (OTPs + authors with >= 10 games on the hero, "small sample" under 20), with
+  each phase's lean vs the Phantom+ average (`focus`: lane farm, jungle farm, fights, objectives, >= +15%; shown in
+  the TLDR, the build view and the comparison: use it to say how each build is played); advice = in-game builds with
   >= 500 characters of explanation + serious Steam guides updated after the patch.
   Mobalytics (Cloudflare) and Reddit (403) are not reachable: do not try to get around it.
 - **roles.py**: game class + meta position (recent Steam "roles / positions" guide, last known guide from the cache

@@ -16,7 +16,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import get, read_json, write_json  # noqa: E402
 
 PHASES = [("Early", 0, 540), ("Mid", 540, 1200), ("Late", 1200, 1800)]  # game seconds
-MIN_MATCHES = 20
+MIN_MATCHES = 10    # non-OTP authors: fewer games than that on the hero = no measure
+SMALL_SAMPLE = 20   # below this, the page flags the measure as a small sample
+FOCUS_GAP = 1.15    # a phase leans towards lane / jungle / fights / objectives when >= 15% above the average
 BASE_BADGE = 90  # reference average: Phantom+ games
 SOURCES = {  # where the souls come from
     "lane": ["gold_lane_creep", "gold_denied"],
@@ -118,6 +120,23 @@ def tags(player, base):
     return out
 
 
+def focus(player, base):
+    """Per phase, what the player does clearly more than the Phantom+ average (at most two, strongest first):
+    "lane" / "jungle" farm, "fights" (kills + assists) or "objectives". No lean = balanced phase.
+    [{"phase", "lean": [{"k", "gap" (% above the average)}]}]; labels come from the locale ("focus")."""
+    def gap(value, average):
+        return value / average if average else 1.0
+    out = []
+    for p, b in zip(player, base):
+        scores = {"lane": gap(p["src_spm"]["lane"], b["src_spm"]["lane"]),
+                  "jungle": gap(p["src_spm"]["jungle"], b["src_spm"]["jungle"]),
+                  "fights": gap(p["kpm"] + p["apm"], b["kpm"] + b["apm"]),
+                  "objectives": gap(p["obj_dmg"], b["obj_dmg"])}
+        lean = sorted((k for k, v in scores.items() if v >= FOCUS_GAP), key=scores.get, reverse=True)[:2]
+        out.append({"phase": p["name"], "lean": [{"k": k, "gap": round(100 * (scores[k] - 1))} for k in lean]})
+    return out
+
+
 def matches_on_hero(ids, hero_id, since):
     out = {}
     for x in get("/v1/players/hero-stats", account_ids=",".join(map(str, ids)), min_unix_timestamp=since):
@@ -145,10 +164,12 @@ def main():
     candidates = data["candidates"]
 
     wanted = {c["key"]: c["author_id"] for c in candidates if c["source"] == "OTP"}
+    games = {c["key"]: c.get("matches") for c in candidates if c["source"] == "OTP"}
     others = {c["key"]: c["author_id"] for c in candidates if c["source"] != "OTP" and c.get("author_id")}
     if others:
         played = matches_on_hero(list(set(others.values())), hero_id, since)
         wanted.update({k: a for k, a in others.items() if played.get(a, 0) >= MIN_MATCHES})
+        games.update({k: played.get(a, 0) for k, a in others.items()})
 
     with concurrent.futures.ThreadPoolExecutor(4) as pool:
         base_future = pool.submit(curve, hero_id, since, None, BASE_BADGE)
@@ -170,9 +191,14 @@ def main():
             continue
         player = phases(curves[key])
         style = tags(player, base)
+        phase_focus = focus(player, base)
         net_worth = [[t // 60, round(float(v.get("net_worth_avg") or 0))] for t, v in sorted(curves[key].items())]
-        write_json(f"{folder}/{key}/playstyle.json", {"phases": player, "tags": style, "nw": net_worth})
-        print(f"[{key}] {c.get('author')} — {', '.join(style) or 'close to the average'}")
+        write_json(f"{folder}/{key}/playstyle.json", {"phases": player, "tags": style, "focus": phase_focus,
+                                                      "matches": games.get(key), "nw": net_worth})
+        small = " (small sample)" if (games.get(key) or 0) < SMALL_SAMPLE else ""
+        print(f"[{key}] {c.get('author')} — {games.get(key)} games{small} — {', '.join(style) or 'close to the average'}")
+        print("  focus: " + " · ".join(f"{f['phase']} " + (", ".join(f"{x['k']} +{x['gap']}%" for x in f["lean"]) or "balanced")
+                                       for f in phase_focus))
         for phase, base_phase in zip(player, base):
             print("  " + format_phase(phase, base_phase))
 
