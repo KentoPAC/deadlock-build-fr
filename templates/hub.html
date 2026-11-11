@@ -94,23 +94,44 @@ footer a:hover{color:var(--color-accent);text-decoration-color:currentColor}
 .card__name img,.card__name span{transition:transform .25s var(--ease-pop)}.card:hover .card__name img,.card:hover .card__name span{transform:scale(1.08) rotate(-2deg)}
 @media (prefers-reduced-motion:reduce){.card:hover{transform:none;animation:none}.card__art::after,.btn--main::before{display:none}.card:hover .card__art img.p{transform:none}}
 
-/* ---- blue-green flame around the selected / hovered big block (in-game hero select) ---- */
-:root{--flame-a:oklch(88% 0.13 168);--flame-b:oklch(72% 0.15 185)}
-@keyframes flicker{0%{transform:scale(1,1) translateY(0);opacity:.85}50%{transform:scale(1.015,1.06) translateY(-2px);opacity:1}100%{transform:scale(1,1.02) translateY(-1px);opacity:.9}}
+/* ---- spectral flame around the hovered card (in-game hero select): tongues of fire born on the card edge,
+   merged into flame shapes by the #flame filter (blur + alpha threshold), bent by animated noise, rising above the card.
+   One .fx element (built by flameFx()) moves to the hovered / focused card. ---- */
+:root{--flame-core:oklch(97% 0.04 175);--flame-a:oklch(88% 0.13 172);--flame-b:oklch(70% 0.15 188);--flame-c:oklch(52% 0.13 200)}
 .flame{position:relative;isolation:isolate;overflow:visible}
-.flame::before{content:"";display:block;position:absolute;inset:0;z-index:-1;background:inherit;border-radius:inherit;clip-path:none;-webkit-mask:none;mask:none;opacity:1;transform:none;animation:none}
-.flame::after{content:"";position:absolute;inset:-9px -9px -7px;z-index:-2;border-radius:8px;pointer-events:none;
-  background:linear-gradient(to top,var(--flame-b),var(--flame-a) 70%,transparent);filter:url(#flame) drop-shadow(0 0 8px var(--flame-b));
-  opacity:0;transition:opacity .22s var(--ease-out)}
-.flame:hover::after,.flame:focus-visible::after{opacity:1;animation:flicker .9s ease-in-out infinite alternate}
-.flame[aria-current=true]::after{opacity:.75;animation:flicker 1.1s ease-in-out infinite alternate}
-@media (prefers-reduced-motion:reduce){.flame:hover::after,.flame[aria-current=true]::after{animation:none}}
+.flame::before{content:"";position:absolute;inset:0;z-index:-1;background:inherit;pointer-events:none}
+.fx{position:absolute;inset:-60px -26px -16px;z-index:-2;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 40px);mask-image:linear-gradient(to bottom,transparent,#000 40px);opacity:0;transition:opacity .25s var(--ease-out)}
+.card:hover>.fx,.card:focus-within>.fx{opacity:1}
+.fx__fire{position:absolute;inset:0;filter:url(#flame) drop-shadow(0 0 5px var(--flame-a)) drop-shadow(0 -6px 22px var(--flame-b))}
+/* the burning rim: tongues merge into it, so the fire starts on the card edge */
+.fx__rim{position:absolute;inset:57px 23px 13px;border:6px solid var(--flame-b);border-radius:6px;box-shadow:inset 0 0 0 3px var(--flame-a)}
+/* always-on fire volume above the top edge and along the upper sides; its outline is torn into wisps by the filter */
+.fx__band{position:absolute;left:20px;right:20px;top:48px;height:18px;border-radius:40% 40% 0 0/100% 100% 0 0;
+  background:linear-gradient(to top,var(--flame-core),var(--flame-a) 35%,var(--flame-b) 70%,transparent)}
+.fx__side{position:absolute;top:60px;bottom:45%;width:12px;background:linear-gradient(to bottom,var(--flame-a),var(--flame-b) 60%,transparent)}
+.fx__side--l{left:16px}.fx__side--r{right:16px}
+.fx__t{position:absolute;top:calc(var(--y) - var(--w)*1.53);left:var(--x);width:var(--w);height:calc(var(--w)*1.7);margin-left:calc(var(--w)/-2);
+  border-radius:50% 50% 45% 45%/62% 62% 38% 38%;transform-origin:50% 90%;
+  background:radial-gradient(ellipse 50% 60% at 50% 72%,var(--flame-core) 0 22%,var(--flame-a) 42%,var(--flame-b) 66%,transparent 72%);
+  animation:lick var(--d) cubic-bezier(.3,0,.6,1) var(--delay) infinite}
+@keyframes lick{0%{transform:translate(0,14px) scale(.55,.4);opacity:0}
+  18%{opacity:1}
+  55%{transform:translate(var(--sway),calc(var(--rise)*-.55)) scale(.75,1.05);opacity:.95}
+  100%{transform:translate(calc(var(--sway)*-.6),calc(var(--rise)*-1)) scale(.22,1.25);opacity:0}}
+/* embers: small sparks that leave the fire */
+.fx__e{position:absolute;top:var(--y);left:var(--x);width:3px;height:3px;border-radius:50%;background:var(--flame-core);
+  box-shadow:0 0 6px 2px var(--flame-a);animation:ember var(--d) ease-out var(--delay) infinite}
+@keyframes ember{0%{transform:translate(0,0);opacity:0}15%{opacity:1}100%{transform:translate(var(--sway),calc(var(--rise)*-1));opacity:0}}
+.card:not(:hover):not(:focus-within)>.fx *{animation-play-state:paused}
+@media (prefers-reduced-motion:reduce){.fx__t,.fx__e{animation:none;opacity:.8;transform:translateY(-6px) scale(.7,.8)}.fx__e{display:none}}
 </style>
 </head>
 <body>
-<svg aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="flame" x="-25%" y="-60%" width="150%" height="220%" color-interpolation-filters="sRGB">
-<feTurbulence type="fractalNoise" baseFrequency="0.018 0.07" numOctaves="2" seed="4" result="n"><animate attributeName="baseFrequency" dur="1.4s" values="0.018 0.07;0.024 0.09;0.018 0.07" repeatCount="indefinite"/></feTurbulence>
-<feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
+<svg aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="flame" x="-10%" y="-20%" width="120%" height="140%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.035 0.11" numOctaves="2" seed="7" result="noise"><animate attributeName="baseFrequency" dur="2.2s" values="0.035 0.11;0.045 0.14;0.035 0.11" repeatCount="indefinite"/></feTurbulence>
+<feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+<feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/>
+<feDisplacementMap in="goo" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
 <div class="wrap">
 <header>
   <div><p class="kicker">{{ui:hub.kicker}}</p><h1>{{ui:nav.all_heroes}}</h1>
@@ -166,6 +187,17 @@ async function copy(t,btn){let ok=false;try{await navigator.clipboard.writeText(
   clearTimeout(T._t);T._t=setTimeout(()=>T.style.display='none',4000);if(ok){btn.dataset.state='done';setTimeout(()=>delete btn.dataset.state,2000)}}
 const n=D.heroes.filter(h=>h.page).length;$('sub').textContent=L('hub.sub',{n,total:D.heroes.length});
 $('q').oninput=render;document.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{F=b.dataset.f;try{localStorage.setItem('hub-f',F)}catch(e){}render()});
+// Flame: built once, moved into the card under the pointer or keyboard focus.
+function flameFx(){const fx=document.createElement('div'),R=(a,b)=>a+Math.random()*(b-a);fx.className='fx';fx.setAttribute('aria-hidden','true');
+  let html='<div class="fx__fire"><div class="fx__band"></div><div class="fx__side fx__side--l"></div><div class="fx__side fx__side--r"></div><div class="fx__rim"></div>';
+  const tongue=(x,y,w,rise)=>html+=`<span class="fx__t" style="--x:${x};--y:${y};--w:${w}px;--rise:${rise}px;--sway:${R(-7,7).toFixed(1)}px;--d:${R(.75,1.3).toFixed(2)}s;--delay:-${R(0,1.3).toFixed(2)}s"></span>`;
+  for(let i=0;i<=14;i++)tongue(`calc(22px + ${((i+R(-.3,.3))/14).toFixed(3)} * (100% - 44px))`,'62px',R(22,36),R(30,52));            // top edge: the tallest flames
+  for(let i=0;i<16;i++){const side=i%2?'calc(100% - 24px)':'24px';tongue(side,`calc(70px + ${R(0,60).toFixed(0)}%)`,R(14,22),R(20,34))} // sides, smaller
+  html+='</div>';
+  for(let i=0;i<7;i++)html+=`<span class="fx__e" style="--x:${R(12,88).toFixed(0)}%;--y:${R(30,70).toFixed(0)}px;--rise:${R(50,90).toFixed(0)}px;--sway:${R(-18,18).toFixed(0)}px;--d:${R(1.1,2).toFixed(2)}s;--delay:-${R(0,2).toFixed(2)}s"></span>`;
+  fx.innerHTML=html;return fx}
+const FX=flameFx(),toCard=e=>{const c=e.target.closest&&e.target.closest('.card');if(c&&FX.parentNode!==c)c.appendChild(FX)};
+$('grid').addEventListener('pointerover',toCard);$('grid').addEventListener('focusin',toCard);
 render();
 fetch('https://api.deadlock-api.com/v2/patches').then(r=>{if(!r.ok)throw 0;return r.json()}).then(list=>{const known=new Set(P.map(p=>Math.floor(p.t/86400)));
   for(const x of list){if(!/update|\d{2}-\d{2}-\d{4}|gameplay|patch/i.test(x.title||''))continue;const t=Date.parse(x.pub_date)/1000,d=Math.floor(t/86400);
