@@ -73,8 +73,9 @@ h1{margin:4px 0 0;font:800 clamp(2.4rem,3vw + 1.4rem,4rem)/.95 var(--font-displa
 :root{--fed:rgb(140,248,220);--fed-low:rgb(96,155,134);--fed-smoke:rgb(36,128,120)}
 .col__p--fed{isolation:isolate;margin-top:0;width:60px;height:74px;border:0;border-radius:3px 3px 50% 50%/3px 3px 46% 46%;overflow:visible;
   background:linear-gradient(to bottom,var(--fed) 30%,var(--fed-low))}
-.fedoval{position:absolute;left:11px;top:12.5px;width:46px;height:61px;border-radius:50%;overflow:hidden}
-.col__p--fed .fedoval img{width:100%;height:100%;border-radius:0;object-fit:cover;object-position:50% 14%;transform:scale(1.55);transform-origin:50% 22%}
+/* the art reaches the shield's flat top (hair, hats, horns) and only its bottom is rounded, as in game */
+.fedoval{position:absolute;left:9px;top:2px;width:50px;height:71.5px;border-radius:3px 3px 50% 50%/3px 3px 40% 40%;overflow:hidden}
+.col__p--fed .fedoval img{width:100%;height:100%;border-radius:0;object-fit:cover;object-position:50% 4%;transform:scale(1.25);transform-origin:50% 10%}
 .col__p img.fedsmoke{position:absolute;left:-9.5px;top:-1.6px;width:79px;height:129px;max-width:none;border-radius:0;object-fit:fill;transform:none;z-index:-1;pointer-events:none}
 .col__souls.col__souls--fed{background:var(--fed);color:rgb(16,20,24)}
 .col__souls small{font-size:.62em;font-weight:500;opacity:.7;margin-left:1px}
