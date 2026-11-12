@@ -134,7 +134,12 @@ def main():
     result["items"] = lane_items(hero_id, since)
     write_json(f"{folder}/laning.json", dict(result, since=since))
     names = {h: x["name"] for h, x in heroes().items()}
-    fmt = lambda e: f"{names.get(e['hero'], e['hero'])} {e['souls']:+} souls (usual lead {e['general'] if e['general'] is not None else '?'}, K-D {e['kd']:+}, {e['lanes']} lanes)"  # noqa: E731
+
+    def fmt(e):
+        usual = e["general"] if e["general"] is not None else "?"
+        return (f"{names.get(e['hero'], e['hero'])} {e['souls']:+} souls "
+                f"(usual lead {usual}, K-D {e['kd']:+}, {e['lanes']} lanes)")
+
     print(f"\n### Lanes at {SAMPLE_S // 60} min (soul lead of the hero's duo vs its average {result['base']:+}, "
           f"{result['lanes']} lanes)")
     print("Win the lane against it: " + (", ".join(map(fmt, result["beaten_by"])) or "none"))
