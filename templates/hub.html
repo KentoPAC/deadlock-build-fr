@@ -38,6 +38,7 @@ h1{margin:var(--space-2xs) 0 0;font:800 clamp(2.75rem,4vw + 1.25rem,4.5rem)/1 va
 .tools input:focus{border-color:var(--color-accent);outline:none}
 .seg{display:flex}.seg button{cursor:pointer;padding:8px 12px;border:1px solid var(--color-rule);background:var(--color-paper-2);color:var(--color-muted);font:700 var(--text-sm)/1 var(--font-body);text-transform:uppercase;letter-spacing:.04em}
 .seg.lang{margin-left:var(--space-xs)}.seg a{padding:8px 12px;border:1px solid var(--color-rule);background:var(--color-paper-2);color:var(--color-muted);font:700 var(--text-sm)/1 var(--font-body);text-decoration:none;letter-spacing:.04em}
+.trainer-link{padding:8px 12px;background:var(--color-accent);color:var(--color-accent-ink);font:800 var(--text-sm)/1 var(--font-display);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;box-shadow:3px 3px 0 var(--color-shade);white-space:nowrap}.trainer-link:hover{background:var(--color-accent-hi)}
 .seg a+a{border-left:0}.seg a:hover{color:var(--color-ink)}.seg a[aria-current=true]{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-accent-ink)}
 .seg button+button{border-left:0}.seg button[aria-pressed=true]{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-accent-ink)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--space-md);margin-top:var(--space-lg)}
@@ -148,7 +149,7 @@ footer a:hover{color:var(--color-accent);text-decoration-color:currentColor}
     <p class="sub" id="sub"></p></div>
   <div class="tools"><input id="q" type="search" placeholder="{{ui:hub.search}}" aria-label="{{ui:hub.search}}">
     <div class="seg" role="group" aria-label="{{ui:hub.filter}}"><button type="button" data-f="all">{{ui:hub.all}}</button><button type="button" data-f="done">{{ui:hub.done}}</button><button type="button" data-f="todo">{{ui:hub.todo}}</button></div>
-    <nav class="seg lang" aria-label="{{ui:lang.label}}">__LANG_LINKS__</nav></div>
+    <nav class="seg lang" aria-label="{{ui:lang.label}}">__LANG_LINKS__</nav><a class="trainer-link" href="trainer/__PAGE__">{{ui:hub.trainer}} →</a></div>
 </header>
 <main class="grid" id="grid"></main>
 <p class="empty" id="empty" hidden>{{ui:hub.empty}}</p>

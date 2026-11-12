@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="__LANG__">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ui:tr.page_title}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Jost:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* Counter-buy trainer. Same look as the hero pages: charcoal, parchment text, display font Big Shoulders Display,
+ * body font Jost. Data (scenarios, heroes, item tooltips) is injected by trainer.py. */
+:root{
+  --color-paper:oklch(13% 0.005 260);--color-paper-2:oklch(19% 0.008 260);--color-paper-3:oklch(25% 0.012 260);
+  --color-rule:oklch(36% 0.018 260);--color-neutral:oklch(66% 0.015 250);--color-muted:oklch(84% 0.025 78);
+  --color-ink:oklch(94% 0.03 78);--color-shade:oklch(8% 0.004 260);
+  --color-accent:oklch(74% 0.16 55);--color-accent-hi:oklch(80% 0.15 60);--color-accent-dim:oklch(40% 0.09 55);--color-accent-ink:oklch(14% 0.01 50);
+  --team-ally:oklch(74% 0.14 70);--team-enemy:oklch(64% 0.12 262);
+  --color-ok:oklch(72% 0.17 140);--color-err:oklch(68% 0.19 25);--color-warn:oklch(82% 0.15 80);--color-focus:oklch(80% 0.15 70);
+  --color-weapon:oklch(68% 0.15 55);--color-vitality:oklch(70% 0.15 135);--color-spirit:oklch(64% 0.16 305);
+  --color-plate:oklch(80% 0.02 80);--color-plate-weapon:oklch(80% 0.08 65);--color-plate-vitality:oklch(83% 0.1 125);--color-plate-spirit:oklch(80% 0.07 300);
+  --font-display:"Big Shoulders Display",Impact,"Arial Narrow",sans-serif;
+  --font-body:"Jost",ui-sans-serif,system-ui,sans-serif;
+  --space-2xs:.5rem;--space-xs:.75rem;--space-sm:1rem;--space-md:1.5rem;--space-lg:2rem;--space-xl:3rem;
+  --text-xs:.75rem;--text-sm:.875rem;--text-md:1.25rem;--text-lg:2rem;
+  --ease-out:cubic-bezier(.16,1,.3,1);--ease-pop:cubic-bezier(.34,1.56,.64,1);
+}
+*{box-sizing:border-box}
+html,body{overflow-x:clip}
+body{margin:0;background:var(--color-paper);color:var(--color-ink);font:400 1rem/1.5 var(--font-body);font-variant-numeric:tabular-nums}
+a{color:var(--color-accent)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--color-focus);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto;padding:var(--space-md) 16px var(--space-xl)}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:var(--space-sm);padding-bottom:var(--space-sm);border-bottom:3px double var(--color-rule)}
+.kicker{margin:0;font:700 var(--text-xs)/1.2 var(--font-display);letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent)}
+h1{margin:4px 0 0;font:800 clamp(2.4rem,3vw + 1.4rem,4rem)/.95 var(--font-display);letter-spacing:.02em;text-transform:uppercase}
+.sub{margin:6px 0 0;max-width:62ch;color:var(--color-muted)}
+.nav{display:flex;gap:8px;align-items:center}
+.nav a,.lang a{padding:7px 11px;border:1px solid var(--color-rule);background:var(--color-paper-2);color:var(--color-ink);text-decoration:none;font:700 var(--text-xs)/1 var(--font-body);letter-spacing:.06em;text-transform:uppercase}
+.lang{display:flex}.lang a+a{border-left:0}.lang a[aria-current=true]{background:var(--color-accent);border-color:var(--color-accent);color:var(--color-accent-ink)}
+
+/* scoreboard */
+.hud{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:var(--space-md);background:var(--color-rule);border:1px solid var(--color-rule)}
+.hud div{padding:10px 14px;background:var(--color-paper-2)}
+.hud small{display:block;font:700 var(--text-xs)/1.2 var(--font-display);letter-spacing:.18em;text-transform:uppercase;color:var(--color-neutral)}
+.hud b{font:800 1.8rem/1.1 var(--font-display);letter-spacing:.03em}
+
+/* situation */
+.brief{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-sm);margin-top:var(--space-md)}
+.brief img{width:64px;height:64px;border-radius:50%;object-fit:cover;object-position:50% 12%;background:var(--color-shade);border:2px solid var(--color-accent)}
+.brief h2{margin:0;font:800 var(--text-lg)/1 var(--font-display);letter-spacing:.04em;text-transform:uppercase}
+.brief p{margin:2px 0 0;color:var(--color-muted)}
+
+/* scoreboard: one column per player, like the in-game Tab screen (allies left, enemies right) */
+.board-wrap{margin-top:var(--space-sm);padding-top:26px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--color-rule) transparent}
+.board{display:grid;grid-template-columns:repeat(6,minmax(78px,1fr)) minmax(96px,.9fr) repeat(6,minmax(78px,1fr));gap:3px;min-width:1080px}
+.mid{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:6px;text-align:center}
+.mid__t{padding:4px 10px;background:var(--color-paper-3);font:800 1.2rem/1 var(--font-display);letter-spacing:.06em}
+.mid__s{display:grid;grid-template-columns:1fr 1fr;width:100%;font:800 1rem/1 var(--font-display)}
+.mid__s span{padding:6px 2px}.mid__s .a{background:var(--team-ally);color:var(--color-shade)}.mid__s .e{background:var(--team-enemy);color:var(--color-shade)}
+.mid small{font-size:var(--text-xs);color:var(--color-neutral)}
+.col{--team:var(--team-ally);display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 4px 8px;background:linear-gradient(to bottom,color-mix(in oklch,var(--team) 34%,var(--color-paper-2)),var(--color-paper-2) 55%);border-top:3px solid var(--team);min-width:0}
+.col--enemy{--team:var(--team-enemy)}
+.col--me{box-shadow:inset 0 0 0 2px var(--color-ink)}
+.col__p{position:relative;margin-top:18px;width:56px;height:56px;border-radius:50%;background:var(--color-shade);border:2px solid var(--team);overflow:visible;cursor:help}
+.col__p img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 18%}
+.col__p{overflow:hidden}
+/* fed enemy, as on the in-game scoreboard: a mint shield with the "gloat" art in a face-cropped oval, and the
+   in-game smoke animation (assets/fed_smoke.webp) above the shield and below the oval. */
+:root{--fed:rgb(140,248,220);--fed-low:rgb(96,155,134);--fed-smoke:rgb(36,128,120)}
+.col__p--fed{isolation:isolate;margin-top:0;width:60px;height:74px;border:0;border-radius:3px 3px 50% 50%/3px 3px 46% 46%;overflow:visible;
+  background:linear-gradient(to bottom,var(--fed) 30%,var(--fed-low))}
+/* the art reaches the shield's flat top (hair, hats, horns) and only its bottom is rounded, as in game */
+.fedoval{position:absolute;left:9px;top:2px;width:50px;height:71.5px;border-radius:3px 3px 50% 50%/3px 3px 40% 40%;overflow:hidden}
+.col__p--fed .fedoval img{width:100%;height:100%;border-radius:0;object-fit:cover;object-position:50% 4%;transform:scale(1.25);transform-origin:50% 10%}
+.col__p img.fedsmoke{position:absolute;left:-9.5px;top:-1.6px;width:79px;height:129px;max-width:none;border-radius:0;object-fit:fill;transform:none;z-index:-1;pointer-events:none}
+.col__souls.col__souls--fed{background:var(--fed);color:rgb(16,20,24)}
+.col__souls small{font-size:.62em;font-weight:500;opacity:.7;margin-left:1px}
+.col__souls{margin-top:-12px;position:relative;padding:1px 6px;background:var(--team);color:var(--color-shade);font:800 .8rem/1.3 var(--font-body)}
+.col__n,.col .kda,.col .col__tag{position:relative;z-index:1}
+.col__n{max-width:100%;font:700 .8rem/1.2 var(--font-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.col__tag{padding:0 5px;font:800 .62rem/1.4 var(--font-display);letter-spacing:.12em;text-transform:uppercase}
+.tag--me{background:var(--color-ink);color:var(--color-shade)}.tag--fed{background:var(--color-err);color:var(--color-shade)}
+.kda{display:grid;grid-template-columns:repeat(3,1fr);width:100%;text-align:center;font-size:var(--text-xs);color:var(--color-neutral)}
+.kda b{display:block;color:var(--color-ink);font-size:.85rem}
+.inv{display:flex;gap:4px;align-items:flex-end;height:46px;padding:3px 6px;background:var(--color-shade);border-radius:3px;cursor:help}
+.inv i{display:block;width:7px;height:100%;border-radius:3px;background:linear-gradient(to top,var(--c) var(--h),color-mix(in oklch,var(--c) 18%,var(--color-shade)) var(--h))}
+.inv .w{--c:var(--color-weapon)}.inv .v{--c:var(--color-vitality)}.inv .s{--c:var(--color-spirit)}
+.col__st{width:100%;font-size:.68rem;line-height:1.35;color:var(--color-neutral);text-align:center}
+.col__items{display:grid;grid-template-columns:repeat(2,32px);gap:4px;justify-content:center;margin-top:2px}
+/* in-game item grid: the item's colour art on a dark tile, a slot-coloured corner with the tier, "ACTIVE" under actives */
+.ic{--corner:var(--color-rule);position:relative;display:block;width:32px;height:32px;border-radius:3px;overflow:hidden;background:oklch(16% 0.01 260);
+  box-shadow:inset 0 0 0 1px color-mix(in oklch,var(--corner) 45%,transparent);cursor:help}
+.ic img{display:block;width:100%;height:100%;object-fit:cover}
+.ic.weapon{--corner:var(--color-weapon)}.ic.vitality{--corner:var(--color-vitality)}.ic.spirit{--corner:var(--color-spirit)}
+.ic__t{position:absolute;top:0;right:0;width:13px;height:13px;background:var(--corner);clip-path:polygon(0 0,100% 0,100% 100%);
+  font:700 7px/1 var(--font-body);color:var(--color-shade);text-align:right;padding:1px 1px 0 0}
+.ic__a{position:absolute;left:0;right:0;bottom:0;background:oklch(12% 0.01 260 / .85);color:var(--color-ink);font:700 5.5px/1.5 var(--font-body);letter-spacing:.08em;text-align:center}
+#tip .inv-t{padding:10px;min-width:250px}
+#tip .inv-t h5{margin:0 0 6px;font:800 var(--text-md)/1 var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
+#tip .inv-t .row{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:3px 0;border-top:1px solid var(--color-rule)}
+#tip .inv-t .row b{color:var(--c)}
+#tip .inv-t small{color:var(--color-neutral)}
+
+/* choice */
+.ask{margin-top:var(--space-lg);padding:var(--space-md);background:var(--color-paper-2);border:1px solid var(--color-rule)}
+.ask h3{margin:0;font:800 var(--text-md)/1.1 var(--font-display);letter-spacing:.12em;text-transform:uppercase}
+.ask p{margin:4px 0 0;color:var(--color-muted)}
+.opts{display:grid;grid-template-columns:repeat(4,minmax(0,170px));justify-content:start;gap:var(--space-sm);margin-top:var(--space-sm)}
+.opt{--plate:var(--color-plate);--corner:var(--color-rule);display:flex;flex-direction:column;align-items:stretch;gap:6px;padding:0;border:0;background:none;cursor:pointer;text-align:center}
+.opt.weapon{--plate:var(--color-plate-weapon);--corner:var(--color-weapon)}.opt.vitality{--plate:var(--color-plate-vitality);--corner:var(--color-vitality)}.opt.spirit{--plate:var(--color-plate-spirit);--corner:var(--color-spirit)}
+.card{position:relative;background:var(--plate);border-radius:6px;overflow:hidden;box-shadow:0 0 0 1px color-mix(in oklch,var(--corner) 60%,var(--color-shade)),0 4px 0 var(--color-shade);
+  transition:transform .22s var(--ease-pop),box-shadow .2s var(--ease-out)}
+.card img{display:block;width:100%;aspect-ratio:84/74;object-fit:cover;background:color-mix(in oklch,var(--corner) 30%,var(--color-paper))}
+.card__tier{position:absolute;top:0;right:0;width:34px;height:34px;background:var(--corner);clip-path:polygon(0 0,100% 0,100% 100%);font:700 12px/1 var(--font-body);color:var(--color-shade);text-align:right;padding:4px 5px 0 0}
+.card__n{display:flex;align-items:center;justify-content:center;min-height:42px;padding:4px;font:700 .85rem/1.15 var(--font-body);color:var(--color-shade)}
+.card__c{font-size:var(--text-xs);color:var(--color-muted)}
+.opt:hover .card,.opt:focus-visible .card{transform:translateY(-6px) rotate(-1deg);box-shadow:0 0 0 2px var(--corner),0 8px 0 var(--color-shade)}
+.opt[disabled]{cursor:default}.opt[disabled] .card{transform:none}
+.opt.is-best .card{box-shadow:0 0 0 3px var(--color-ok),0 4px 0 var(--color-shade)}
+.opt.is-picked:not(.is-best):not(.is-pro) .card{box-shadow:0 0 0 3px var(--color-err),0 4px 0 var(--color-shade)}
+.opt.is-pro:not(.is-best) .card{box-shadow:0 0 0 3px var(--color-warn),0 4px 0 var(--color-shade)}
+.badges{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;min-height:20px}
+.badge{padding:2px 6px;font:800 .68rem/1.2 var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--color-shade)}
+.b-best{background:var(--color-ok)}.b-pro{background:var(--color-warn)}.b-you{background:var(--color-ink)}
+.score{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px;font-size:var(--text-xs);color:var(--color-muted)}
+.score .bar{height:8px}.score .bar i{background:var(--b,var(--color-neutral))}
+
+/* verdict */
+.verdict{margin-top:var(--space-sm);padding:var(--space-sm) var(--space-md);border-left:4px solid var(--v);background:color-mix(in oklch,var(--v) 10%,var(--color-paper-2))}
+.verdict h4{margin:0;font:800 var(--text-md)/1.1 var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--v)}
+.verdict p{margin:6px 0 0;max-width:80ch}
+.verdict small{color:var(--color-neutral)}
+.next{margin-top:var(--space-sm);padding:10px 18px;border:0;background:var(--color-accent);color:var(--color-accent-ink);font:800 1rem/1 var(--font-display);letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:3px 3px 0 var(--color-shade)}
+.next:hover{background:var(--color-accent-hi)}
+.end{margin-top:var(--space-lg);text-align:center;padding:var(--space-lg);background:var(--color-paper-2);border:1px solid var(--color-rule)}
+.end b{display:block;font:800 4rem/1 var(--font-display)}
+.how{margin-top:var(--space-lg);color:var(--color-neutral);font-size:var(--text-sm);max-width:90ch}
+.how h3{color:var(--color-ink);font:800 var(--text-md)/1 var(--font-display);letter-spacing:.12em;text-transform:uppercase}
+
+/* tooltip */
+#tip{position:fixed;z-index:10;max-width:340px;background:var(--color-paper-2);border:1px solid var(--color-rule);pointer-events:none;display:none;font-size:var(--text-sm);box-shadow:0 8px 24px oklch(0% 0 0 / .5)}
+#tip .h{--tint:var(--color-rule);display:flex;gap:10px;align-items:center;padding:10px;background:linear-gradient(160deg,color-mix(in oklch,var(--tint) 30%,var(--color-paper-2)),var(--color-paper-2))}
+#tip .h.weapon{--tint:var(--color-weapon)}#tip .h.vitality{--tint:var(--color-vitality)}#tip .h.spirit{--tint:var(--color-spirit)}
+#tip .h img{width:44px;height:44px;border-radius:4px;object-fit:cover}
+#tip .tn{font:800 var(--text-md)/1.1 var(--font-display);letter-spacing:.06em;text-transform:uppercase}
+#tip .tc{color:var(--color-accent);font-size:var(--text-xs)}
+#tip .b{padding:10px}#tip .st{display:flex;justify-content:space-between;gap:12px;color:var(--color-muted)}#tip .st b{color:var(--color-ink);font-weight:400}
+#tip .d{margin:6px 0;line-height:1.4}#tip .d b{color:var(--color-accent);font-weight:400}
+#tip .sep{border-top:1px solid var(--color-rule);margin:6px 0}
+
+@media (max-width:900px){.opts{grid-template-columns:repeat(2,minmax(0,170px))}}
+@media (max-width:480px){.hud b{font-size:1.4rem}.hud div{padding:8px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div><p class="kicker">{{ui:tr.kicker}}</p><h1>{{ui:tr.title}}</h1><p class="sub">{{ui:tr.sub}}</p></div>
+  <div class="nav"><a href="../__HOME__">{{ui:nav.all_heroes}}</a><nav class="lang" aria-label="{{ui:lang.label}}">__LANG_LINKS__</nav></div>
+</header>
+<div class="hud" aria-live="polite"><div><small>{{ui:tr.round}}</small><b id="round"></b></div><div><small>{{ui:tr.score}}</small><b id="score"></b></div><div><small>{{ui:tr.best}}</small><b id="best"></b></div></div>
+<main id="game"></main>
+<section class="how"><h3>{{ui:tr.how_title}}</h3><p>{{ui:tr.how}}</p></section>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<script type="application/json" id="ui">__UI__</script>
+<script type="application/json" id="data">__DATA__</script>
+<script>
+const UI=JSON.parse(document.getElementById('ui').textContent),D=JSON.parse(document.getElementById('data').textContent);
+const L=(k,v={})=>(UI[k]||k).replace(/\{(\w+)\}/g,(_,x)=>v[x]??'');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id),LOC=document.documentElement.lang;
+const num=n=>Math.round(n).toLocaleString(LOC),k=n=>n>=1000?(n/1000).toLocaleString(LOC,{maximumFractionDigits:1})+'k':String(n);
+const IT=D.items,HE=D.heroes,ROUNDS=Math.min(10,D.scenarios.length),ROMAN=['','I','II','III','IV','V'];
+const T=id=>IT[id]||{},H=id=>HE[id]||{n:'#'+id};
+let order=[],round=0,score=0,best=0;
+try{best=+localStorage.getItem('trainer-best')||0}catch(e){}
+
+function start(){order=D.scenarios.map((_,i)=>i).sort(()=>Math.random()-.5).slice(0,ROUNDS);round=0;score=0;show()}
+function hud(){$('round').textContent=`${Math.min(round+1,ROUNDS)} / ${ROUNDS}`;$('score').textContent=`${score} / ${ROUNDS*5}`;$('best').textContent=best?`${best} / ${ROUNDS*5}`:'—'}
+function icon(id){const t=T(id);return `<span class="ic ${esc(t.slot)}" data-id="${id}" tabindex="0" aria-label="${esc(t.n||'')}"><img src="${esc(t.img||t.icon||'')}" alt="" loading="lazy">${t.tier?`<span class="ic__t">${ROMAN[t.tier]}</span>`:''}${t.act?`<span class="ic__a">${L('tr.active')}</span>`:''}</span>`}
+// one scoreboard column; the three bars are the souls invested in weapon / vitality / spirit items
+const SLOTS=[['weapon','w'],['vitality','v'],['spirit','s']],BAR_MAX=16000;
+function tier(slot,souls){const t=(D.bonuses[slot]||[]).filter(b=>souls>=b[0]);return t.length?t[t.length-1]:null}
+function nextTier(slot,souls){return (D.bonuses[slot]||[]).find(b=>souls<b[0])||null}
+function column(p,avg,ally){const h=H(p.hero),fed=!ally&&p.souls>=1.2*avg;
+  return `<div class="col${ally?'':' col--enemy'}${p.me?' col--me':''}">
+    <span class="col__p${fed?' col__p--fed':''}" tabindex="0" data-pstats="${esc(JSON.stringify({h:p.hero,dmg:p.dmg,heal:p.heal,taken:p.taken}))}">${fed?smoke():''}${fed?`<span class="fedoval"><img src="${esc(h.fed||h.img||'')}" alt="" onerror="this.src='${esc(h.icon||'')}'"></span>`:h.img?`<img src="${esc(h.img)}" alt="" onerror="this.src='${esc(h.icon||'')}'">`:''}</span>
+    <span class="col__souls${fed?' col__souls--fed':''}">${gameSouls(p.souls)}</span><span class="col__n">${esc(h.n)}</span>
+    ${p.me?`<span class="col__tag tag--me">${L('tr.you')}</span>`:'<span class="col__tag">&nbsp;</span>'}
+    <div class="kda"><span>K<b>${p.k}</b></span><span>D<b>${p.d}</b></span><span>A<b>${p.a}</b></span></div>
+    <span class="inv" tabindex="0" data-inv="${esc(JSON.stringify(p.inv||{}))}">${SLOTS.map(([sl,c])=>`<i class="${c}" style="--h:${Math.min(100,100*((p.inv||{})[sl]||0)/BAR_MAX).toFixed(0)}%"></i>`).join('')}</span>
+    <div class="col__st">${L('tr.dmg')} ${k(p.dmg)}<br>${L('tr.heal')} ${k(p.heal)}</div>
+    <div class="col__items">${p.items.map(icon).join('')}</div></div>`}
+// souls written like the game: 621, 1.7k, 22k (small k)
+function gameSouls(n){if(n<1000)return String(n);const v=n<10000?(n/1000).toLocaleString(LOC,{maximumFractionDigits:1}):Math.round(n/1000);return `${v}<small>k</small>`}
+// fed enemy smoke: the in-game animation, extracted frame by frame from a recording (assets/fed_smoke.webp),
+// scaled so its shield matches ours (76 px in the recording -> 60 px here)
+function smoke(){return D.smoke?`<img class="fedsmoke" src="${D.smoke}" alt="" aria-hidden="true">`:''}
+function invTip(inv){return `<div class="inv-t">${SLOTS.map(([sl])=>{const v=inv[sl]||0,t=tier(sl,v),n=nextTier(sl,v);
+  return `<div style="--c:var(--color-${sl})"><h5>${L('tr.inv_'+sl)}</h5><div class="row"><span>${L('tr.inv_spent')}</span><span></span><b>${num(v)}</b></div>
+    <div class="row"><span>${L('tr.inv_bonus')}</span><span></span><b>${t?L('tr.bonus_'+sl,{n:t[1]}):'—'}</b></div>
+    ${n?`<div class="row"><small>${L('tr.inv_next',{souls:num(n[0])})}</small><span></span><small>${L('tr.bonus_'+sl,{n:n[1]})}</small></div>`:''}</div>`}).join('<br>')}</div>`}
+function statTip(x){return `<div class="inv-t"><h5 style="color:var(--color-ink)">${esc(H(x.h).n)}</h5>
+  ${[['tr.dmg','dmg'],['tr.heal','heal'],['tr.taken','taken']].map(([l,f])=>`<div class="row"><span>${L(l)}</span><span></span><b style="color:var(--color-ink)">${num(x[f])}</b></div>`).join('')}</div>`}
+function card(id){const t=T(id);return `<div class="card">${t.img?`<img src="${esc(t.img)}" alt="">`:''}${t.tier?`<span class="card__tier">${ROMAN[t.tier]}</span>`:''}<div class="card__n">${esc(t.n||id)}</div></div>`}
+
+function show(){hud();if(round>=ROUNDS)return finish();
+  const s=D.scenarios[order[round]],me=s.players.find(p=>p.me),max=Math.max(...s.players.map(p=>p.souls));
+  const side=ally=>s.players.filter(p=>p.ally===ally).sort((a,b)=>ally?a.souls-b.souls:b.souls-a.souls);
+  const avgE=side(false).reduce((t,p)=>t+p.souls,0)/6;
+  $('game').innerHTML=`<section class="brief">${H(me.hero).img?`<img src="${esc(H(me.hero).img)}" alt="">`:''}<div>
+      <h2>${L('tr.playing',{hero:esc(H(me.hero).n),min:Math.round(s.t/60)})}</h2><p>${L('tr.context',{souls:num(me.souls),rank:esc(s.rank||'')})}</p><p><small>${L('tr.board_hint')}</small></p></div></section>
+    <div class="board-wrap"><div class="board">${side(true).map(p=>column(p,avgE,true)).join('')}
+      <div class="mid"><span class="mid__t">${Math.floor(s.t/60)}:00</span><div class="mid__s"><span class="a">${k(side(true).reduce((t,p)=>t+p.souls,0))}</span><span class="e">${k(side(false).reduce((t,p)=>t+p.souls,0))}</span></div>
+        <small>${L('tr.allies')} · ${L('tr.enemies')}</small></div>
+      ${side(false).map(p=>column(p,avgE,false)).join('')}</div></div>
+    <section class="ask"><h3>${L('tr.question')}</h3><p>${L('tr.question_sub')}</p>
+      <div class="opts">${s.options.map(o=>`<button type="button" class="opt ${esc(T(o.id).slot)}" data-pick="${o.id}" data-id="${o.id}">${card(o.id)}<span class="card__c">${num(T(o.id).c||0)} ${L('tr.souls')}</span><span class="badges"></span><span class="score" hidden></span></button>`).join('')}</div>
+      <div id="verdict"></div></section>`;
+  document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>answer(s,+b.dataset.pick));bindTips();scrollTo({top:0})}
+
+function answer(s,pick){
+  const pts=(pick===s.best?3:0)+(pick===s.pro?2:0);score+=pts;
+  const lo=Math.min(0,...s.options.map(o=>o.score)),hi=Math.max(...s.options.map(o=>o.score));
+  document.querySelectorAll('[data-pick]').forEach(b=>{const id=+b.dataset.pick,o=s.options.find(x=>x.id===id);b.disabled=true;
+    b.classList.toggle('is-best',id===s.best);b.classList.toggle('is-pro',id===s.pro);b.classList.toggle('is-picked',id===pick);
+    b.querySelector('.badges').innerHTML=(id===pick?`<span class="badge b-you">${L('tr.b_you')}</span>`:'')+(id===s.best?`<span class="badge b-best">${L('tr.b_best')}</span>`:'')+(id===s.pro?`<span class="badge b-pro">${L('tr.b_pro')}</span>`:'');
+    const sc=b.querySelector('.score');sc.hidden=false;
+    sc.innerHTML=`<span class="bar"><i style="--w:${hi>lo?(100*(o.score-lo)/(hi-lo)).toFixed(0):50}%;--b:${id===s.best?'var(--color-ok)':'var(--color-neutral)'}"></i></span><span>${o.score>0?'+':''}${o.score.toLocaleString(LOC)} pts</span>`});
+  const w=s.why,e=s.players.find(p=>!p.ally&&p.hero===w.hero),cat=w.cat?L('tr.cat.'+w.cat):'';
+  const v=pts>=3?'var(--color-ok)':pts===2?'var(--color-warn)':'var(--color-err)';
+  const title=pts===5?L('tr.v_perfect'):pts===3?L('tr.v_best'):pts===2?L('tr.v_pro'):L('tr.v_miss');
+  $('verdict').innerHTML=`<div class="verdict" style="--v:${v}"><h4>${title} · +${pts}</h4>
+    <p>${L('tr.why',{item:esc(T(s.best).n),hero:esc(H(w.hero).n),share:w.share,souls:e?num(e.souls):'?',kda:e?`${e.k}/${e.d}/${e.a}`:'',gain:(w.gain>0?'+':'')+w.gain.toLocaleString(LOC,{maximumFractionDigits:1})})}${cat?' '+L('tr.cat_is',{cat}):''}</p>
+    <p>${L(s.won?'tr.pro_won':'tr.pro_lost',{item:esc(T(s.pro).n),rank:esc(s.rank||'')})}</p>
+    <p><small>${L('tr.score_note')}</small></p></div>
+    <button type="button" class="next">${round+1>=ROUNDS?L('tr.see_score'):L('tr.next')}</button>`;
+  $('verdict').querySelector('.next').onclick=()=>{round++;show()};$('verdict').querySelector('.next').focus({preventScroll:true});hud()}
+
+function finish(){if(score>best){best=score;try{localStorage.setItem('trainer-best',best)}catch(e){}}hud();
+  $('game').innerHTML=`<section class="end"><p class="kicker">${L('tr.final')}</p><b>${score} / ${ROUNDS*5}</b><p>${L('tr.final_sub')}</p><button type="button" class="next" id="again">${L('tr.again')}</button></section>`;
+  $('again').onclick=start}
+
+/* item tooltips (same content as the hero pages) */
+const tip=$('tip');
+function tipHtml(t){let h=`<div class="h ${esc(t.slot)}"><img src="${esc(t.img||'')}" alt=""><div><div class="tn">${esc(t.n)}</div>${t.c?`<div class="tc">${num(t.c)} ${L('tr.souls')}</div>`:''}</div></div><div class="b">`;
+  const st=l=>l.map(x=>`<div class="st"><span>${x[0]}</span><b>${x[1]}</b></div>`).join('');
+  if((t.innate||[]).length)h+=st(t.innate);
+  (t.blocks||[]).forEach((b,i)=>{if(i||(t.innate||[]).length)h+='<div class="sep"></div>';if(b.d)h+=`<div class="d">${b.d}</div>`;h+=st(b.s)});return h+'</div>'}
+function place(x,y){const r=tip.getBoundingClientRect();let l=x+16,t=y+16;if(l+r.width>innerWidth-8)l=x-r.width-16;if(t+r.height>innerHeight-8)t=Math.max(8,innerHeight-r.height-8);tip.style.left=Math.max(8,l)+'px';tip.style.top=t+'px'}
+function bindTips(){document.querySelectorAll('#game [data-inv],#game [data-pstats]').forEach(el=>{const o=(x,y)=>{tip.innerHTML=el.dataset.inv?invTip(JSON.parse(el.dataset.inv)):statTip(JSON.parse(el.dataset.pstats));tip.style.display='block';
+    if(x==null){const r=el.getBoundingClientRect();x=r.right;y=r.top}place(x,y)};
+  el.addEventListener('mouseenter',e=>o(e.clientX,e.clientY));el.addEventListener('mousemove',e=>{if(tip.style.display==='block')place(e.clientX,e.clientY)});
+  el.addEventListener('focus',()=>o());['mouseleave','blur'].forEach(n=>el.addEventListener(n,()=>tip.style.display='none'))});
+ document.querySelectorAll('#game [data-id]').forEach(el=>{const o=(x,y)=>{if(!IT[el.dataset.id])return;tip.innerHTML=tipHtml(T(el.dataset.id));tip.style.display='block';
+    if(x==null){const r=el.getBoundingClientRect();x=r.right;y=r.top}place(x,y)};
+  el.addEventListener('mouseenter',e=>o(e.clientX,e.clientY));el.addEventListener('mousemove',e=>{if(tip.style.display==='block')place(e.clientX,e.clientY)});
+  el.addEventListener('focus',()=>o());['mouseleave','blur'].forEach(n=>el.addEventListener(n,()=>tip.style.display='none'))})}
+start();
+</script>
+</body>
+</html>

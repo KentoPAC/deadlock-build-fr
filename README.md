@@ -33,7 +33,8 @@ French) such as
 To refresh them after regenerating your own pages:
 
 ```sh
-cp ../../../builds/index.html examples/ && for d in ../../../builds/search-*; do cp "$d/index.html" "examples/${d##*/}/"; done
+cp ../../../builds/index*.html examples/ && cp -r ../../../builds/trainer examples/ \
+  && for d in ../../../builds/search-*; do cp "$d"/index*.html "examples/${d##*/}/"; done
 ```
 
 ## Why
@@ -59,6 +60,10 @@ sentence keeps track of its sources.
   matches, counterplay by enemy composition, and creator video tips with timestamped links.
 - **Always current.** Item names, icons, tooltips, hero art and patches are re-read from the API on every run;
   nothing about items is hard-coded. Pages compare their own data with the latest patches, live.
+- **Counter-buy trainer.** A mini game on real Ascendant+ games frozen at 15 or 20 min: see every player's
+  souls, K/D/A and items, spot who is fed, and pick the item to buy. The answer combines measured item gains against
+  the enemy heroes (weighted by how fed they are) with what the high-rank player really bought.
+  [Try it](https://kentopac.github.io/deadlock-maxing/examples/trainer/).
 - **Sourced and versioned.** Every written text cites its sources, and the analysis method is versioned: when the
   method changes, older pages list exactly what changed and offer a targeted update request.
 - **No dependencies.** Python standard library only (3.14+ for the built-in `compression.zstd`).
@@ -113,9 +118,12 @@ scripts/
   guides.py         community guides (in-game builds, Steam guides)
   roles.py          game class, meta position, statistical profile
   matchups.py       matchups and items that beat the hero
+  laning.py         who and what wins the lane against the hero
   counterplay.py    counter items by enemy composition
   counters.py       items one-tricks buy against specific heroes (background)
-  videos.py         creator video tips (YouTube subtitles)
+  videos.py         creator video tips and hero guide videos (YouTube subtitles)
+  trainer.py        counter-buy trainer (real games, item choice)
+  writing.py        writing checks (filler, repeated ideas)
   codec.py          build code encoder / decoder
   tooltips.py       in-game style item and ability tooltips
   textlinks.py      links in written texts, shortened-name check
@@ -123,7 +131,7 @@ scripts/
   i18n.py           localized strings (t, table, pattern)
   common.py         API access and shared helpers
 locales/            interface strings, one file per language (en, fr)
-templates/          hero page and home page (HTML, CSS, JS)
+templates/          hero page, home page and trainer (HTML, CSS, JS)
 examples/           sample generated pages
 assets/             banner and emblem
 data/
