@@ -16,6 +16,7 @@ Usage: python3 -I trainer.py [builds_folder] [--matches 200] [--scenarios 60]
    Answer: the best stats item scores 3 points, the pro's buy 2 (5 when they are the same item).
 Writes <builds>/trainer/index.html (English) and index.fr.html; no account ids or player names are kept.
 """
+import base64
 import html
 import json
 import os
@@ -208,6 +209,16 @@ def build(root, n_matches, n_scenarios, seed=None):
     return out, shop
 
 
+def smoke_uri():
+    """The fed-enemy smoke animation (assets/fed_smoke.webp, extracted frame by frame from an in-game recording),
+    embedded so the page works on its own."""
+    path = os.path.join(SKILL, "assets", "fed_smoke.webp")
+    if not os.path.exists(path):
+        return ""
+    with open(path, "rb") as f:
+        return "data:image/webp;base64," + base64.b64encode(f.read()).decode()
+
+
 def page(root, scenarios, lang):
     """trainer/index.html (English) or index.<lang>.html, with heroes and item tooltips in that language."""
     use(lang)
@@ -221,7 +232,7 @@ def page(root, scenarios, lang):
                       "icon": image(h, "icon_image_small_webp")}
                   for h in {p["hero"] for s in scenarios for p in s["players"]}}
     data = {"scenarios": [dict(s, rank=rank_label(s["badge"]) if s.get("badge") else "") for s in scenarios],
-            "items": item_data(all_items, used), "heroes": hero_cards,
+            "items": item_data(all_items, used), "heroes": hero_cards, "smoke": smoke_uri(),
             # the game's investment bonuses (same for every hero): souls threshold -> bonus per slot
             "bonuses": {slot: [[b["gold_threshold"], b["bonus"]] for b in tiers]
                         for slot, tiers in next((h["cost_bonuses"] for h in all_heroes.values() if h.get("cost_bonuses")), {}).items()}}
