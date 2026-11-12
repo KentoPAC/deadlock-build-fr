@@ -95,11 +95,15 @@ h1{margin:4px 0 0;font:800 clamp(2.4rem,3vw + 1.4rem,4rem)/.95 var(--font-displa
 .inv i{display:block;width:7px;height:100%;border-radius:3px;background:linear-gradient(to top,var(--c) var(--h),color-mix(in oklch,var(--c) 18%,var(--color-shade)) var(--h))}
 .inv .w{--c:var(--color-weapon)}.inv .v{--c:var(--color-vitality)}.inv .s{--c:var(--color-spirit)}
 .col__st{width:100%;font-size:.68rem;line-height:1.35;color:var(--color-neutral);text-align:center}
-.col__items{display:grid;grid-template-columns:repeat(2,28px);gap:3px;justify-content:center;margin-top:2px}
-.ic{width:28px;height:28px;padding:3px;border-radius:3px;object-fit:contain;background:var(--color-paper-3);border-bottom:2px solid var(--corner,var(--color-rule));cursor:help}
-.ic.weapon{--corner:var(--color-weapon);background:color-mix(in oklch,var(--color-weapon) 75%,var(--color-shade))}
-.ic.vitality{--corner:var(--color-vitality);background:color-mix(in oklch,var(--color-vitality) 70%,var(--color-shade))}
-.ic.spirit{--corner:var(--color-spirit);background:color-mix(in oklch,var(--color-spirit) 75%,var(--color-shade))}
+.col__items{display:grid;grid-template-columns:repeat(2,32px);gap:4px;justify-content:center;margin-top:2px}
+/* in-game item grid: the item's colour art on a dark tile, a slot-coloured corner with the tier, "ACTIVE" under actives */
+.ic{--corner:var(--color-rule);position:relative;display:block;width:32px;height:32px;border-radius:3px;overflow:hidden;background:oklch(16% 0.01 260);
+  box-shadow:inset 0 0 0 1px color-mix(in oklch,var(--corner) 45%,transparent);cursor:help}
+.ic img{display:block;width:100%;height:100%;object-fit:cover}
+.ic.weapon{--corner:var(--color-weapon)}.ic.vitality{--corner:var(--color-vitality)}.ic.spirit{--corner:var(--color-spirit)}
+.ic__t{position:absolute;top:0;right:0;width:13px;height:13px;background:var(--corner);clip-path:polygon(0 0,100% 0,100% 100%);
+  font:700 7px/1 var(--font-body);color:var(--color-shade);text-align:right;padding:1px 1px 0 0}
+.ic__a{position:absolute;left:0;right:0;bottom:0;background:oklch(12% 0.01 260 / .85);color:var(--color-ink);font:700 5.5px/1.5 var(--font-body);letter-spacing:.08em;text-align:center}
 #tip .inv-t{padding:10px;min-width:250px}
 #tip .inv-t h5{margin:0 0 6px;font:800 var(--text-md)/1 var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
 #tip .inv-t .row{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:3px 0;border-top:1px solid var(--color-rule)}
@@ -190,7 +194,7 @@ try{best=+localStorage.getItem('trainer-best')||0}catch(e){}
 
 function start(){order=D.scenarios.map((_,i)=>i).sort(()=>Math.random()-.5).slice(0,ROUNDS);round=0;score=0;show()}
 function hud(){$('round').textContent=`${Math.min(round+1,ROUNDS)} / ${ROUNDS}`;$('score').textContent=`${score} / ${ROUNDS*5}`;$('best').textContent=best?`${best} / ${ROUNDS*5}`:'—'}
-function icon(id){const t=T(id);return `<img class="ic ${esc(t.slot)}" src="${esc(t.icon||t.img||'')}" alt="${esc(t.n||'')}" data-id="${id}" tabindex="0">`}
+function icon(id){const t=T(id);return `<span class="ic ${esc(t.slot)}" data-id="${id}" tabindex="0" aria-label="${esc(t.n||'')}"><img src="${esc(t.img||t.icon||'')}" alt="" loading="lazy">${t.tier?`<span class="ic__t">${ROMAN[t.tier]}</span>`:''}${t.act?`<span class="ic__a">${L('tr.active')}</span>`:''}</span>`}
 // one scoreboard column; the three bars are the souls invested in weapon / vitality / spirit items
 const SLOTS=[['weapon','w'],['vitality','v'],['spirit','s']],BAR_MAX=16000;
 function tier(slot,souls){const t=(D.bonuses[slot]||[]).filter(b=>souls>=b[0]);return t.length?t[t.length-1]:null}
