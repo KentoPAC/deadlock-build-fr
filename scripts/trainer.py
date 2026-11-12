@@ -213,8 +213,12 @@ def page(root, scenarios, lang):
     use(lang)
     all_items, all_heroes = items(), heroes()
     used = {i for s in scenarios for p in s["players"] for i in p["items"]} | {o["id"] for s in scenarios for o in s["options"]}
-    hero_cards = {h: {"n": all_heroes.get(h, {}).get("name", str(h)),
-                      "img": ((all_heroes.get(h) or {}).get("images") or {}).get("icon_image_small_webp")}
+    def image(h, key):
+        return ((all_heroes.get(h) or {}).get("images") or {}).get(key)
+    # in-game scoreboard portraits: the hero card (face), and the "gloat" card when the hero is fed
+    hero_cards = {h: {"n": all_heroes.get(h, {}).get("name", str(h)), "img": image(h, "top_bar_vertical_image_webp") or image(h, "icon_hero_card_webp"),
+                      "fed": image(h, "hero_card_gloat_webp") or image(h, "icon_hero_card_webp"),
+                      "icon": image(h, "icon_image_small_webp")}
                   for h in {p["hero"] for s in scenarios for p in s["players"]}}
     data = {"scenarios": [dict(s, rank=rank_label(s["badge"]) if s.get("badge") else "") for s in scenarios],
             "items": item_data(all_items, used), "heroes": hero_cards,
