@@ -65,7 +65,7 @@ def build_hub(root, lang, patch_list):
     payload = json.dumps({"heroes": cards, "patches": patch_list, "pageName": page_name(lang)},
                          ensure_ascii=False, separators=(",", ":"))
     page = fill_template(read_text(TEMPLATE), {
-        "__LANG__": lang, "__LANG_LINKS__": language_links(lang),
+        "__LANG__": lang, "__LANG_LINKS__": language_links(lang), "__PAGE__": page_name(lang),
         "__UI__": json.dumps(table("ui"), ensure_ascii=False).replace("</", "<\\/"),
         "__DATA__": payload.replace("</", "<\\/")})
     path = f"{root}/{page_name(lang)}"

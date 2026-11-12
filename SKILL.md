@@ -187,6 +187,15 @@ is missing.
   with `?language=french`. Natural French gamer tone (lane, farm, focus… are fine). `#Citadel_HeroBuilds_*` labels are
   not translated. End the description translation with "Traduit du build <id>.".
 
+## D. Counter-buy trainer
+
+`python3 -I S/scripts/trainer.py [builds] [--matches 200] [--scenarios 60]` (~1 min) writes `builds/trainer/`
+(index.html + index.fr.html, linked from the home page): real Ascendant+ games frozen at 15 or 20 min, every
+player's souls, K/D/A, damage, healing and items; the player picks one of 4 items. Best answer (3 pts) = the counter
+item (counterplay.py categories) bought by that hero's players with the highest win-rate gain against the enemy
+heroes, weighted by their threat ((souls / average)^2: fed heroes weigh more); the pro's real next purchase = 2 pts.
+No account id or player name is kept. Rerun it to refresh the games (gains and hero items are cached for a day).
+
 ## Troubleshooting
 
 - Pasting fails: ask the user to copy any build in game ("Copier dans le presse-papier"), then
