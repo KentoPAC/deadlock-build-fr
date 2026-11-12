@@ -65,21 +65,18 @@ h1{margin:4px 0 0;font:800 clamp(2.4rem,3vw + 1.4rem,4rem)/.95 var(--font-displa
 .col{--team:var(--team-ally);display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 4px 8px;background:linear-gradient(to bottom,color-mix(in oklch,var(--team) 34%,var(--color-paper-2)),var(--color-paper-2) 55%);border-top:3px solid var(--team);min-width:0}
 .col--enemy{--team:var(--team-enemy)}
 .col--me{box-shadow:inset 0 0 0 2px var(--color-ink)}
-.col__p{position:relative;width:56px;height:56px;border-radius:50%;background:var(--color-shade);border:2px solid var(--team);overflow:visible;cursor:help}
+.col__p{position:relative;margin-top:18px;width:56px;height:56px;border-radius:50%;background:var(--color-shade);border:2px solid var(--team);overflow:visible;cursor:help}
 .col__p img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 18%}
 .col__p{overflow:hidden}
-/* fed enemy, reproduced from the in-game scoreboard: mint shield-shaped portrait with the "gloat" art, a cream
-   tapered "!" on its left edge, and flat dark-teal smoke that leaks from under the shield, slides down and out around
-   the souls badge and breaks into flecks (hard edges, no glow). */
-:root{--fed:rgb(140,248,220);--fed-low:rgb(96,155,134);--fed-smoke:rgb(36,128,120);--fed-mark:rgb(248,236,220)}
-.col__p--fed{isolation:isolate;width:60px;height:74px;border:0;border-radius:3px 3px 50% 50%/3px 3px 46% 46%;overflow:visible;
+/* fed enemy, as on the in-game scoreboard: a mint shield with the "gloat" art in a face-cropped oval, and the
+   in-game smoke animation (assets/fed_smoke.webp) above the shield and below the oval. */
+:root{--fed:rgb(140,248,220);--fed-low:rgb(96,155,134);--fed-smoke:rgb(36,128,120)}
+.col__p--fed{isolation:isolate;margin-top:0;width:60px;height:74px;border:0;border-radius:3px 3px 50% 50%/3px 3px 46% 46%;overflow:visible;
   background:linear-gradient(to bottom,var(--fed) 30%,var(--fed-low))}
 .fedoval{position:absolute;left:11px;top:12.5px;width:46px;height:61px;border-radius:50%;overflow:hidden}
 .col__p--fed .fedoval img{width:100%;height:100%;border-radius:0;object-fit:cover;object-position:50% 14%;transform:scale(1.55);transform-origin:50% 22%}
-.fedmark{position:absolute;left:-6px;top:15px;z-index:2;filter:drop-shadow(1.2px 0 0 #161616) drop-shadow(-1.2px 0 0 #161616) drop-shadow(0 1.2px 0 #161616) drop-shadow(0 -1.2px 0 #161616)}
-.fedmark i{display:block;width:11px;height:40px;background:var(--fed-mark);clip-path:polygon(0 0,100% 0,74% 100%,30% 100%)}
 .col__p img.fedsmoke{position:absolute;left:-9.5px;top:-1.6px;width:79px;height:129px;max-width:none;border-radius:0;object-fit:fill;transform:none;z-index:-1;pointer-events:none}
-.col__souls.col__souls--fed{background:var(--fed);color:rgb(16,20,24);margin-top:-2px}
+.col__souls.col__souls--fed{background:var(--fed);color:rgb(16,20,24)}
 .col__souls small{font-size:.62em;font-weight:500;opacity:.7;margin-left:1px}
 .col__souls{margin-top:-12px;position:relative;padding:1px 6px;background:var(--team);color:var(--color-shade);font:800 .8rem/1.3 var(--font-body)}
 .col__n,.col .kda,.col .col__tag{position:relative;z-index:1}
@@ -193,7 +190,7 @@ function tier(slot,souls){const t=(D.bonuses[slot]||[]).filter(b=>souls>=b[0]);r
 function nextTier(slot,souls){return (D.bonuses[slot]||[]).find(b=>souls<b[0])||null}
 function column(p,avg,ally){const h=H(p.hero),fed=!ally&&p.souls>=1.2*avg;
   return `<div class="col${ally?'':' col--enemy'}${p.me?' col--me':''}">
-    <span class="col__p${fed?' col__p--fed':''}" tabindex="0" data-pstats="${esc(JSON.stringify({h:p.hero,dmg:p.dmg,heal:p.heal,taken:p.taken}))}">${fed?smoke()+'<span class="fedmark" aria-hidden="true"><i></i></span>':''}${fed?`<span class="fedoval"><img src="${esc(h.fed||h.img||'')}" alt="" onerror="this.src='${esc(h.icon||'')}'"></span>`:h.img?`<img src="${esc(h.img)}" alt="" onerror="this.src='${esc(h.icon||'')}'">`:''}</span>
+    <span class="col__p${fed?' col__p--fed':''}" tabindex="0" data-pstats="${esc(JSON.stringify({h:p.hero,dmg:p.dmg,heal:p.heal,taken:p.taken}))}">${fed?smoke():''}${fed?`<span class="fedoval"><img src="${esc(h.fed||h.img||'')}" alt="" onerror="this.src='${esc(h.icon||'')}'"></span>`:h.img?`<img src="${esc(h.img)}" alt="" onerror="this.src='${esc(h.icon||'')}'">`:''}</span>
     <span class="col__souls${fed?' col__souls--fed':''}">${gameSouls(p.souls)}</span><span class="col__n">${esc(h.n)}</span>
     ${p.me?`<span class="col__tag tag--me">${L('tr.you')}</span>`:'<span class="col__tag">&nbsp;</span>'}
     <div class="kda"><span>K<b>${p.k}</b></span><span>D<b>${p.d}</b></span><span>A<b>${p.a}</b></span></div>
