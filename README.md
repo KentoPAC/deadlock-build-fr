@@ -12,7 +12,7 @@ into the game.
 > Ask Claude *"Find me the best Mina builds"* and get a page with a two-minute TLDR, a full guide and one-click
 > build codes for the in-game **"Paste build"** button.
 
-**[Live demo](https://kentopac.github.io/deadlock-maxing/examples/)**: the home page and seven generated hero pages
+**[Live demo](https://kentopac.github.io/deadlock-maxing/examples/)**: the home page and eight generated hero pages
 ([French version](https://kentopac.github.io/deadlock-maxing/examples/index.fr.html)).
 
 | Home page | TLDR: the build to take and what to do |
