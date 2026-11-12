@@ -15,7 +15,7 @@
   --color-rule:oklch(36% 0.018 260);--color-neutral:oklch(66% 0.015 250);--color-muted:oklch(84% 0.025 78);
   --color-ink:oklch(94% 0.03 78);--color-shade:oklch(8% 0.004 260);
   --color-accent:oklch(74% 0.16 55);--color-accent-hi:oklch(80% 0.15 60);--color-accent-dim:oklch(40% 0.09 55);--color-accent-ink:oklch(14% 0.01 50);
-  --color-ally:oklch(72% 0.12 230);--color-enemy:oklch(68% 0.19 25);
+  --team-ally:oklch(74% 0.14 70);--team-enemy:oklch(64% 0.12 262);
   --color-ok:oklch(72% 0.17 140);--color-err:oklch(68% 0.19 25);--color-warn:oklch(82% 0.15 80);--color-focus:oklch(80% 0.15 70);
   --color-weapon:oklch(68% 0.15 55);--color-vitality:oklch(70% 0.15 135);--color-spirit:oklch(64% 0.16 305);
   --color-plate:oklch(80% 0.02 80);--color-plate-weapon:oklch(80% 0.08 65);--color-plate-vitality:oklch(83% 0.1 125);--color-plate-spirit:oklch(80% 0.07 300);
@@ -54,29 +54,39 @@ h1{margin:4px 0 0;font:800 clamp(2.4rem,3vw + 1.4rem,4rem)/.95 var(--font-displa
 .brief h2{margin:0;font:800 var(--text-lg)/1 var(--font-display);letter-spacing:.04em;text-transform:uppercase}
 .brief p{margin:2px 0 0;color:var(--color-muted)}
 
-/* teams */
-.teams{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-md);margin-top:var(--space-md)}
-.team h3{margin:0 0 6px;font:800 var(--text-md)/1 var(--font-display);letter-spacing:.14em;text-transform:uppercase}
-.team--ally h3{color:var(--color-ally)}.team--enemy h3{color:var(--color-enemy)}
-.pl{display:grid;grid-template-columns:40px minmax(0,1fr);gap:4px 10px;padding:8px 10px;background:var(--color-paper-2);border:1px solid var(--color-rule);border-left:4px solid var(--side)}
-.pl+.pl{margin-top:4px}
-.team--ally{--side:var(--color-ally)}.team--enemy{--side:var(--color-enemy)}
-.pl--me{background:color-mix(in oklch,var(--color-ally) 14%,var(--color-paper-2))}
-.pl>img{grid-row:span 2;width:40px;height:40px;border-radius:50%;object-fit:cover;background:var(--color-shade)}
-.pl__top{display:flex;align-items:center;gap:8px;min-width:0}
-.pl__n{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.pl__tag{flex:none;padding:1px 6px;font:800 .7rem/1.3 var(--font-display);letter-spacing:.12em;text-transform:uppercase}
-.tag--me{background:var(--color-ally);color:var(--color-shade)}
-.tag--fed{background:var(--color-enemy);color:var(--color-shade)}
-.pl__kda{margin-left:auto;font-size:var(--text-sm);color:var(--color-muted);white-space:nowrap}
-.pl__souls{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:8px;font-size:var(--text-sm)}
-.pl__souls b{min-width:5.2em}
-.bar{height:6px;background:var(--color-paper-3);border-radius:3px;overflow:hidden}
-.bar i{display:block;height:100%;width:var(--w);background:var(--side)}
-.pl__more{grid-column:2;display:flex;flex-wrap:wrap;gap:3px 12px;font-size:var(--text-xs);color:var(--color-neutral)}
-.pl__items{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:3px;margin-top:2px}
-.ic{width:26px;height:26px;border-radius:4px;object-fit:cover;background:var(--color-paper-3);border-bottom:2px solid var(--corner,var(--color-rule));cursor:help}
-.ic.weapon{--corner:var(--color-weapon)}.ic.vitality{--corner:var(--color-vitality)}.ic.spirit{--corner:var(--color-spirit)}
+/* scoreboard: one column per player, like the in-game Tab screen (allies left, enemies right) */
+.board-wrap{margin-top:var(--space-md);overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--color-rule) transparent}
+.board{display:grid;grid-template-columns:repeat(6,minmax(78px,1fr)) minmax(96px,.9fr) repeat(6,minmax(78px,1fr));gap:3px;min-width:1080px}
+.mid{display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:6px;text-align:center}
+.mid__t{padding:4px 10px;background:var(--color-paper-3);font:800 1.2rem/1 var(--font-display);letter-spacing:.06em}
+.mid__s{display:grid;grid-template-columns:1fr 1fr;width:100%;font:800 1rem/1 var(--font-display)}
+.mid__s span{padding:6px 2px}.mid__s .a{background:var(--team-ally);color:var(--color-shade)}.mid__s .e{background:var(--team-enemy);color:var(--color-shade)}
+.mid small{font-size:var(--text-xs);color:var(--color-neutral)}
+.col{--team:var(--team-ally);display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 4px 8px;background:linear-gradient(to bottom,color-mix(in oklch,var(--team) 34%,var(--color-paper-2)),var(--color-paper-2) 55%);border-top:3px solid var(--team);min-width:0}
+.col--enemy{--team:var(--team-enemy)}
+.col--me{box-shadow:inset 0 0 0 2px var(--color-ink)}
+.col__p{position:relative;width:56px;height:56px;border-radius:50%;background:var(--color-shade);border:2px solid var(--team);overflow:visible;cursor:help}
+.col__p img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.col__souls{margin-top:-12px;position:relative;padding:1px 6px;background:var(--team);color:var(--color-shade);font:800 .8rem/1.3 var(--font-body)}
+.col__n{max-width:100%;font:700 .8rem/1.2 var(--font-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.col__tag{padding:0 5px;font:800 .62rem/1.4 var(--font-display);letter-spacing:.12em;text-transform:uppercase}
+.tag--me{background:var(--color-ink);color:var(--color-shade)}.tag--fed{background:var(--color-err);color:var(--color-shade)}
+.kda{display:grid;grid-template-columns:repeat(3,1fr);width:100%;text-align:center;font-size:var(--text-xs);color:var(--color-neutral)}
+.kda b{display:block;color:var(--color-ink);font-size:.85rem}
+.inv{display:flex;gap:4px;align-items:flex-end;height:46px;padding:3px 6px;background:var(--color-shade);border-radius:3px;cursor:help}
+.inv i{display:block;width:7px;height:100%;border-radius:3px;background:linear-gradient(to top,var(--c) var(--h),color-mix(in oklch,var(--c) 18%,var(--color-shade)) var(--h))}
+.inv .w{--c:var(--color-weapon)}.inv .v{--c:var(--color-vitality)}.inv .s{--c:var(--color-spirit)}
+.col__st{width:100%;font-size:.68rem;line-height:1.35;color:var(--color-neutral);text-align:center}
+.col__items{display:grid;grid-template-columns:repeat(2,28px);gap:3px;justify-content:center;margin-top:2px}
+.ic{width:28px;height:28px;border-radius:4px;object-fit:cover;background:var(--color-paper-3);border-bottom:2px solid var(--corner,var(--color-rule));cursor:help}
+.ic.weapon{--corner:var(--color-weapon);background:color-mix(in oklch,var(--color-weapon) 35%,var(--color-paper-3))}
+.ic.vitality{--corner:var(--color-vitality);background:color-mix(in oklch,var(--color-vitality) 35%,var(--color-paper-3))}
+.ic.spirit{--corner:var(--color-spirit);background:color-mix(in oklch,var(--color-spirit) 35%,var(--color-paper-3))}
+#tip .inv-t{padding:10px;min-width:250px}
+#tip .inv-t h5{margin:0 0 6px;font:800 var(--text-md)/1 var(--font-display);letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
+#tip .inv-t .row{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:3px 0;border-top:1px solid var(--color-rule)}
+#tip .inv-t .row b{color:var(--c)}
+#tip .inv-t small{color:var(--color-neutral)}
 
 /* choice */
 .ask{margin-top:var(--space-lg);padding:var(--space-md);background:var(--color-paper-2);border:1px solid var(--color-rule)}
@@ -125,7 +135,7 @@ h1{margin:4px 0 0;font:800 clamp(2.4rem,3vw + 1.4rem,4rem)/.95 var(--font-displa
 #tip .d{margin:6px 0;line-height:1.4}#tip .d b{color:var(--color-accent);font-weight:400}
 #tip .sep{border-top:1px solid var(--color-rule);margin:6px 0}
 
-@media (max-width:900px){.teams{grid-template-columns:minmax(0,1fr)}.team--enemy{order:-1}.opts{grid-template-columns:repeat(2,minmax(0,170px))}}
+@media (max-width:900px){.opts{grid-template-columns:repeat(2,minmax(0,170px))}}
 @media (max-width:480px){.hud b{font-size:1.4rem}.hud div{padding:8px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -157,23 +167,37 @@ try{best=+localStorage.getItem('trainer-best')||0}catch(e){}
 function start(){order=D.scenarios.map((_,i)=>i).sort(()=>Math.random()-.5).slice(0,ROUNDS);round=0;score=0;show()}
 function hud(){$('round').textContent=`${Math.min(round+1,ROUNDS)} / ${ROUNDS}`;$('score').textContent=`${score} / ${ROUNDS*5}`;$('best').textContent=best?`${best} / ${ROUNDS*5}`:'—'}
 function icon(id){const t=T(id);return `<img class="ic ${esc(t.slot)}" src="${esc(t.icon||t.img||'')}" alt="${esc(t.n||'')}" data-id="${id}" tabindex="0">`}
-function player(p,max,avg,ally){const h=H(p.hero),fed=!ally&&p.souls>=1.2*avg;
-  return `<div class="pl${p.me?' pl--me':''}">${h.img?`<img src="${esc(h.img)}" alt="">`:'<span></span>'}
-    <div class="pl__top"><span class="pl__n">${esc(h.n)}</span>${p.me?`<span class="pl__tag tag--me">${L('tr.you')}</span>`:''}${fed?`<span class="pl__tag tag--fed">${L('tr.fed')}</span>`:''}
-      <span class="pl__kda">${p.k}/${p.d}/${p.a}</span></div>
-    <div class="pl__souls"><b>${num(p.souls)}</b><span class="bar"><i style="--w:${(100*p.souls/max).toFixed(1)}%"></i></span></div>
-    <div class="pl__more"><span>${L('tr.dmg')} ${k(p.dmg)}</span><span>${L('tr.heal')} ${k(p.heal)}</span><span>${L('tr.taken')} ${k(p.taken)}</span></div>
-    <div class="pl__items">${p.items.map(icon).join('')}</div></div>`}
+// one scoreboard column; the three bars are the souls invested in weapon / vitality / spirit items
+const SLOTS=[['weapon','w'],['vitality','v'],['spirit','s']],BAR_MAX=16000;
+function tier(slot,souls){const t=(D.bonuses[slot]||[]).filter(b=>souls>=b[0]);return t.length?t[t.length-1]:null}
+function nextTier(slot,souls){return (D.bonuses[slot]||[]).find(b=>souls<b[0])||null}
+function column(p,avg,ally){const h=H(p.hero),fed=!ally&&p.souls>=1.2*avg;
+  return `<div class="col${ally?'':' col--enemy'}${p.me?' col--me':''}">
+    <span class="col__p" tabindex="0" data-pstats="${esc(JSON.stringify({h:p.hero,dmg:p.dmg,heal:p.heal,taken:p.taken}))}">${h.img?`<img src="${esc(h.img)}" alt="">`:''}</span>
+    <span class="col__souls">${k(p.souls)}</span><span class="col__n">${esc(h.n)}</span>
+    ${p.me?`<span class="col__tag tag--me">${L('tr.you')}</span>`:fed?`<span class="col__tag tag--fed">${L('tr.fed')}</span>`:'<span class="col__tag">&nbsp;</span>'}
+    <div class="kda"><span>K<b>${p.k}</b></span><span>D<b>${p.d}</b></span><span>A<b>${p.a}</b></span></div>
+    <span class="inv" tabindex="0" data-inv="${esc(JSON.stringify(p.inv||{}))}">${SLOTS.map(([sl,c])=>`<i class="${c}" style="--h:${Math.min(100,100*((p.inv||{})[sl]||0)/BAR_MAX).toFixed(0)}%"></i>`).join('')}</span>
+    <div class="col__st">${L('tr.dmg')} ${k(p.dmg)}<br>${L('tr.heal')} ${k(p.heal)}</div>
+    <div class="col__items">${p.items.map(icon).join('')}</div></div>`}
+function invTip(inv){return `<div class="inv-t">${SLOTS.map(([sl])=>{const v=inv[sl]||0,t=tier(sl,v),n=nextTier(sl,v);
+  return `<div style="--c:var(--color-${sl})"><h5>${L('tr.inv_'+sl)}</h5><div class="row"><span>${L('tr.inv_spent')}</span><span></span><b>${num(v)}</b></div>
+    <div class="row"><span>${L('tr.inv_bonus')}</span><span></span><b>${t?L('tr.bonus_'+sl,{n:t[1]}):'—'}</b></div>
+    ${n?`<div class="row"><small>${L('tr.inv_next',{souls:num(n[0])})}</small><span></span><small>${L('tr.bonus_'+sl,{n:n[1]})}</small></div>`:''}</div>`}).join('<br>')}</div>`}
+function statTip(x){return `<div class="inv-t"><h5 style="color:var(--color-ink)">${esc(H(x.h).n)}</h5>
+  ${[['tr.dmg','dmg'],['tr.heal','heal'],['tr.taken','taken']].map(([l,f])=>`<div class="row"><span>${L(l)}</span><span></span><b style="color:var(--color-ink)">${num(x[f])}</b></div>`).join('')}</div>`}
 function card(id){const t=T(id);return `<div class="card">${t.img?`<img src="${esc(t.img)}" alt="">`:''}${t.tier?`<span class="card__tier">${ROMAN[t.tier]}</span>`:''}<div class="card__n">${esc(t.n||id)}</div></div>`}
 
 function show(){hud();if(round>=ROUNDS)return finish();
   const s=D.scenarios[order[round]],me=s.players.find(p=>p.me),max=Math.max(...s.players.map(p=>p.souls));
-  const side=ally=>s.players.filter(p=>p.ally===ally).sort((a,b)=>b.souls-a.souls);
+  const side=ally=>s.players.filter(p=>p.ally===ally).sort((a,b)=>ally?a.souls-b.souls:b.souls-a.souls);
   const avgE=side(false).reduce((t,p)=>t+p.souls,0)/6;
   $('game').innerHTML=`<section class="brief">${H(me.hero).img?`<img src="${esc(H(me.hero).img)}" alt="">`:''}<div>
-      <h2>${L('tr.playing',{hero:esc(H(me.hero).n),min:Math.round(s.t/60)})}</h2><p>${L('tr.context',{souls:num(me.souls),rank:esc(s.rank||'')})}</p></div></section>
-    <div class="teams"><section class="team team--ally"><h3>${L('tr.allies')}</h3>${side(true).map(p=>player(p,max,avgE,true)).join('')}</section>
-      <section class="team team--enemy"><h3>${L('tr.enemies')}</h3>${side(false).map(p=>player(p,max,avgE,false)).join('')}</section></div>
+      <h2>${L('tr.playing',{hero:esc(H(me.hero).n),min:Math.round(s.t/60)})}</h2><p>${L('tr.context',{souls:num(me.souls),rank:esc(s.rank||'')})}</p><p><small>${L('tr.board_hint')}</small></p></div></section>
+    <div class="board-wrap"><div class="board">${side(true).map(p=>column(p,avgE,true)).join('')}
+      <div class="mid"><span class="mid__t">${Math.floor(s.t/60)}:00</span><div class="mid__s"><span class="a">${k(side(true).reduce((t,p)=>t+p.souls,0))}</span><span class="e">${k(side(false).reduce((t,p)=>t+p.souls,0))}</span></div>
+        <small>${L('tr.allies')} · ${L('tr.enemies')}</small></div>
+      ${side(false).map(p=>column(p,avgE,false)).join('')}</div></div>
     <section class="ask"><h3>${L('tr.question')}</h3><p>${L('tr.question_sub')}</p>
       <div class="opts">${s.options.map(o=>`<button type="button" class="opt ${esc(T(o.id).slot)}" data-pick="${o.id}" data-id="${o.id}">${card(o.id)}<span class="card__c">${num(T(o.id).c||0)} ${L('tr.souls')}</span><span class="badges"></span><span class="score" hidden></span></button>`).join('')}</div>
       <div id="verdict"></div></section>`;
@@ -208,7 +232,11 @@ function tipHtml(t){let h=`<div class="h ${esc(t.slot)}"><img src="${esc(t.img||
   if((t.innate||[]).length)h+=st(t.innate);
   (t.blocks||[]).forEach((b,i)=>{if(i||(t.innate||[]).length)h+='<div class="sep"></div>';if(b.d)h+=`<div class="d">${b.d}</div>`;h+=st(b.s)});return h+'</div>'}
 function place(x,y){const r=tip.getBoundingClientRect();let l=x+16,t=y+16;if(l+r.width>innerWidth-8)l=x-r.width-16;if(t+r.height>innerHeight-8)t=Math.max(8,innerHeight-r.height-8);tip.style.left=Math.max(8,l)+'px';tip.style.top=t+'px'}
-function bindTips(){document.querySelectorAll('#game [data-id]').forEach(el=>{const o=(x,y)=>{if(!IT[el.dataset.id])return;tip.innerHTML=tipHtml(T(el.dataset.id));tip.style.display='block';
+function bindTips(){document.querySelectorAll('#game [data-inv],#game [data-pstats]').forEach(el=>{const o=(x,y)=>{tip.innerHTML=el.dataset.inv?invTip(JSON.parse(el.dataset.inv)):statTip(JSON.parse(el.dataset.pstats));tip.style.display='block';
+    if(x==null){const r=el.getBoundingClientRect();x=r.right;y=r.top}place(x,y)};
+  el.addEventListener('mouseenter',e=>o(e.clientX,e.clientY));el.addEventListener('mousemove',e=>{if(tip.style.display==='block')place(e.clientX,e.clientY)});
+  el.addEventListener('focus',()=>o());['mouseleave','blur'].forEach(n=>el.addEventListener(n,()=>tip.style.display='none'))});
+ document.querySelectorAll('#game [data-id]').forEach(el=>{const o=(x,y)=>{if(!IT[el.dataset.id])return;tip.innerHTML=tipHtml(T(el.dataset.id));tip.style.display='block';
     if(x==null){const r=el.getBoundingClientRect();x=r.right;y=r.top}place(x,y)};
   el.addEventListener('mouseenter',e=>o(e.clientX,e.clientY));el.addEventListener('mousemove',e=>{if(tip.style.display==='block')place(e.clientX,e.clientY)});
   el.addEventListener('focus',()=>o());['mouseleave','blur'].forEach(n=>el.addEventListener(n,()=>tip.style.display='none'))})}

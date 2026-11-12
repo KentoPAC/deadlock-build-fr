@@ -116,6 +116,16 @@ def next_buy(player, t, shop):
     return None
 
 
+def investment(held, shop):
+    """Souls invested per shop slot (weapon, vitality, spirit), as the game's three bars show them."""
+    out = {"weapon": 0, "vitality": 0, "spirit": 0}
+    for i in held:
+        slot = shop[i].get("item_slot_type")
+        if slot in out:
+            out[slot] += shop[i].get("cost", 0)
+    return out
+
+
 def threats(enemies):
     """{hero: weight}: (souls / average souls)^2, normalised (the fed heroes weigh the most)."""
     avg = sum(e["souls"] for e in enemies) / len(enemies)
@@ -135,8 +145,9 @@ def scenario(match, rng, shop, gains, categories, fits):
     table_ = []
     for p in players:
         s = state_at(p, t)
-        table_.append(dict(s, hero=p["hero_id"], ally=p["team"] == me["team"], me=p is me,
-                           items=held_items(p, t, shop)))
+        held = held_items(p, t, shop)
+        table_.append(dict(s, hero=p["hero_id"], ally=p["team"] == me["team"], me=p is me, items=held,
+                           inv=investment(held, shop)))
     enemies = [x for x in table_ if not x["ally"]]
     weights = threats(enemies)
     owned = set(next(x for x in table_ if x["me"])["items"])
@@ -206,7 +217,10 @@ def page(root, scenarios, lang):
                       "img": ((all_heroes.get(h) or {}).get("images") or {}).get("icon_image_small_webp")}
                   for h in {p["hero"] for s in scenarios for p in s["players"]}}
     data = {"scenarios": [dict(s, rank=rank_label(s["badge"]) if s.get("badge") else "") for s in scenarios],
-            "items": item_data(all_items, used), "heroes": hero_cards}
+            "items": item_data(all_items, used), "heroes": hero_cards,
+            # the game's investment bonuses (same for every hero): souls threshold -> bonus per slot
+            "bonuses": {slot: [[b["gold_threshold"], b["bonus"]] for b in tiers]
+                        for slot, tiers in next((h["cost_bonuses"] for h in all_heroes.values() if h.get("cost_bonuses")), {}).items()}}
     ui = table("ui")
     out = re.sub(r"\{\{ui:([\w.]+)\}\}", lambda m: html.escape(ui[m[1]]), read_text(TEMPLATE))
     for key, value in {"__LANG__": lang, "__LANG_LINKS__": language_links(lang), "__HOME__": page_name(lang),
