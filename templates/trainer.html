@@ -68,19 +68,24 @@ h1{margin:4px 0 0;font:800 clamp(2.4rem,3vw + 1.4rem,4rem)/.95 var(--font-displa
 .col__p{position:relative;width:56px;height:56px;border-radius:50%;background:var(--color-shade);border:2px solid var(--team);overflow:visible;cursor:help}
 .col__p img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 18%}
 .col__p{overflow:hidden}
-/* fed enemy: shield-shaped portrait on teal, laughing "gloat" art, spectral flames, white warning bar (as in game) */
-:root{--fed:oklch(84% 0.12 178);--fed-deep:oklch(62% 0.12 190)}
-.col__p--fed{isolation:isolate;width:62px;height:76px;border:0;border-radius:8px 8px 50% 50%/8px 8px 62% 62%;overflow:visible;
-  background:linear-gradient(to bottom,var(--fed),var(--fed-deep));box-shadow:0 0 14px 2px color-mix(in oklch,var(--fed) 60%,transparent)}
-.col__p--fed img{border-radius:8px 8px 50% 50%/8px 8px 62% 62%;transform:none;object-position:50% 8%}
-.col__p--fed::before{content:"";position:absolute;left:-7px;top:6px;width:8px;height:44px;border-radius:4px 4px 2px 2px;z-index:2;
-  background:linear-gradient(to bottom,oklch(96% 0.03 85) 0 72%,transparent 72% 80%,oklch(96% 0.03 85) 80%);box-shadow:0 0 0 1.5px var(--color-shade)}
-.fedfire{position:absolute;inset:-22px -16px -8px;z-index:-1;pointer-events:none;filter:url(#flame) drop-shadow(0 0 5px var(--fed)) drop-shadow(0 -3px 10px var(--fed-deep))}
-.fedfire span{position:absolute;bottom:var(--y);left:var(--x);width:var(--w);height:calc(var(--w)*1.6);margin-left:calc(var(--w)/-2);border-radius:50% 50% 45% 45%/62% 62% 38% 38%;
-  background:radial-gradient(ellipse 50% 60% at 50% 72%,oklch(97% 0.04 175) 0 20%,var(--fed) 45%,var(--fed-deep) 66%,transparent 72%);transform-origin:50% 90%;animation:lick var(--d) ease-in-out var(--delay) infinite}
-@keyframes lick{0%{transform:translateY(4px) scale(.7,.6);opacity:0}20%{opacity:1}60%{transform:translateY(-12px) scale(.75,1.05);opacity:.95}100%{transform:translateY(-24px) scale(.35,1.2);opacity:0}}
-.col__souls.col__souls--fed{background:var(--fed);margin-top:-2px}
+/* fed enemy, reproduced from the in-game scoreboard: mint shield-shaped portrait with the "gloat" art, a cream
+   tapered "!" on its left edge, and flat dark-teal smoke that leaks from under the shield, slides down and out around
+   the souls badge and breaks into flecks (hard edges, no glow). */
+:root{--fed:rgb(140,248,220);--fed-low:rgb(96,155,134);--fed-smoke:rgb(36,128,120);--fed-mark:rgb(248,236,220)}
+.col__p--fed{isolation:isolate;width:60px;height:74px;border:0;border-radius:3px 3px 50% 50%/3px 3px 46% 46%;overflow:visible;
+  background:linear-gradient(to bottom,var(--fed) 30%,var(--fed-low))}
+.col__p--fed img{border-radius:3px 3px 50% 50%/3px 3px 46% 46%;object-position:50% 6%}
+.fedmark{position:absolute;left:-6px;top:15px;z-index:2;filter:drop-shadow(1.2px 0 0 #161616) drop-shadow(-1.2px 0 0 #161616) drop-shadow(0 1.2px 0 #161616) drop-shadow(0 -1.2px 0 #161616)}
+.fedmark i{display:block;width:11px;height:40px;background:var(--fed-mark);clip-path:polygon(0 0,100% 0,74% 100%,30% 100%)}
+.fedsmoke{position:absolute;left:-34px;top:22px;width:128px;height:120px;z-index:-1;pointer-events:none;overflow:visible}
+.fedsmoke circle{fill:var(--fed-smoke);transform-box:fill-box;transform-origin:center;animation:drift var(--d) linear var(--delay) infinite}
+@keyframes drift{0%{transform:translate(0,0) scale(.6);opacity:0}10%{opacity:1}
+  50%{transform:translate(var(--mx),var(--my)) scale(1)}85%{opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.3);opacity:0}}
+.col__souls.col__souls--fed{background:var(--fed);color:rgb(16,20,24);margin-top:-2px}
+@media (prefers-reduced-motion:reduce){.fedsmoke circle{animation:none;opacity:1;transform:none}}
+.col__souls small{font-size:.62em;font-weight:500;opacity:.7;margin-left:1px}
 .col__souls{margin-top:-12px;position:relative;padding:1px 6px;background:var(--team);color:var(--color-shade);font:800 .8rem/1.3 var(--font-body)}
+.col__n,.col .kda,.col .col__tag{position:relative;z-index:1}
 .col__n{max-width:100%;font:700 .8rem/1.2 var(--font-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .col__tag{padding:0 5px;font:800 .62rem/1.4 var(--font-display);letter-spacing:.12em;text-transform:uppercase}
 .tag--me{background:var(--color-ink);color:var(--color-shade)}.tag--fed{background:var(--color-err);color:var(--color-shade)}
@@ -164,10 +169,12 @@ h1{margin:4px 0 0;font:800 clamp(2.4rem,3vw + 1.4rem,4rem)/.95 var(--font-displa
 <section class="how"><h3>{{ui:tr.how_title}}</h3><p>{{ui:tr.how}}</p></section>
 </div>
 <div id="tip" role="tooltip"></div>
-<svg aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="flame" x="-20%" y="-30%" width="140%" height="160%" color-interpolation-filters="sRGB">
-<feTurbulence type="fractalNoise" baseFrequency="0.05 0.13" numOctaves="2" seed="5" result="noise"><animate attributeName="baseFrequency" dur="1.8s" values="0.05 0.13;0.065 0.17;0.05 0.13" repeatCount="indefinite"/></feTurbulence>
-<feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/><feColorMatrix in="blur" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/>
-<feDisplacementMap in="goo" in2="noise" scale="10" xChannelSelector="R" yChannelSelector="G"/></filter></defs></svg>
+<svg aria-hidden="true" width="0" height="0" style="position:absolute"><defs><filter id="smoke" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+<feTurbulence type="fractalNoise" baseFrequency="0.09" numOctaves="2" seed="3" result="noise"><animate attributeName="baseFrequency" dur="2.4s" values="0.09;0.075;0.1;0.09" repeatCount="indefinite"/></feTurbulence>
+<feDisplacementMap in="SourceGraphic" in2="noise" scale="13" xChannelSelector="R" yChannelSelector="G" result="torn"/>
+<feGaussianBlur in="torn" stdDeviation="1.6" result="soft"/>
+<feComponentTransfer in="soft" result="hard"><feFuncA type="discrete" tableValues="0 0 1 1 1"/></feComponentTransfer>
+<feFlood flood-color="rgb(36,128,120)"/><feComposite in2="hard" operator="in"/></filter></defs></svg>
 <script type="application/json" id="ui">__UI__</script>
 <script type="application/json" id="data">__DATA__</script>
 <script>
@@ -190,18 +197,23 @@ function tier(slot,souls){const t=(D.bonuses[slot]||[]).filter(b=>souls>=b[0]);r
 function nextTier(slot,souls){return (D.bonuses[slot]||[]).find(b=>souls<b[0])||null}
 function column(p,avg,ally){const h=H(p.hero),fed=!ally&&p.souls>=1.2*avg;
   return `<div class="col${ally?'':' col--enemy'}${p.me?' col--me':''}">
-    <span class="col__p${fed?' col__p--fed':''}" tabindex="0" data-pstats="${esc(JSON.stringify({h:p.hero,dmg:p.dmg,heal:p.heal,taken:p.taken}))}">${fed?fire():''}${(fed?h.fed:h.img)?`<img src="${esc(fed?h.fed:h.img)}" alt="" onerror="this.src='${esc(h.icon||'')}'">`:''}</span>
-    <span class="col__souls${fed?' col__souls--fed':''}">${k(p.souls)}</span><span class="col__n">${esc(h.n)}</span>
-    ${p.me?`<span class="col__tag tag--me">${L('tr.you')}</span>`:fed?`<span class="col__tag tag--fed">${L('tr.fed')}</span>`:'<span class="col__tag">&nbsp;</span>'}
+    <span class="col__p${fed?' col__p--fed':''}" tabindex="0" data-pstats="${esc(JSON.stringify({h:p.hero,dmg:p.dmg,heal:p.heal,taken:p.taken}))}">${fed?smoke()+'<span class="fedmark" aria-hidden="true"><i></i></span>':''}${(fed?h.fed:h.img)?`<img src="${esc(fed?h.fed:h.img)}" alt="" onerror="this.src='${esc(h.icon||'')}'">`:''}</span>
+    <span class="col__souls${fed?' col__souls--fed':''}">${gameSouls(p.souls)}</span><span class="col__n">${esc(h.n)}</span>
+    ${p.me?`<span class="col__tag tag--me">${L('tr.you')}</span>`:'<span class="col__tag">&nbsp;</span>'}
     <div class="kda"><span>K<b>${p.k}</b></span><span>D<b>${p.d}</b></span><span>A<b>${p.a}</b></span></div>
     <span class="inv" tabindex="0" data-inv="${esc(JSON.stringify(p.inv||{}))}">${SLOTS.map(([sl,c])=>`<i class="${c}" style="--h:${Math.min(100,100*((p.inv||{})[sl]||0)/BAR_MAX).toFixed(0)}%"></i>`).join('')}</span>
     <div class="col__st">${L('tr.dmg')} ${k(p.dmg)}<br>${L('tr.heal')} ${k(p.heal)}</div>
     <div class="col__items">${p.items.map(icon).join('')}</div></div>`}
-// teal flames around a fed enemy's portrait: tall tongues over the top edge, smaller ones up the sides
-function fire(){let h='<span class="fedfire" aria-hidden="true">';const R=(a,b)=>a+Math.random()*(b-a);
-  for(let i=0;i<7;i++)h+=`<span style="--x:${(14+i*12+R(-3,3)).toFixed(0)}%;--y:${R(60,70).toFixed(0)}%;--w:${R(20,28).toFixed(0)}px;--d:${R(.7,1.1).toFixed(2)}s;--delay:-${R(0,1).toFixed(2)}s"></span>`;
-  for(let i=0;i<6;i++)h+=`<span style="--x:${i%2?R(84,92):R(8,16)}%;--y:${R(25,55).toFixed(0)}%;--w:${R(14,19).toFixed(0)}px;--d:${R(.8,1.2).toFixed(2)}s;--delay:-${R(0,1).toFixed(2)}s"></span>`;
-  return h+'</span>'}
+// flat teal smoke under a fed enemy's portrait (as in game): two curved trails leave from under the shield, one
+// sweeping down-left, one hooking down-right, plus a few flecks. Each trail is a chain of puffs started one after the
+// other on the same path; the #smoke filter merges them into one ribbon with torn, hard edges and a single flat colour.
+const TRAILS=[{x:46,y:44,mx:-16,my:20,dx:-34,dy:40,r:[5.5,7.5]},{x:80,y:44,mx:16,my:12,dx:24,dy:38,r:[4.5,6]},{x:60,y:50,mx:-4,my:24,dx:-8,dy:44,r:[3.5,4.5]}];
+function gameSouls(n){if(n<1000)return String(n);const v=n<10000?(n/1000).toLocaleString(LOC,{maximumFractionDigits:1}):Math.round(n/1000);return `${v}<small>k</small>`}
+function smoke(){const R=(a,b)=>(a+Math.random()*(b-a)).toFixed(1);let c='';
+  TRAILS.forEach((t,j)=>{const n=9,d=+R(2.2,2.8);for(let i=0;i<n;i++)
+    c+=`<circle cx="${t.x}" cy="${t.y}" r="${R(t.r[0],t.r[1])}" style="--mx:${t.mx}px;--my:${t.my}px;--dx:${t.dx}px;--dy:${t.dy}px;--d:${d}s;--delay:-${(d*i/n+j*.3).toFixed(2)}s"/>`});
+  for(let i=0;i<5;i++)c+=`<circle class="fleck" cx="${R(28,96)}" cy="${R(60,80)}" r="${R(1.6,2.6)}" style="--mx:${R(-6,6)}px;--my:${R(8,14)}px;--dx:${R(-12,12)}px;--dy:${R(22,34)}px;--d:${R(1.6,2.4)}s;--delay:-${R(0,2.4)}s"/>`;
+  return `<svg class="fedsmoke" viewBox="0 0 128 120" aria-hidden="true"><g filter="url(#smoke)">${c}</g></svg>`}
 function invTip(inv){return `<div class="inv-t">${SLOTS.map(([sl])=>{const v=inv[sl]||0,t=tier(sl,v),n=nextTier(sl,v);
   return `<div style="--c:var(--color-${sl})"><h5>${L('tr.inv_'+sl)}</h5><div class="row"><span>${L('tr.inv_spent')}</span><span></span><b>${num(v)}</b></div>
     <div class="row"><span>${L('tr.inv_bonus')}</span><span></span><b>${t?L('tr.bonus_'+sl,{n:t[1]}):'—'}</b></div>
